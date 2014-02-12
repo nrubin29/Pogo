@@ -17,7 +17,7 @@ public class Print extends Command {
 			if (str.startsWith("_")) msg += b.getVariable(str.substring(1)).getValue() + " ";
 			else msg += str.replaceAll("~", " ") + " ";
 		}
-		
-		gui.write(msg);
+
+        gui.write(msg);
 	}
 }

@@ -71,11 +71,15 @@ public class GUI extends JFrame {
         return localResult;
     }
 
-    public void write(String txt) {
-        try { text.getDocument().insertString(text.getDocument().getLength(), txt + "\n", null); }
-        catch (Exception e) { }
-        
-        setCaret();
+    public void write(final String txt) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                try { text.getDocument().insertString(text.getDocument().getLength(), txt + "\n", null); }
+                catch (Exception e) { }
+
+                setCaret();
+            }
+        });
     }
 
     private class Filter extends DocumentFilter {

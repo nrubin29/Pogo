@@ -18,6 +18,7 @@ public class CommandManager {
 
         cmds.add(new Declare());
         cmds.add(new GetInput());
+        cmds.add(new Invoke());
 		cmds.add(new Print());
         cmds.add(new Set());
 	}

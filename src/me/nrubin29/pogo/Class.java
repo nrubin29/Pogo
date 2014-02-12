@@ -9,7 +9,7 @@ public class Class extends Block {
 	private ArrayList<Method> methods;
 	CommandManager commandManager;
 	
-	public Class(GUI gui, String code) throws InvalidCodeException {
+	public Class(GUI gui, ArrayList<String> code) throws InvalidCodeException {
         super(null);
 
 		this.methods = new ArrayList<Method>();
@@ -25,7 +25,7 @@ public class Class extends Block {
 		/*
 		 * Iterating over each line in the code.
 		 */
-		for (String line : code.split("\n")) {
+		for (String line : code) {
 			line = trimComments(line);
 			
 			if (line.equals("") || line.equals(" ")) { }
@@ -36,19 +36,26 @@ public class Class extends Block {
 			}
 			
 			else if (line.equals("end") && collect) {
-				collect = false;
-				
 				/*
 				 * NOTE: This assumes that methods are the only blocks.
 				 */
-				
+
 				methods.add(new Method(this, blockName, collection));
-				
+
+                collect = false;
+                blockName = null;
 				collection.clear();
 			}
 			
 			else {
 				if (collect) collection.add(line);
+
+                else {
+                    /*
+                    This is temporary and is implemented for scope purposes.
+                     */
+                    if (line.startsWith("declare")) commandManager.parse(this, line);
+                }
 			}
 		}
 		

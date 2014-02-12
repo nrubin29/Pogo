@@ -4,16 +4,16 @@ import me.nrubin29.pogo.Block;
 import me.nrubin29.pogo.GUI;
 import me.nrubin29.pogo.InvalidCodeException;
 
-public class GetInput extends Command {
+public class Invoke extends Command {
 
-	public GetInput() {
-		super("getinput");
+	public Invoke() {
+		super("invoke");
 	}
-
-    /*
-    getinput varname
-     */
+	
+	/*
+	 * invoke method
+	 */
 	public void run(GUI gui, Block b, String[] args) throws InvalidCodeException {
-        b.getVariable(args[0]).setValue(gui.prompt());
+        b.getAncestorClass().getMethod(args[0]).run();
 	}
 }
