@@ -1,21 +1,18 @@
 package me.nrubin29.pogo;
 
-import java.util.ArrayList;
-
-import me.nrubin29.pogo.Variable.VariableType;
 import me.nrubin29.pogo.cmd.CommandManager;
 
-public class Class {
+import java.util.ArrayList;
 
-	private ArrayList<Variable> vars;
+public class Class extends Block {
+
 	private ArrayList<Method> methods;
-	
 	CommandManager commandManager;
 	
 	public Class(GUI gui, String code) throws InvalidCodeException {
-		this.vars = new ArrayList<Variable>();
+        super(null);
+
 		this.methods = new ArrayList<Method>();
-		
 		this.commandManager = new CommandManager(gui);
 		
 		/*
@@ -31,7 +28,7 @@ public class Class {
 		for (String line : code.split("\n")) {
 			line = trimComments(line);
 			
-			if (line.equals("") || line.equals(" ")) continue;
+			if (line.equals("") || line.equals(" ")) { }
 			
 			else if (line.startsWith("method ")) {
 				collect = true;
@@ -75,17 +72,5 @@ public class Class {
 		}
 		
 		throw new InvalidCodeException("Method " + name + " does not exist.");
-	}
-	
-	public void addVariable(VariableType t, String name, Object value) {
-		vars.add(new Variable(t, name, value));
-	}
-	
-	public Variable getVariable(String name) throws InvalidCodeException {
-		for (Variable v : vars) {
-			if (v.getName().equals(name)) return v;
-		}
-		
-		throw new InvalidCodeException("Variable " + name + " is not declared.");
 	}
 }

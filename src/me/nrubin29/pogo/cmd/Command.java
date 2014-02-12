@@ -1,9 +1,8 @@
 package me.nrubin29.pogo.cmd;
 
-import me.nrubin29.pogo.Class;
+import me.nrubin29.pogo.Block;
 import me.nrubin29.pogo.GUI;
 import me.nrubin29.pogo.InvalidCodeException;
-import me.nrubin29.pogo.Method;
 
 public abstract class Command {
 
@@ -17,5 +16,5 @@ public abstract class Command {
 		return name;
 	}
 	
-	public abstract void run(GUI gui, Class c, Method m, String[] args) throws InvalidCodeException;
+	public abstract void run(GUI gui, Block b, String[] args) throws InvalidCodeException;
 }

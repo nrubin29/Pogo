@@ -1,31 +1,14 @@
 package me.nrubin29.pogo;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
+import javax.swing.*;
+import javax.swing.text.*;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-import javax.swing.WindowConstants;
-import javax.swing.text.AbstractDocument;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-import javax.swing.text.DocumentFilter;
-import javax.swing.text.Element;
 
 public class GUI extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
-	
-	private static GUI instance = new GUI();
-	
-	public static GUI getInstance() {
-		return instance;
-	}
 
     private JTextPane text;
     private Filter f = new Filter();
@@ -37,27 +20,20 @@ public class GUI extends JFrame {
 
         text = new JTextPane();
         ((AbstractDocument) text.getDocument()).setDocumentFilter(f);
-        text.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-        text.setForeground(Color.GREEN);
-        text.setBackground(Color.BLACK);
-        text.setCaretColor(Color.GREEN);
+        text.setEditable(false);
+        text.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
         text.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_UP) { e.consume(); }
 
-//                else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-//                    try {
-//                        lastInput = text.getText().split("\n")[text.getText().split("\n").length - 1];
-//
-//                        new Thread(new Runnable() {
-//                            public void run() {
-//                                if (hijack) result = lastInput;
-//                                else CommandParser.getInstance().parse(lastInput);
-//                            }
-//                        }).start();
-//                    }
-//                    catch (Exception ex) { ex.printStackTrace(); }
-//                }
+                else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    try {
+                        lastInput = text.getText().split("\n")[text.getText().split("\n").length - 1];
+
+                        if (waiting) result = lastInput;
+                    }
+                    catch (Exception ex) { ex.printStackTrace(); }
+                }
             }
         });
 
@@ -74,13 +50,21 @@ public class GUI extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
     }
-    
+
+    private boolean waiting = false;
     private String result = null;
 
     public String prompt() {
+        waiting = true;
+        text.setEditable(true);
+
         while (result == null) {
-            //Utils.pause(Utils.SECOND / 10);
+            try { Thread.sleep(100); }
+            catch (Exception e) { }
         }
+
+        waiting = false;
+        text.setEditable(false);
 
         String localResult = result;
         result = null;

@@ -1,14 +1,10 @@
 package me.nrubin29.pogo;
 
+import javax.swing.*;
 import java.lang.Thread.UncaughtExceptionHandler;
-
-import javax.swing.JOptionPane;
 
 /*
  * TODO: Not necessarily in this order:
- * Modifying variable values.
- * Not setting value of variable on declaration.
- * Getting input.
  * For loop.
  * While loop.
  * Arrays.
@@ -17,34 +13,48 @@ import javax.swing.JOptionPane;
  * More variable types.
  * Math.
  * Invoke other methods.
- * Class-level variables.
- * Switch to block format (for class, method, if, loop, etc.)
+ * Scope (use class-level variables in subblocks).
  */
 public class PogoPlayer {
 	
 	private GUI gui;
 	
 	/*
-	 * This is sample code. I will add a file chooser once I get a few more features added.
+	This is sample code. It contains variable declaration and prints Hello World.
 	 */
-	private String code =
+	private String code1 =
 			"// Sample Pogo Code." + "\n" +
-			"\n" +
 			"method main // Declaring the main method. This will be called when the code starts." + "\n" +
 			"declare string str = Hello // Declaring a string called str and setting it equal to Hello." + "\n" +
-			"print _str ~World // Print the contents of str (which is Hello), a space, and the word World." + "\n" +
+            "declare string str1 // Declaring a null string called str1." + "\n" +
+            "set str1 World // Setting str1 to Hello." + "\n" +
+			"print _str _str1 // Print the contents of str (which is Hello) and the contents of str1 (which is World)." + "\n" +
 			"end // End the main method.";
+
+    /*
+    This is sample code. It gets the user's input.
+     */
+    private String code2 =
+            "// Sample Pogo Code." + "\n" +
+            "method main" + "\n" +
+            "declare string name" + "\n" +
+            "print Enter your name." + "\n" +
+            "getinput name" + "\n" +
+            "print Hello there, _name !" + "\n" +
+            "end";
 
 	public PogoPlayer() throws InvalidCodeException {
 		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
 			public void uncaughtException(Thread thread, Throwable e) {
-				JOptionPane.showMessageDialog(null, e.getMessage());
+                e.printStackTrace();
+                if (gui != null) gui.write(e.getMessage());
+				else JOptionPane.showMessageDialog(null, e.getMessage());
 			}
 		});
 		
 		gui = new GUI();
 		
-		new Class(gui, code);
+		new Class(gui, code2);
 	}
 	
 	public static void main(String[] args) throws InvalidCodeException {
