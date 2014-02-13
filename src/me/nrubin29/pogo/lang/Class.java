@@ -11,14 +11,6 @@ public class Class extends Block {
 	private ArrayList<Method> methods;
 	CommandManager commandManager;
 
-    /*
-    Given line: method main : Creates block representing method.
-        Given line: print Hello : Adds print Hello to last block (method main).
-        Given line: if equals Hello Hello : Creates block representing if statement.
-            Given line: print duh : Adds print duh to the last block (if statement).
-        Given line: end : Ends the if statement. Adds to block before (main method) and removes from temp list.
-    Give line: end : Ends the main method.
-     */
 	public Class(GUI gui, ArrayList<String> code) throws InvalidCodeException {
         super(null);
 
@@ -69,11 +61,11 @@ public class Class extends Block {
 	}
 	
 	private String trimComments(String str) {
-		StringBuffer fin = new StringBuffer();
+		StringBuilder fin = new StringBuilder();
 		
 		for (String word : str.split(" ")) {
 			if (word.startsWith("//")) return fin.toString().trim();
-			else fin.append(word + " ");
+			else fin.append(word).append(" ");
 		}
 		
 		return fin.toString().trim();
@@ -86,4 +78,8 @@ public class Class extends Block {
 		
 		throw new InvalidCodeException("Method " + name + " does not exist.");
 	}
+
+    public void run() throws InvalidCodeException {
+        // No need to do anything here.
+    }
 }

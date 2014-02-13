@@ -18,9 +18,12 @@ public class Declare extends Command {
         VariableType t = VariableType.match(args[0]);
 		String name = args[1];
 
-        String value = null;
+        Object value = null;
 
-        if (args.length == 4) value = args[3];
+        if (args.length == 4) {
+            t.validateValue(args[3]);
+            value = args[3];
+        }
 		
 		b.addVariable(t, name, value);
 	}

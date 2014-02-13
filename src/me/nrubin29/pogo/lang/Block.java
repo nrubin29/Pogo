@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-public class Block {
+public abstract class Block {
 
     private Block superBlock;
     private ArrayList<Variable> vars;
@@ -35,7 +35,7 @@ public class Block {
         return tree.toArray(new Block[tree.size()]);
     }
 
-    public void addVariable(Variable.VariableType t, String name, String value) {
+    public void addVariable(Variable.VariableType t, String name, Object value) {
         vars.add(new Variable(t, name, value));
     }
 
@@ -63,10 +63,12 @@ public class Block {
         StringBuilder builder = new StringBuilder();
 
         for (String word : str.split(" ")) {
-            if (word.startsWith("_")) builder.append(b.getVariable(word.substring(1)).getValue() + " ");
-            else builder.append(word + " ");
+            if (word.startsWith("_")) builder.append(b.getVariable(word.substring(1)).getValue()).append(" ");
+            else builder.append(word).append(" ");
         }
 
         return builder.toString();
     }
+
+    public abstract void run() throws InvalidCodeException;
 }
