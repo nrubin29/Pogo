@@ -1,8 +1,8 @@
 package me.nrubin29.pogo.cmd;
 
-import me.nrubin29.pogo.Block;
-import me.nrubin29.pogo.GUI;
 import me.nrubin29.pogo.InvalidCodeException;
+import me.nrubin29.pogo.gui.GUI;
+import me.nrubin29.pogo.lang.Block;
 
 public class Invoke extends Command {
 
@@ -14,6 +14,6 @@ public class Invoke extends Command {
 	 * invoke method
 	 */
 	public void run(GUI gui, Block b, String[] args) throws InvalidCodeException {
-        b.getAncestorClass().getMethod(args[0]).run();
+        ((me.nrubin29.pogo.lang.Class) b.getBlockTree()[0]).getMethod(args[0]).run();
 	}
 }

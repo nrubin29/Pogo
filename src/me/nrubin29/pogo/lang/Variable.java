@@ -1,4 +1,6 @@
-package me.nrubin29.pogo;
+package me.nrubin29.pogo.lang;
+
+import me.nrubin29.pogo.InvalidCodeException;
 
 public class Variable {
 	
@@ -15,10 +17,9 @@ public class Variable {
 	}
 
 	private VariableType type;
-	private String name;
-	private Object value;
+	private String name, value;
 	
-	public Variable(VariableType type, String name, Object value) {
+	public Variable(VariableType type, String name, String value) {
 		this.type = type;
 		this.name = name;
 		this.value = value;
@@ -32,11 +33,11 @@ public class Variable {
 		return name;
 	}
 	
-	public Object getValue() {
+	public String getValue() {
 		return value;
 	}
 
-    public void setValue(Object value) {
+    public void setValue(String value) {
         this.value = value;
     }
 }

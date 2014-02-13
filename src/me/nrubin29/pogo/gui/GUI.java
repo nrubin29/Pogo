@@ -1,4 +1,4 @@
-package me.nrubin29.pogo;
+package me.nrubin29.pogo.gui;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -15,7 +15,7 @@ public class GUI extends JFrame {
 
     private String lastInput;
 
-    GUI() {
+    public GUI() {
         super("Pogo - Jump into Coding");
 
         text = new JTextPane();

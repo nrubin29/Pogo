@@ -1,5 +1,7 @@
 package me.nrubin29.pogo;
 
+import me.nrubin29.pogo.gui.GUI;
+
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.BufferedReader;
@@ -11,7 +13,6 @@ import java.util.ArrayList;
  * Arrays:
     * Foreach loop.
  * Booleans:
-    * If statements.
     * For loop.
     * While loop.
  * Features:
@@ -46,7 +47,7 @@ public class PogoPlayer {
 
                 gui = new GUI();
 
-                new Class(gui, in);
+                new me.nrubin29.pogo.lang.Class(gui, in);
             }
 
             catch (Exception e) { }

@@ -1,9 +1,9 @@
 package me.nrubin29.pogo.cmd;
 
-import me.nrubin29.pogo.Block;
-import me.nrubin29.pogo.GUI;
 import me.nrubin29.pogo.InvalidCodeException;
-import me.nrubin29.pogo.Variable.VariableType;
+import me.nrubin29.pogo.gui.GUI;
+import me.nrubin29.pogo.lang.Block;
+import me.nrubin29.pogo.lang.Variable.VariableType;
 
 public class Declare extends Command {
 
@@ -18,7 +18,7 @@ public class Declare extends Command {
         VariableType t = VariableType.match(args[0]);
 		String name = args[1];
 
-        Object value = null;
+        String value = null;
 
         if (args.length == 4) value = args[3];
 		

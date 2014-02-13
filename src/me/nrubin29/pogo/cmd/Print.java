@@ -1,8 +1,8 @@
 package me.nrubin29.pogo.cmd;
 
-import me.nrubin29.pogo.Block;
-import me.nrubin29.pogo.GUI;
 import me.nrubin29.pogo.InvalidCodeException;
+import me.nrubin29.pogo.gui.GUI;
+import me.nrubin29.pogo.lang.Block;
 
 public class Print extends Command {
 
@@ -11,13 +11,10 @@ public class Print extends Command {
 	}
 	
 	public void run(GUI gui, Block b, String[] args) throws InvalidCodeException {
-		String msg = "";
+		StringBuilder msg = new StringBuilder();
 		
-		for (String str : args) {
-			if (str.startsWith("_")) msg += b.getVariable(str.substring(1)).getValue() + " ";
-			else msg += str.replaceAll("~", " ") + " ";
-		}
+		for (String str : args) msg.append(str + " ");
 
-        gui.write(msg);
+        gui.write(b.handleVarReferences(b, msg.toString()));
 	}
 }

@@ -1,8 +1,8 @@
 package me.nrubin29.pogo.cmd;
 
-import me.nrubin29.pogo.Block;
-import me.nrubin29.pogo.GUI;
 import me.nrubin29.pogo.InvalidCodeException;
+import me.nrubin29.pogo.gui.GUI;
+import me.nrubin29.pogo.lang.Block;
 
 import java.util.ArrayList;
 import java.util.Arrays;

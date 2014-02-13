@@ -1,4 +1,4 @@
-package me.nrubin29.pogo;
+package me.nrubin29.pogo.gui;
 
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
