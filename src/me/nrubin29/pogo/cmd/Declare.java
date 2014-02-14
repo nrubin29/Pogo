@@ -1,7 +1,7 @@
 package me.nrubin29.pogo.cmd;
 
 import me.nrubin29.pogo.InvalidCodeException;
-import me.nrubin29.pogo.gui.GUI;
+import me.nrubin29.pogo.gui.Console;
 import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Variable.VariableType;
 
@@ -14,7 +14,7 @@ public class Declare extends Command {
 	/*
 	 * declare string str = Hello
 	 */
-	public void run(GUI gui, Block b, String[] args) throws InvalidCodeException {
+	public void run(Console console, Block b, String[] args) throws InvalidCodeException {
         VariableType t = VariableType.match(args[0]);
 		String name = args[1];
 

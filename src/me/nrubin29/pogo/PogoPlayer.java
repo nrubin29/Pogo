@@ -1,13 +1,9 @@
 package me.nrubin29.pogo;
 
-import me.nrubin29.pogo.gui.GUI;
+import me.nrubin29.pogo.gui.IDE;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.lang.Thread.UncaughtExceptionHandler;
-import java.util.ArrayList;
 
 /*
  * Arrays:
@@ -19,41 +15,16 @@ import java.util.ArrayList;
     * Math.
  */
 public class PogoPlayer {
-	
-	private GUI gui;
 
 	public PogoPlayer() throws InvalidCodeException {
 		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
-			public void uncaughtException(Thread thread, Throwable e) {
+            public void uncaughtException(Thread thread, Throwable e) {
                 e.printStackTrace();
-                if (gui != null) gui.write(!(e instanceof InvalidCodeException) ? e.getClass().getSimpleName() + " " : "" + e.getMessage());
-				else JOptionPane.showMessageDialog(null, e.getMessage());
-			}
-		});
-
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileFilter(new FileNameExtensionFilter("Pogo Code", "pogo"));
-        chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        chooser.setMultiSelectionEnabled(false);
-
-        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-            try {
-                ArrayList<String> in = new ArrayList<String>();
-                BufferedReader reader = new BufferedReader(new FileReader(chooser.getSelectedFile()));
-
-                while (reader.ready()) in.add(reader.readLine());
-
-                reader.close();
-
-                gui = new GUI();
-
-                new me.nrubin29.pogo.lang.Class(gui, in);
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
-
-            catch (Exception e) { }
-        }
-
-        else System.exit(0);
+        });
+        
+        new IDE();
 	}
 	
 	public static void main(String[] args) throws InvalidCodeException {

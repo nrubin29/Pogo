@@ -2,50 +2,56 @@ package me.nrubin29.pogo.lang;
 
 import me.nrubin29.pogo.InvalidCodeException;
 import me.nrubin29.pogo.cmd.CommandManager;
-import me.nrubin29.pogo.gui.GUI;
+import me.nrubin29.pogo.gui.Console;
 
 import java.util.ArrayList;
 
 public class Class extends Block {
 
+    private String[] code;
+
 	private ArrayList<Method> methods;
 	CommandManager commandManager;
 
-	public Class(GUI gui, ArrayList<String> code) throws InvalidCodeException {
+	public Class(String[] code) {
         super(null);
 
-		this.methods = new ArrayList<Method>();
-		this.commandManager = new CommandManager(gui);
-		
+        this.code = code;
+	}
+
+    public void run(Console console) throws InvalidCodeException {
+        this.methods = new ArrayList<Method>();
+        this.commandManager = new CommandManager(console);
+
 		/*
 		 * This list is used when collecting lines for a method, etc.
 		 */
-		boolean collect = false;
-		String blockName = null;
-		ArrayList<String> collection = new ArrayList<String>();
-		
+        boolean collect = false;
+        String blockName = null;
+        ArrayList<String> collection = new ArrayList<String>();
+
 		/*
 		 * Iterating over each line in the code.
 		 */
-		for (String line : code) {
-			line = trimComments(line);
-			
-			if (line.equals("") || line.equals(" ")) { }
+        for (String line : code) {
+            line = trimComments(line);
+
+            if (line.equals("") || line.equals(" "));
 
             else if (line.startsWith("method ")) {
                 collect = true;
                 blockName = line.split(" ")[1];
             }
-			
-			else if (line.equals("end " + blockName)) {
+
+            else if (line.equals("end " + blockName)) {
                 methods.add(new Method(this, blockName, collection));
 
                 collect = false;
                 blockName = null;
                 collection.clear();
-			}
-			
-			else {
+            }
+
+            else {
                 if (collect) collection.add(line);
 
                 else {
@@ -54,11 +60,11 @@ public class Class extends Block {
                      */
                     if (line.startsWith("declare")) commandManager.parse(this, line);
                 }
-			}
-		}
+            }
+        }
 
-		getMethod("main").run();
-	}
+        getMethod("main").run();
+    }
 	
 	private String trimComments(String str) {
 		StringBuilder fin = new StringBuilder();
@@ -75,7 +81,7 @@ public class Class extends Block {
 		for (Method m : methods) {
 			if (m.getName().equals(name)) return m;
 		}
-		
+
 		throw new InvalidCodeException("Method " + name + " does not exist.");
 	}
 

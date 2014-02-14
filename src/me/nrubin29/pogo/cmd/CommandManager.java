@@ -1,7 +1,7 @@
 package me.nrubin29.pogo.cmd;
 
 import me.nrubin29.pogo.InvalidCodeException;
-import me.nrubin29.pogo.gui.GUI;
+import me.nrubin29.pogo.gui.Console;
 import me.nrubin29.pogo.lang.Block;
 
 import java.util.ArrayList;
@@ -11,10 +11,10 @@ public class CommandManager {
 
 	private ArrayList<Command> cmds = new ArrayList<Command>();
 	
-	private GUI gui;
+	private Console console;
 	
-	public CommandManager(GUI gui) {
-		this.gui = gui;
+	public CommandManager(Console console) {
+		this.console = console;
 
         cmds.add(new Declare());
         cmds.add(new GetInput());
@@ -36,6 +36,6 @@ public class CommandManager {
         
         if (c == null) throw new InvalidCodeException("Invalid operation call.");
 
-        else c.run(gui, b, args);
+        else c.run(console, b, args);
     }
 }

@@ -6,7 +6,7 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class GUI extends JFrame {
+public class Console extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -15,8 +15,8 @@ public class GUI extends JFrame {
 
     private String lastInput;
 
-    public GUI() {
-        super("Pogo - Jump into Coding");
+    public Console(me.nrubin29.pogo.lang.Class clazz) {
+        super("Pogo - Console");
 
         text = new JTextPane();
         ((AbstractDocument) text.getDocument()).setDocumentFilter(f);
@@ -47,8 +47,14 @@ public class GUI extends JFrame {
         setSize(640, 480);
         setResizable(false);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setVisible(true);
+
+        try { clazz.run(this); }
+        catch (Exception e) {
+            dispose();
+            Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
+        }
     }
 
     private boolean waiting = false;
