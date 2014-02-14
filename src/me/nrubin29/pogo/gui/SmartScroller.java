@@ -28,6 +28,7 @@ import java.awt.event.AdjustmentListener;
  *
  *  Similar logic would apply for horizontal scrolling.
  */
+@SuppressWarnings("ALL")
 public class SmartScroller implements AdjustmentListener
 {
     public final static int HORIZONTAL = 0;

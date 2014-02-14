@@ -14,9 +14,13 @@ public class If extends ConditionalBlock {
         this.collection = new ArrayList<String>(collection);
 	}
 
-    public void runWhenTrue() throws InvalidCodeException {
-        for (String line : collection) {
-            ((Class) getBlockTree()[0]).commandManager.parse(this, line);
+    public void run() throws InvalidCodeException {
+        if (compareOp == ConditionalBlock.CompareOperation.EQUALS) {
+            if (handleVarReferences(this, aVal).equals(handleVarReferences(this, bVal))) {
+                for (String line : collection) {
+                    ((Class) getBlockTree()[0]).commandManager.parse(this, line);
+                }
+            }
         }
     }
 }

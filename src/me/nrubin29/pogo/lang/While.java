@@ -14,18 +14,13 @@ public class While extends ConditionalBlock {
         this.collection = new ArrayList<String>(collection);
 	}
 
-    @Override
     public void run() throws InvalidCodeException {
         if (compareOp == ConditionalBlock.CompareOperation.EQUALS) {
             while (handleVarReferences(this, aVal).equals(handleVarReferences(this, bVal))) {
-                runWhenTrue();
+                for (String line : collection) {
+                    ((Class) getBlockTree()[0]).commandManager.parse(this, line);
+                }
             }
-        }
-    }
-
-    public void runWhenTrue() throws InvalidCodeException {
-        for (String line : collection) {
-            ((Class) getBlockTree()[0]).commandManager.parse(this, line);
         }
     }
 }
