@@ -8,15 +8,15 @@ import java.util.Collections;
 
 public abstract class Block {
 
-    private Block superBlock;
-    private ArrayList<Variable> vars;
+    private final Block superBlock;
+    private final ArrayList<Variable> vars;
 
-    public Block(Block superBlock) {
+    Block(Block superBlock) {
         this.superBlock = superBlock;
         this.vars = new ArrayList<Variable>();
     }
 
-    public Block getSuperBlock() {
+    Block getSuperBlock() {
         return superBlock;
     }
 
@@ -51,7 +51,7 @@ public abstract class Block {
         throw new InvalidCodeException("Variable " + name + " is not declared.");
     }
 
-    public boolean hasVariable(String name) {
+    boolean hasVariable(String name) {
         for (Variable v : vars) {
             if (v.getName().equals(name)) return true;
         }
@@ -70,5 +70,5 @@ public abstract class Block {
         return builder.toString();
     }
 
-    public abstract void run() throws InvalidCodeException;
+    protected abstract void run() throws InvalidCodeException;
 }

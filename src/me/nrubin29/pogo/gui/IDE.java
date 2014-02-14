@@ -13,8 +13,7 @@ public class IDE extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 
-    private JTextPane text;
-    private JButton run, save, load;
+    private final JTextPane text;
 
     public IDE() {
         super("Pogo - IDE");
@@ -22,14 +21,14 @@ public class IDE extends JFrame {
         text = new JTextPane();
         text.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
 
-        run = new JButton("Run");
+        JButton run = new JButton("Run");
         run.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 new Console(new Class(text.getText().split("\n")));
             }
         });
 
-        save = new JButton("Save");
+        JButton save = new JButton("Save");
         save.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser chooser = new JFileChooser();
@@ -39,22 +38,19 @@ public class IDE extends JFrame {
 
                 if (chooser.showSaveDialog(IDE.this) == JFileChooser.APPROVE_OPTION) {
                     try {
-                        System.out.println(chooser.getSelectedFile());
                         BufferedWriter writer = new BufferedWriter(new FileWriter(new File(chooser.getSelectedFile().getAbsolutePath() + ".pogo")));
 
                         for (String line : text.getText().split("\n")) writer.write(line + "\n");
 
                         writer.close();
-                    }
-
-                    catch (Exception ex) {
+                    } catch (Exception ex) {
                         Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), ex);
                     }
                 }
             }
         });
 
-        load = new JButton("Load");
+        JButton load = new JButton("Load");
         load.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser chooser = new JFileChooser();
@@ -68,12 +64,11 @@ public class IDE extends JFrame {
                     try {
                         BufferedReader reader = new BufferedReader(new FileReader(chooser.getSelectedFile()));
 
-                        while (reader.ready()) text.getDocument().insertString(text.getDocument().getLength(), reader.readLine() + "\n", null);
+                        while (reader.ready())
+                            text.getDocument().insertString(text.getDocument().getLength(), reader.readLine() + "\n", null);
 
                         reader.close();
-                    }
-
-                    catch (Exception ex) {
+                    } catch (Exception ex) {
                         Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), ex);
                     }
                 }

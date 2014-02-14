@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Class extends Block {
 
-    private String[] code;
+    private final String[] code;
 
 	private ArrayList<Method> methods;
 	CommandManager commandManager;
@@ -36,9 +36,7 @@ public class Class extends Block {
         for (String line : code) {
             line = trimComments(line);
 
-            if (line.equals("") || line.equals(" "));
-
-            else if (line.startsWith("method ")) {
+            if (line.startsWith("method ")) {
                 collect = true;
                 blockName = line.split(" ")[1];
             }
@@ -51,19 +49,16 @@ public class Class extends Block {
                 collection.clear();
             }
 
-            else {
-                if (collect) collection.add(line);
+            else if (line.startsWith("declare")) commandManager.parse(this, line);
 
-                else {
-                    /*
-                    This is temporary and is implemented for scope purposes.
-                     */
-                    if (line.startsWith("declare")) commandManager.parse(this, line);
-                }
+            else {
+                if (collect && !line.equals("") && !line.equals(" ")) collection.add(line);
             }
         }
 
         getMethod("main").run();
+
+        console.write("--Terminated.");
     }
 	
 	private String trimComments(String str) {

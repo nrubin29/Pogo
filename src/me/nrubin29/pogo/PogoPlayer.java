@@ -5,18 +5,9 @@ import me.nrubin29.pogo.gui.IDE;
 import javax.swing.*;
 import java.lang.Thread.UncaughtExceptionHandler;
 
-/*
- * Arrays:
-    * Foreach loop.
- * Booleans:
-    * For loop.
-    * While loop.
- * Features:
-    * Math.
- */
-public class PogoPlayer {
+class PogoPlayer {
 
-	public PogoPlayer() throws InvalidCodeException {
+	private PogoPlayer() {
 		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
             public void uncaughtException(Thread thread, Throwable e) {
                 e.printStackTrace();

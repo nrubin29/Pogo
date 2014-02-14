@@ -7,8 +7,8 @@ import java.util.Arrays;
 
 public class Method extends Block {
 
-	private String name;
-    private ArrayList<String> collection;
+	private final String name;
+    private final ArrayList<String> collection;
 	
 	public Method(Block superBlock, String name, ArrayList<String> collection) {
         super(superBlock);
@@ -31,24 +31,38 @@ public class Method extends Block {
 
         boolean collect = false;
         ArrayList<String> localCollection = new ArrayList<String>();
+        ConditionalBlock.ConditionalBlockType blockType = null;
         String aVal = null, bVal = null;
-        If.CompareOperation compareOp = null;
+        ConditionalBlock.CompareOperation compareOp = null;
 
         for (String line : collection) {
-            if (line.startsWith("if")) {
-                String[] args = Arrays.copyOfRange(line.split(" "), 1, line.split(" ").length);
-                aVal = args[1];
-                bVal = args[2];
-                compareOp = If.CompareOperation.match(args[0]);
-                collect = true;
+            boolean blockMatch = false;
+
+            for (ConditionalBlock.ConditionalBlockType bt : ConditionalBlock.ConditionalBlockType.values()) {
+                if (line.startsWith(bt.name().toLowerCase())) {
+                    blockMatch = true;
+                    String[] args = Arrays.copyOfRange(line.split(" "), 1, line.split(" ").length);
+                    blockType = bt;
+                    aVal = args[1];
+                    bVal = args[2];
+                    compareOp = ConditionalBlock.CompareOperation.match(args[0]);
+                    collect = true;
+                }
             }
 
-            else if (line.equals("end") && collect) {
-                If i = new If(this, aVal, bVal, compareOp, localCollection);
-                blocks.add(i);
+            if (blockMatch) continue;
+
+            if (line.equals("end") && collect) {
+                Block block = null;
+
+                if (blockType == ConditionalBlock.ConditionalBlockType.IF) block = new If(this, aVal, bVal, compareOp, localCollection);
+                else if (blockType == ConditionalBlock.ConditionalBlockType.WHILE) block = new While(this, aVal, bVal, compareOp, localCollection);
+
+                blocks.add(block);
 
                 collect = false;
                 localCollection.clear();
+                blockType = null;
                 aVal = null;
                 bVal = null;
                 compareOp = null;

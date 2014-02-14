@@ -9,9 +9,9 @@ import java.util.Arrays;
 
 public class CommandManager {
 
-	private ArrayList<Command> cmds = new ArrayList<Command>();
+	private final ArrayList<Command> cmds = new ArrayList<Command>();
 	
-	private Console console;
+	private final Console console;
 	
 	public CommandManager(Console console) {
 		this.console = console;
@@ -34,7 +34,7 @@ public class CommandManager {
         	if (cm.getName().equals(cmd)) c = cm;
         }
         
-        if (c == null) throw new InvalidCodeException("Invalid operation call.");
+        if (c == null) throw new InvalidCodeException("Function " + cmd + " does not exist.");
 
         else c.run(console, b, args);
     }

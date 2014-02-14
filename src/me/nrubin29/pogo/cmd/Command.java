@@ -4,11 +4,11 @@ import me.nrubin29.pogo.InvalidCodeException;
 import me.nrubin29.pogo.gui.Console;
 import me.nrubin29.pogo.lang.Block;
 
-public abstract class Command {
+abstract class Command {
 
-	private String name;
+	private final String name;
 	
-	public Command(String name) {
+	Command(String name) {
 		this.name = name;
 	}
 	

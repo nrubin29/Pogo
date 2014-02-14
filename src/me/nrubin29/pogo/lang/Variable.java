@@ -9,7 +9,7 @@ public class Variable {
 	public enum VariableType {
 		BOOLEAN(Boolean.class), INTEGER(Integer.class), STRING(String.class);
 
-        private java.lang.Class<?> clazz;
+        private final java.lang.Class<?> clazz;
 
         VariableType(Class<?> clazz) {
             this.clazz = clazz;
@@ -25,12 +25,13 @@ public class Variable {
 
         public void validateValue(Object value) {
             try { clazz.getDeclaredMethod("valueOf", String.class).invoke(null, value); }
-            catch (Exception e) { }
+            catch (Exception ignored) { }
         }
 	}
 
-	private VariableType type;
-	private String name, value;
+	private final VariableType type;
+	private final String name;
+    private String value;
 	
 	public Variable(VariableType type, String name, Object value) {
 		this.type = type;

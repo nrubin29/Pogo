@@ -10,8 +10,7 @@ public class Console extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
 
-    private JTextPane text;
-    private Filter f = new Filter();
+    private final JTextPane text;
 
     private String lastInput;
 
@@ -19,6 +18,7 @@ public class Console extends JFrame {
         super("Pogo - Console");
 
         text = new JTextPane();
+        Filter f = new Filter();
         ((AbstractDocument) text.getDocument()).setDocumentFilter(f);
         text.setEditable(false);
         text.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
@@ -70,7 +70,7 @@ public class Console extends JFrame {
 
         while (result == null) {
             try { Thread.sleep(100); }
-            catch (Exception e) { }
+            catch (Exception ignored) { }
         }
 
         waiting = false;
@@ -85,7 +85,7 @@ public class Console extends JFrame {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 try { text.getDocument().insertString(text.getDocument().getLength(), txt + "\n", null); }
-                catch (Exception e) { }
+                catch (Exception ignored) { }
 
                 setCaret();
             }

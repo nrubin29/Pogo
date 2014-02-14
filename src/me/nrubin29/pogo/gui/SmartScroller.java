@@ -26,7 +26,7 @@ import java.awt.event.AdjustmentListener;
  *  - when the viewport is not at the top and new data is added, then adjust
  *    the viewport to the relative position it was at before the data was added
  *
- *  Similiar logic would apply for horizontal scrolling.
+ *  Similar logic would apply for horizontal scrolling.
  */
 public class SmartScroller implements AdjustmentListener
 {

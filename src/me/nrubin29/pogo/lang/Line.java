@@ -4,7 +4,7 @@ import me.nrubin29.pogo.InvalidCodeException;
 
 public class Line extends Block {
 
-    private String line;
+    private final String line;
 
     public Line(Block superBlock, String line) {
         super(superBlock);
