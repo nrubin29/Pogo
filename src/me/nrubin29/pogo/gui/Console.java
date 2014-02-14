@@ -15,7 +15,7 @@ public class Console extends JFrame {
 
     private String lastInput;
 
-    public Console(me.nrubin29.pogo.lang.Class clazz) {
+    public Console(final me.nrubin29.pogo.lang.Class clazz) {
         super("Pogo - Console");
 
         text = new JTextPane();
@@ -50,11 +50,15 @@ public class Console extends JFrame {
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setVisible(true);
 
-        try { clazz.run(this); }
-        catch (Exception e) {
-            dispose();
-            Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
-        }
+        new Thread(new Runnable() {
+            public void run() {
+                try { clazz.run(Console.this); }
+                catch (Exception e) {
+                    dispose();
+                    Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
+                }
+            }
+        }).start();
     }
 
     private boolean waiting = false;

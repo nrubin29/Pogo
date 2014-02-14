@@ -21,24 +21,31 @@ public class Method extends Block {
 		return name;
 	}
 
+    /*
+    Idea for handling if statements:
+    Have a Line class that extends Block and represents one line. For each line that isn't a block, add it as a Line.
+    Once parsing is done, iterate over each Line and run it.
+     */
     public void run() throws InvalidCodeException {
+        ArrayList<Block> blocks = new ArrayList<Block>();
+
         boolean collect = false;
         ArrayList<String> localCollection = new ArrayList<String>();
-        Object aVal = null, bVal = null;
-        String compareOp = null;
+        String aVal = null, bVal = null;
+        If.CompareOperation compareOp = null;
 
         for (String line : collection) {
             if (line.startsWith("if")) {
                 String[] args = Arrays.copyOfRange(line.split(" "), 1, line.split(" ").length);
-                aVal = handleVarReferences(this, args[1]);
-                bVal = handleVarReferences(this, args[2]);
-                compareOp = args[0];
+                aVal = args[1];
+                bVal = args[2];
+                compareOp = If.CompareOperation.match(args[0]);
                 collect = true;
             }
 
             else if (line.equals("end") && collect) {
                 If i = new If(this, aVal, bVal, compareOp, localCollection);
-                i.run();
+                blocks.add(i);
 
                 collect = false;
                 localCollection.clear();
@@ -49,8 +56,10 @@ public class Method extends Block {
 
             else {
                 if (collect) localCollection.add(line);
-                else ((Class) getBlockTree()[0]).commandManager.parse(this, line);
+                else blocks.add(new Line(this, line));
             }
         }
+
+        for (Block block : blocks) block.run();
     }
 }

@@ -20,7 +20,7 @@ public class Variable {
 				if (t.name().toLowerCase().equals(str)) return t;
 			}
 			
-			throw new InvalidCodeException("Variable type doesn't exist.");
+			throw new InvalidCodeException("Variable type " + str + " doesn't exist.");
 		}
 
         public void validateValue(Object value) {

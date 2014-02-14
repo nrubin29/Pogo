@@ -7,10 +7,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.*;
 
 public class IDE extends JFrame {
 
@@ -42,7 +39,8 @@ public class IDE extends JFrame {
 
                 if (chooser.showSaveDialog(IDE.this) == JFileChooser.APPROVE_OPTION) {
                     try {
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(chooser.getSelectedFile()));
+                        System.out.println(chooser.getSelectedFile());
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(new File(chooser.getSelectedFile().getAbsolutePath() + ".pogo")));
 
                         for (String line : text.getText().split("\n")) writer.write(line + "\n");
 

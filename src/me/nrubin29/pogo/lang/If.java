@@ -6,11 +6,23 @@ import java.util.ArrayList;
 
 public class If extends Block {
 
-    private ArrayList<String> collection;
-    private Object aVal, bVal;
-    private String compareOp;
+    public enum CompareOperation {
+        EQUALS;
 
-	public If(Block superBlock, Object aVal, Object bVal, String compareOp, ArrayList<String> collection) {
+        public static CompareOperation match(String str) throws InvalidCodeException {
+            for (CompareOperation op : values()) {
+                if (op.name().toLowerCase().equals(str)) return op;
+            }
+
+            throw new InvalidCodeException("Comparison operation " + str + " doesn't exist.");
+        }
+    }
+
+    private ArrayList<String> collection;
+    private String aVal, bVal;
+    private CompareOperation compareOp;
+
+	public If(Block superBlock, String aVal, String bVal, CompareOperation compareOp, ArrayList<String> collection) {
         super(superBlock);
 
         this.aVal = aVal;
@@ -20,11 +32,8 @@ public class If extends Block {
 	}
 
     public void run() throws InvalidCodeException {
-        /*
-        TODO: Make compareOp an enum?
-         */
-        if (compareOp.equals("equals")) {
-            if (aVal.equals(bVal)) {
+        if (compareOp == CompareOperation.EQUALS) {
+            if (handleVarReferences(this, aVal).equals(handleVarReferences(this, bVal))) {
                 for (String line : collection) {
                     ((Class) getBlockTree()[0]).commandManager.parse(this, line);
                 }
