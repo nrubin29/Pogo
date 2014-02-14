@@ -2,6 +2,8 @@ package me.nrubin29.pogo.lang;
 
 import me.nrubin29.pogo.InvalidCodeException;
 
+import java.util.ArrayList;
+
 public abstract class ConditionalBlock extends Block {
 
     public enum ConditionalBlockType {
@@ -9,7 +11,7 @@ public abstract class ConditionalBlock extends Block {
     }
 
     public enum CompareOperation {
-        EQUALS;
+        EQUALS, NOTEQUALS;
 
         public static CompareOperation match(String str) throws InvalidCodeException {
             for (CompareOperation op : values()) {
@@ -33,4 +35,10 @@ public abstract class ConditionalBlock extends Block {
     }
 
     public abstract void run() throws InvalidCodeException;
+
+    public final void doLines(ArrayList<String> collection) throws InvalidCodeException {
+        for (String line : collection) {
+            ((Class) getBlockTree()[0]).commandManager.parse(this, line);
+        }
+    }
 }

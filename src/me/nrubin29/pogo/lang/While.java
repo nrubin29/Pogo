@@ -17,9 +17,13 @@ public class While extends ConditionalBlock {
     public void run() throws InvalidCodeException {
         if (compareOp == ConditionalBlock.CompareOperation.EQUALS) {
             while (handleVarReferences(this, aVal).equals(handleVarReferences(this, bVal))) {
-                for (String line : collection) {
-                    ((Class) getBlockTree()[0]).commandManager.parse(this, line);
-                }
+                doLines(collection);
+            }
+        }
+
+        else if (compareOp == CompareOperation.NOTEQUALS) {
+            while (!handleVarReferences(this, aVal).equals(handleVarReferences(this, bVal))) {
+                doLines(collection);
             }
         }
     }
