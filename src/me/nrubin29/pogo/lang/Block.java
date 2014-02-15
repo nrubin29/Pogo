@@ -10,10 +10,18 @@ public abstract class Block {
 
     private final Block superBlock;
     private final ArrayList<Variable> vars;
+    final ArrayList<Block> subBlocks;
+    private final ArrayList<String> lines;
 
     Block(Block superBlock) {
         this.superBlock = superBlock;
         this.vars = new ArrayList<Variable>();
+        this.subBlocks = new ArrayList<Block>();
+        this.lines = new ArrayList<String>();
+    }
+
+    void addLine(String line) {
+        lines.add(line);
     }
 
     Block getSuperBlock() {
@@ -59,5 +67,55 @@ public abstract class Block {
         return false;
     }
 
-    protected abstract void run() throws InvalidCodeException;
+    public void run() throws InvalidCodeException {
+        Block currentBlock = null;
+
+        lineLoop: for (String line : lines) {
+            if (currentBlock == null) {
+                for (ConditionalBlock.ConditionalBlockType bt : ConditionalBlock.ConditionalBlockType.values()) {
+                    if (line.startsWith(bt.name().toLowerCase())) {
+                        String[] args = Arrays.copyOfRange(line.split(" "), 1, line.split(" ").length);
+
+                        if (bt == ConditionalBlock.ConditionalBlockType.IF) currentBlock = new If(this, args[1], args[2], ConditionalBlock.CompareOperation.match(args[0]));
+                        else if (bt == ConditionalBlock.ConditionalBlockType.WHILE) currentBlock = new While(this, args[1], args[2], ConditionalBlock.CompareOperation.match(args[0]));
+
+                        continue lineLoop;
+                    }
+                }
+            }
+
+            if (line.equals("end")) {
+                /*
+                If the end pertains to a nested statement...
+                 */
+                if (currentBlock != null) {
+                    currentBlock.addLine("end");
+                    subBlocks.add(currentBlock);
+                    currentBlock = null;
+                }
+
+                /*
+                If the end pertains to this statement...
+                 */
+                else {
+                    break;
+                }
+            }
+
+            else {
+                if (currentBlock != null) currentBlock.addLine(line);
+                else subBlocks.add(new Line(this, line));
+            }
+        }
+
+        runAfterParse();
+    }
+
+    protected abstract void runAfterParse() throws InvalidCodeException;
+
+    final void doBlocks() throws InvalidCodeException {
+        for (Block block : subBlocks) {
+            block.run();
+        }
+    }
 }

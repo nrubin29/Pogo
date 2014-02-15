@@ -12,7 +12,7 @@ public class Line extends Block {
         this.line = line;
     }
 
-    public void run() throws InvalidCodeException {
+    public void runAfterParse() throws InvalidCodeException {
         ((Class) getBlockTree()[0]).commandManager.parse(getSuperBlock(), line);
     }
 }

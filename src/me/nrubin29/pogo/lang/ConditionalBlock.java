@@ -2,8 +2,6 @@ package me.nrubin29.pogo.lang;
 
 import me.nrubin29.pogo.InvalidCodeException;
 
-import java.util.ArrayList;
-
 public abstract class ConditionalBlock extends Block {
 
     public enum ConditionalBlockType {
@@ -34,11 +32,5 @@ public abstract class ConditionalBlock extends Block {
         this.compareOp = compareOp;
     }
 
-    public abstract void run() throws InvalidCodeException;
-
-    public final void doLines(ArrayList<String> collection) throws InvalidCodeException {
-        for (String line : collection) {
-            ((Class) getBlockTree()[0]).commandManager.parse(this, line);
-        }
-    }
+    public abstract void runAfterParse() throws InvalidCodeException;
 }

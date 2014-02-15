@@ -23,12 +23,7 @@ public class Class extends Block {
         this.methods = new ArrayList<Method>();
         this.commandManager = new CommandManager(console);
 
-		/*
-		 * This list is used when collecting lines for a method, etc.
-		 */
-        boolean collect = false;
-        String blockName = null;
-        ArrayList<String> collection = new ArrayList<String>();
+        Method currentMethod = null;
 
 		/*
 		 * Iterating over each line in the code.
@@ -37,22 +32,19 @@ public class Class extends Block {
             line = trimComments(line);
 
             if (line.startsWith("method ")) {
-                collect = true;
-                blockName = line.split(" ")[1];
+                currentMethod = new Method(this, line.split(" ")[1]);
             }
 
-            else if (line.equals("end " + blockName)) {
-                methods.add(new Method(this, blockName, collection));
+            else if (line.equals("end " + currentMethod.getName())) {
+                methods.add(currentMethod);
 
-                collect = false;
-                blockName = null;
-                collection.clear();
+                currentMethod = null;
             }
 
             else if (line.startsWith("declare")) commandManager.parse(this, line);
 
             else {
-                if (collect && !line.equals("") && !line.equals(" ")) collection.add(line);
+                if (currentMethod != null && !line.equals("") && !line.equals(" ")) currentMethod.addLine(line);
             }
         }
 
@@ -80,7 +72,7 @@ public class Class extends Block {
 		throw new InvalidCodeException("Method " + name + " does not exist.");
 	}
 
-    public void run() throws InvalidCodeException {
+    public void runAfterParse() throws InvalidCodeException {
         // No need to do anything here.
     }
 }
