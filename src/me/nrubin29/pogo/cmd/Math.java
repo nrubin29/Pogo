@@ -1,0 +1,32 @@
+package me.nrubin29.pogo.cmd;
+
+import me.nrubin29.pogo.InvalidCodeException;
+import me.nrubin29.pogo.gui.Console;
+import me.nrubin29.pogo.lang.Block;
+import me.nrubin29.pogo.lang.Variable;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
+public class Math extends Command {
+
+	public Math() {
+		super("math");
+	}
+
+    private ScriptEngine engine;
+	
+	/*
+	 * math varname expression
+	 */
+	public void run(Console console, Block b, String[] args) throws InvalidCodeException {
+        if (engine == null) engine = new ScriptEngineManager().getEngineByName("JavaScript");
+
+        Variable v = b.getVariable(args[0]);
+
+        if (v.getType() != Variable.VariableType.INTEGER) throw new InvalidCodeException("Attempted to assign math output to non-integer.");
+
+        try { v.setValue(new Double(Double.parseDouble(engine.eval(args[1]).toString())).intValue()); }
+        catch (Exception e) { throw new InvalidCodeException("Invalid math expression."); }
+	}
+}
