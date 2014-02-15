@@ -30,6 +30,6 @@ public class PogoPlayer {
             builder.append(" ");
         }
 
-        return builder.toString();
+        return builder.toString().trim();
     }
 }

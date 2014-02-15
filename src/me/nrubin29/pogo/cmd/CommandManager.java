@@ -21,6 +21,7 @@ public class CommandManager {
         cmds.add(new Invoke());
         cmds.add(new Math());
 		cmds.add(new Print());
+        cmds.add(new Random());
         cmds.add(new Set());
 	}
 	

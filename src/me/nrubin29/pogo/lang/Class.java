@@ -35,7 +35,7 @@ public class Class extends Block {
                 currentMethod = new Method(this, line.split(" ")[1]);
             }
 
-            else if (line.equals("end " + currentMethod.getName())) {
+            else if (currentMethod != null && line.equals("end " + currentMethod.getName())) {
                 methods.add(currentMethod);
 
                 currentMethod = null;

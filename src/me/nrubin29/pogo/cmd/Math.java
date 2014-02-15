@@ -26,7 +26,9 @@ public class Math extends Command {
 
         Variable v = b.getVariable(args[0]);
 
-        if (v.getType() != Variable.VariableType.INTEGER) throw new InvalidCodeException("Attempted to assign math output to non-integer.");
+        if (v.getType() != Variable.VariableType.INTEGER) {
+            throw new InvalidCodeException("Attempted to assign math output to non-integer.");
+        }
 
         try {
             v.setValue(new Double(Double.parseDouble(engine.eval(PogoPlayer.implode(Arrays.copyOfRange(args, 1, args.length), b)).toString())).intValue());

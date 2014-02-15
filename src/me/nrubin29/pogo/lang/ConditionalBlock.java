@@ -9,7 +9,7 @@ public abstract class ConditionalBlock extends Block {
     }
 
     public enum CompareOperation {
-        EQUALS, NOTEQUALS;
+        EQUALS, NOTEQUALS, GREATERTHAN, LESSTHAN;
 
         public static CompareOperation match(String str) throws InvalidCodeException {
             for (CompareOperation op : values()) {

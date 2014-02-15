@@ -21,5 +21,33 @@ public class If extends ConditionalBlock {
                 doBlocks();
             }
         }
+
+        else if (compareOp == CompareOperation.GREATERTHAN) {
+            int a, b;
+
+            try {
+                a = Integer.parseInt(PogoPlayer.implode(new String[]{ aVal }, this));
+                b = Integer.parseInt(PogoPlayer.implode(new String[] { bVal }, this));
+            }
+            catch (Exception e) {
+                throw new InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-integers.");
+            }
+
+            if (a > b) doBlocks();
+        }
+
+        else if (compareOp == CompareOperation.LESSTHAN) {
+            int a, b;
+
+            try {
+                a = Integer.parseInt(PogoPlayer.implode(new String[]{ aVal }, this));
+                b = Integer.parseInt(PogoPlayer.implode(new String[] { bVal }, this));
+            }
+            catch (Exception e) {
+                throw new InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-integers.");
+            }
+
+            if (a < b) doBlocks();
+        }
     }
 }
