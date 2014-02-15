@@ -59,16 +59,5 @@ public abstract class Block {
         return false;
     }
 
-    public String handleVarReferences(Block b, String str) throws InvalidCodeException {
-        StringBuilder builder = new StringBuilder();
-
-        for (String word : str.split(" ")) {
-            if (word.startsWith("_")) builder.append(b.getVariable(word.substring(1)).getValue()).append(" ");
-            else builder.append(word).append(" ");
-        }
-
-        return builder.toString();
-    }
-
     protected abstract void run() throws InvalidCodeException;
 }

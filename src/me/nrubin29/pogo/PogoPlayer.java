@@ -1,24 +1,35 @@
 package me.nrubin29.pogo;
 
 import me.nrubin29.pogo.gui.IDE;
+import me.nrubin29.pogo.lang.Block;
 
 import javax.swing.*;
-import java.lang.Thread.UncaughtExceptionHandler;
 
-class PogoPlayer {
-
-	private PogoPlayer() {
-		Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler() {
+public class PogoPlayer {
+	
+	public static void main(String[] args) throws InvalidCodeException {
+		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             public void uncaughtException(Thread thread, Throwable e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-        
+
         new IDE();
 	}
-	
-	public static void main(String[] args) throws InvalidCodeException {
-		new PogoPlayer();
-	}
+
+    public static String implode(String[] strs, Block block) throws InvalidCodeException {
+        StringBuilder builder = new StringBuilder();
+
+        for (String str : strs) {
+            if (str.startsWith("_") && block != null && block.getVariable(str.substring(1)) != null) {
+                builder.append(block.getVariable(str.substring(1)).getValue());
+            }
+            else builder.append(str);
+
+            builder.append(" ");
+        }
+
+        return builder.toString();
+    }
 }

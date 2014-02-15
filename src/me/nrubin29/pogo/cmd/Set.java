@@ -1,6 +1,7 @@
 package me.nrubin29.pogo.cmd;
 
 import me.nrubin29.pogo.InvalidCodeException;
+import me.nrubin29.pogo.PogoPlayer;
 import me.nrubin29.pogo.gui.Console;
 import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Variable;
@@ -24,14 +25,6 @@ public class Set extends Command {
             v.setValue(args[3]);
         }
 
-		else {
-            StringBuilder newVal = new StringBuilder();
-
-            for (String str : Arrays.copyOfRange(args, 1, args.length)) {
-                newVal.append(str).append(" ");
-            }
-
-            v.setValue(newVal.toString());
-        }
+		else v.setValue(PogoPlayer.implode(Arrays.copyOfRange(args, 1, args.length), b));
 	}
 }

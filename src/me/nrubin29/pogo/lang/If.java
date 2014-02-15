@@ -1,6 +1,7 @@
 package me.nrubin29.pogo.lang;
 
 import me.nrubin29.pogo.InvalidCodeException;
+import me.nrubin29.pogo.PogoPlayer;
 
 import java.util.ArrayList;
 
@@ -16,13 +17,13 @@ public class If extends ConditionalBlock {
 
     public void run() throws InvalidCodeException {
         if (compareOp == ConditionalBlock.CompareOperation.EQUALS) {
-            if (handleVarReferences(this, aVal).equals(handleVarReferences(this, bVal))) {
+            if (PogoPlayer.implode(new String[] { aVal }, this).equals(PogoPlayer.implode(new String[] { bVal }, this))) {
                 doLines(collection);
             }
         }
 
         else if (compareOp == ConditionalBlock.CompareOperation.NOTEQUALS) {
-            if (!handleVarReferences(this, aVal).equals(handleVarReferences(this, bVal))) {
+            if (!PogoPlayer.implode(new String[] { aVal }, this).equals(PogoPlayer.implode(new String[] { bVal }, this))) {
                 doLines(collection);
             }
         }

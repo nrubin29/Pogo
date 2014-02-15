@@ -1,12 +1,14 @@
 package me.nrubin29.pogo.cmd;
 
 import me.nrubin29.pogo.InvalidCodeException;
+import me.nrubin29.pogo.PogoPlayer;
 import me.nrubin29.pogo.gui.Console;
 import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Variable;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import java.util.Arrays;
 
 public class Math extends Command {
 
@@ -26,7 +28,9 @@ public class Math extends Command {
 
         if (v.getType() != Variable.VariableType.INTEGER) throw new InvalidCodeException("Attempted to assign math output to non-integer.");
 
-        try { v.setValue(new Double(Double.parseDouble(engine.eval(args[1]).toString())).intValue()); }
+        try {
+            v.setValue(new Double(Double.parseDouble(engine.eval(PogoPlayer.implode(Arrays.copyOfRange(args, 1, args.length), b)).toString())).intValue());
+        }
         catch (Exception e) { throw new InvalidCodeException("Invalid math expression."); }
 	}
 }

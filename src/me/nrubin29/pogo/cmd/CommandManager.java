@@ -38,9 +38,9 @@ public class CommandManager {
         if (c == null) throw new InvalidCodeException("Function " + cmd + " does not exist.");
 
         else {
-            for (int i = 0; i < args.length; i++) {
-                if (args[i].startsWith("_")) args[i] = b.getVariable(args[i].substring(1)).getValue();
-            }
+//            for (int i = 0; i < args.length; i++) {
+//                if (args[i].startsWith("_")) args[i] = b.getVariable(args[i].substring(1)).getValue();
+//            }
 
             c.run(console, b, args);
         }
