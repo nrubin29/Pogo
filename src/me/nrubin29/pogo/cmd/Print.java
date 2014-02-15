@@ -15,6 +15,6 @@ public class Print extends Command {
 		
 		for (String str : args) msg.append(str).append(" ");
 
-        console.write(b.handleVarReferences(b, msg.toString()));
+        console.write(msg.toString());
 	}
 }
