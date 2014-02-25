@@ -10,6 +10,8 @@ public class If extends ConditionalBlock {
 	}
 
     public void runAfterParse() throws InvalidCodeException {
+    	System.out.println("if " + compareOp + " " + PogoPlayer.implode(new String[] { aVal }, this) + " " + PogoPlayer.implode(new String[] { bVal }, this));
+    	
         if (compareOp == ConditionalBlock.CompareOperation.EQUALS) {
             if (PogoPlayer.implode(new String[] { aVal }, this).equals(PogoPlayer.implode(new String[] { bVal }, this))) {
                 doBlocks();
@@ -23,31 +25,15 @@ public class If extends ConditionalBlock {
         }
 
         else if (compareOp == CompareOperation.GREATERTHAN) {
-            int a, b;
-
-            try {
-                a = Integer.parseInt(PogoPlayer.implode(new String[]{ aVal }, this));
-                b = Integer.parseInt(PogoPlayer.implode(new String[] { bVal }, this));
+            if (Integer.parseInt(PogoPlayer.implode(new String[]{ aVal }, this)) > Integer.parseInt(PogoPlayer.implode(new String[] { bVal }, this))) {
+            	doBlocks();
             }
-            catch (Exception e) {
-                throw new InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-integers.");
-            }
-
-            if (a > b) doBlocks();
         }
 
         else if (compareOp == CompareOperation.LESSTHAN) {
-            int a, b;
-
-            try {
-                a = Integer.parseInt(PogoPlayer.implode(new String[]{ aVal }, this));
-                b = Integer.parseInt(PogoPlayer.implode(new String[] { bVal }, this));
+        	if (Integer.parseInt(PogoPlayer.implode(new String[]{ aVal }, this)) < Integer.parseInt(PogoPlayer.implode(new String[] { bVal }, this))) {
+            	doBlocks();
             }
-            catch (Exception e) {
-                throw new InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-integers.");
-            }
-
-            if (a < b) doBlocks();
         }
     }
 }

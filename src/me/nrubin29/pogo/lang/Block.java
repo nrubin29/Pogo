@@ -68,27 +68,34 @@ public abstract class Block {
     }
 
     public void run() throws InvalidCodeException {
+    	subBlocks.clear();
+    	
         Block currentBlock = null;
 
         lineLoop: for (String line : lines) {
             if (currentBlock == null) {
                 for (ConditionalBlock.ConditionalBlockType bt : ConditionalBlock.ConditionalBlockType.values()) {
                     if (line.startsWith(bt.name().toLowerCase())) {
+                    	System.out.println("found " + bt);
+                    	
                         String[] args = Arrays.copyOfRange(line.split(" "), 1, line.split(" ").length);
 
                         if (bt == ConditionalBlock.ConditionalBlockType.IF) currentBlock = new If(this, args[1], args[2], ConditionalBlock.CompareOperation.match(args[0]));
                         else if (bt == ConditionalBlock.ConditionalBlockType.WHILE) currentBlock = new While(this, args[1], args[2], ConditionalBlock.CompareOperation.match(args[0]));
-
+                        
                         continue lineLoop;
                     }
                 }
             }
+            
+            System.out.println("Continuing with line " + line);
 
             if (line.equals("end")) {
                 /*
                 If the end pertains to a nested statement...
                  */
                 if (currentBlock != null) {
+                	System.out.println("Ending nested block.");
                     currentBlock.addLine("end");
                     subBlocks.add(currentBlock);
                     currentBlock = null;
@@ -98,15 +105,19 @@ public abstract class Block {
                 If the end pertains to this statement...
                  */
                 else {
-                    break;
+                	System.out.println("Breaking from " + getClass() + " block.");
+                	break;
                 }
             }
 
             else {
+            	System.out.println("Going to add " + line + " somewhere.");
                 if (currentBlock != null) currentBlock.addLine(line);
                 else subBlocks.add(new Line(this, line));
             }
         }
+        
+        System.out.println("\n\n\n");
 
         runAfterParse();
     }
