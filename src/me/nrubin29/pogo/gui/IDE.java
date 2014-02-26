@@ -1,18 +1,16 @@
 package me.nrubin29.pogo.gui;
 
-import me.nrubin29.pogo.lang.Class;
-
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.*;
 
 public class IDE extends JFrame {
 
-	private static final long serialVersionUID = 1L;
-
+    private final Console console;
     private final JTextPane text;
 
     public IDE() {
@@ -20,15 +18,43 @@ public class IDE extends JFrame {
 
         text = new JTextPane();
         text.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
+        
+        JScrollPane scroll = new JScrollPane(text);
+        scroll.setBorder(null);
+        scroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
+        
+        console = new Console();
+        
+        JScrollPane consoleScroll = new JScrollPane(console);
+        scroll.setBorder(null);
+        scroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
 
-        JButton run = new JButton("Run");
+        JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scroll, consoleScroll);
+        split.setOneTouchExpandable(true);
+        split.setDividerLocation(320);
+        
+        add(split);
+        
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu("File");
+        JMenuItem run = new JMenuItem("Run"), save = new JMenuItem("Save"), load = new JMenuItem("Load");
+        
+        menuBar.add(menu);
+        
+        menu.add(run);
+        menu.add(save);
+        menu.add(load);
+        
+        setJMenuBar(menuBar);
+        
+        run.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.META_DOWN_MASK));
         run.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new Console(new Class(text.getText().split("\n")));
+                console.run(new me.nrubin29.pogo.lang.Class(text.getText().split("\n")));
             }
         });
-
-        JButton save = new JButton("Save");
+        
+        save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.META_DOWN_MASK));
         save.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser chooser = new JFileChooser();
@@ -49,8 +75,8 @@ public class IDE extends JFrame {
                 }
             }
         });
-
-        JButton load = new JButton("Load");
+        
+        load.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.META_DOWN_MASK));
         load.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser chooser = new JFileChooser();
@@ -74,19 +100,6 @@ public class IDE extends JFrame {
                 }
             }
         });
-
-        JScrollPane scroll = new JScrollPane(text);
-        scroll.setBorder(null);
-        scroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
-
-        JPanel toolBar = new JPanel();
-        toolBar.setMaximumSize(new Dimension(640, 30));
-        toolBar.add(run);
-        toolBar.add(save);
-        toolBar.add(load);
-
-        add(toolBar);
-        add(scroll);
 
         setSize(640, 480);
         setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));

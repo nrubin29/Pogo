@@ -2,8 +2,6 @@ package me.nrubin29.pogo.lang;
 
 import me.nrubin29.pogo.InvalidCodeException;
 
-import java.util.Arrays;
-
 public class Method extends Block {
 
 	private final String name;
@@ -19,8 +17,6 @@ public class Method extends Block {
 	}
 
     public void runAfterParse() throws InvalidCodeException {
-    	System.out.println(Arrays.toString(subBlocks.toArray()));
-    	
-        doBlocks();
+    	doBlocks();
     }
 }

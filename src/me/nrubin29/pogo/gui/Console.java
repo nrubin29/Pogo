@@ -6,29 +6,22 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class Console extends JFrame {
-	
-	private static final long serialVersionUID = 1L;
-
-    private final JTextPane text;
+public class Console extends JTextPane {
 
     private String lastInput;
 
-    public Console(final me.nrubin29.pogo.lang.Class clazz) {
-        super("Pogo - Console");
-
-        text = new JTextPane();
+    public Console() {
         Filter f = new Filter();
-        ((AbstractDocument) text.getDocument()).setDocumentFilter(f);
-        text.setEditable(false);
-        text.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
-        text.addKeyListener(new KeyAdapter() {
+        ((AbstractDocument) getDocument()).setDocumentFilter(f);
+        setEditable(false);
+        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
+        addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_UP) { e.consume(); }
 
                 else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     try {
-                        lastInput = text.getText().split("\n")[text.getText().split("\n").length - 1];
+                        lastInput = getText().split("\n")[getText().split("\n").length - 1];
 
                         if (waiting) result = lastInput;
                     }
@@ -36,27 +29,13 @@ public class Console extends JFrame {
                 }
             }
         });
-
-        JScrollPane scroll = new JScrollPane(text);
-        scroll.setBorder(null);
-        scroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
-        new SmartScroller(scroll);
-
-        add(scroll);
-
-        setSize(640, 480);
-        setResizable(false);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setVisible(true);
-
-        new Thread(new Runnable() {
+    }
+    
+    public void run(final me.nrubin29.pogo.lang.Class clazz) {
+    	new Thread(new Runnable() {
             public void run() {
                 try { clazz.run(Console.this); }
-                catch (Exception e) {
-                    dispose();
-                    Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
-                }
+                catch (Exception e) { Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e); }
             }
         }).start();
     }
@@ -66,7 +45,7 @@ public class Console extends JFrame {
 
     public String prompt() {
         waiting = true;
-        text.setEditable(true);
+        setEditable(true);
 
         while (result == null) {
             try { Thread.sleep(100); }
@@ -74,7 +53,7 @@ public class Console extends JFrame {
         }
 
         waiting = false;
-        text.setEditable(false);
+        setEditable(false);
 
         String localResult = result;
         result = null;
@@ -84,7 +63,7 @@ public class Console extends JFrame {
     public void write(final String txt) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                try { text.getDocument().insertString(text.getDocument().getLength(), txt + "\n", null); }
+                try { getDocument().insertString(getDocument().getLength(), txt + "\n", null); }
                 catch (Exception ignored) { }
 
                 setCaret();
@@ -95,14 +74,14 @@ public class Console extends JFrame {
     private class Filter extends DocumentFilter {
         public void insertString(final FilterBypass fb, final int offset, final String string, final AttributeSet attr)
                 throws BadLocationException {
-            if (getLineStartOffset(getLineOfOffset(offset)) == getLineStartOffset(getLineOfOffset(text.getDocument().getLength()))) {
-                super.insertString(fb, text.getDocument().getLength(), string, null);
+            if (getLineStartOffset(getLineOfOffset(offset)) == getLineStartOffset(getLineOfOffset(getDocument().getLength()))) {
+                super.insertString(fb, getDocument().getLength(), string, null);
             }
             setCaret();
         }
 
         public void remove(final FilterBypass fb, final int offset, final int length) throws BadLocationException {
-            if (getLineStartOffset(getLineOfOffset(offset)) == getLineStartOffset(getLineOfOffset(text.getDocument().getLength()))) {
+            if (getLineStartOffset(getLineOfOffset(offset)) == getLineStartOffset(getLineOfOffset(getDocument().getLength()))) {
                 super.remove(fb, offset, length);
             }
             setCaret();
@@ -110,7 +89,7 @@ public class Console extends JFrame {
 
         public void replace(final FilterBypass fb, final int offset, final int length, final String string, final AttributeSet attrs)
                 throws BadLocationException {
-            if (getLineStartOffset(getLineOfOffset(offset)) == getLineStartOffset(getLineOfOffset(text.getDocument().getLength()))) {
+            if (getLineStartOffset(getLineOfOffset(offset)) == getLineStartOffset(getLineOfOffset(getDocument().getLength()))) {
                 super.replace(fb, offset, length, string, null);
             }
             setCaret();
@@ -118,7 +97,7 @@ public class Console extends JFrame {
     }
 
     private int getLineOfOffset(int offset) throws BadLocationException {
-        Document doc = text.getDocument();
+        Document doc = getDocument();
         if (offset < 0) {
             throw new BadLocationException("Can't translate offset to line", -1);
         } else if (offset > doc.getLength()) {
@@ -130,11 +109,11 @@ public class Console extends JFrame {
     }
 
     private int getLineStartOffset(int line) throws BadLocationException {
-        Element map = text.getDocument().getDefaultRootElement();
+        Element map = getDocument().getDefaultRootElement();
         if (line < 0) {
             throw new BadLocationException("Negative line", -1);
         } else if (line > map.getElementCount()) {
-            throw new BadLocationException("Given line too big", text.getDocument().getLength() + 1);
+            throw new BadLocationException("Given line too big", getDocument().getLength() + 1);
         } else {
             Element lineElem = map.getElement(line);
             return lineElem.getStartOffset();
@@ -142,7 +121,7 @@ public class Console extends JFrame {
     }
 
     private void setCaret() {
-        try { text.setCaretPosition(text.getDocument().getLength()); }
+        try { setCaretPosition(getDocument().getLength()); }
         catch (Exception e) { e.printStackTrace(); }
     }
 }

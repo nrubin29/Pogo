@@ -10,7 +10,7 @@ public abstract class Block {
 
     private final Block superBlock;
     private final ArrayList<Variable> vars;
-    final ArrayList<Block> subBlocks;
+    private final ArrayList<Block> subBlocks;
     private final ArrayList<String> lines;
 
     Block(Block superBlock) {
@@ -66,36 +66,51 @@ public abstract class Block {
 
         return false;
     }
-
+    
     public void run() throws InvalidCodeException {
     	subBlocks.clear();
     	
         Block currentBlock = null;
+        int numEndsIgnore = 0;
 
         lineLoop: for (String line : lines) {
-            if (currentBlock == null) {
-                for (ConditionalBlock.ConditionalBlockType bt : ConditionalBlock.ConditionalBlockType.values()) {
-                    if (line.startsWith(bt.name().toLowerCase())) {
-                    	System.out.println("found " + bt);
-                    	
-                        String[] args = Arrays.copyOfRange(line.split(" "), 1, line.split(" ").length);
+        	for (ConditionalBlock.ConditionalBlockType bt : ConditionalBlock.ConditionalBlockType.values()) {
+                if (line.startsWith(bt.name().toLowerCase())) {
+                	if (currentBlock == null) {
+                    	String[] args = Arrays.copyOfRange(line.split(" "), 1, line.split(" ").length);
 
-                        if (bt == ConditionalBlock.ConditionalBlockType.IF) currentBlock = new If(this, args[1], args[2], ConditionalBlock.CompareOperation.match(args[0]));
-                        else if (bt == ConditionalBlock.ConditionalBlockType.WHILE) currentBlock = new While(this, args[1], args[2], ConditionalBlock.CompareOperation.match(args[0]));
+                        if (bt == ConditionalBlock.ConditionalBlockType.IF) {
+                        	currentBlock = new If(this, args[1], args[2], ConditionalBlock.CompareOperation.match(args[0]));
+                        }
                         
-                        continue lineLoop;
+                        else if (bt == ConditionalBlock.ConditionalBlockType.WHILE) {
+                        	currentBlock = new While(this, args[1], args[2], ConditionalBlock.CompareOperation.match(args[0]));
+                        }
                     }
+                    
+                    else {
+                    	currentBlock.addLine(line);
+                    	numEndsIgnore++;
+                    }
+                    
+                    continue lineLoop;
                 }
             }
-            
-            System.out.println("Continuing with line " + line);
 
             if (line.equals("end")) {
+            	/*
+            	If we are supposed to ignore this "end"
+            	 */
+            	if (numEndsIgnore > 0) {
+            		numEndsIgnore--;
+            		currentBlock.addLine("end");
+            		continue;
+            	}
+            	
                 /*
                 If the end pertains to a nested statement...
                  */
                 if (currentBlock != null) {
-                	System.out.println("Ending nested block.");
                     currentBlock.addLine("end");
                     subBlocks.add(currentBlock);
                     currentBlock = null;
@@ -104,20 +119,14 @@ public abstract class Block {
                 /*
                 If the end pertains to this statement...
                  */
-                else {
-                	System.out.println("Breaking from " + getClass() + " block.");
-                	break;
-                }
+                else break;
             }
 
             else {
-            	System.out.println("Going to add " + line + " somewhere.");
                 if (currentBlock != null) currentBlock.addLine(line);
                 else subBlocks.add(new Line(this, line));
             }
         }
-        
-        System.out.println("\n\n\n");
 
         runAfterParse();
     }

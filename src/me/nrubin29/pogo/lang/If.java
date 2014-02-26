@@ -10,9 +10,7 @@ public class If extends ConditionalBlock {
 	}
 
     public void runAfterParse() throws InvalidCodeException {
-    	System.out.println("if " + compareOp + " " + PogoPlayer.implode(new String[] { aVal }, this) + " " + PogoPlayer.implode(new String[] { bVal }, this));
-    	
-        if (compareOp == ConditionalBlock.CompareOperation.EQUALS) {
+    	if (compareOp == ConditionalBlock.CompareOperation.EQUALS) {
             if (PogoPlayer.implode(new String[] { aVal }, this).equals(PogoPlayer.implode(new String[] { bVal }, this))) {
                 doBlocks();
             }
