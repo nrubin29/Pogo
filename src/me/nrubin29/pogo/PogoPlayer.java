@@ -10,6 +10,7 @@ public class PogoPlayer {
 	public static void main(String[] args) throws InvalidCodeException {
 		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             public void uncaughtException(Thread thread, Throwable e) {
+            	System.out.println("The following stack trace was caught and will be shown to the user:");
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -25,6 +26,7 @@ public class PogoPlayer {
             if (str.startsWith("_") && block != null && block.getVariable(str.substring(1)) != null) {
                 builder.append(block.getVariable(str.substring(1)).getValue());
             }
+            
             else builder.append(str);
 
             builder.append(" ");

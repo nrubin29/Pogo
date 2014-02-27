@@ -70,6 +70,8 @@ public abstract class Block {
     public void run() throws InvalidCodeException {
     	subBlocks.clear();
     	
+    	If lastIf = null;
+    	
         Block currentBlock = null;
         int numEndsIgnore = 0;
 
@@ -81,6 +83,12 @@ public abstract class Block {
 
                         if (bt == ConditionalBlock.ConditionalBlockType.IF) {
                         	currentBlock = new If(this, args[1], args[2], ConditionalBlock.CompareOperation.match(args[0]));
+                        }
+                        
+                        else if (bt == ConditionalBlock.ConditionalBlockType.ELSE) {
+                        	if (lastIf == null) throw new InvalidCodeException("Else without if.");
+                        	
+                        	currentBlock = new Else(this);
                         }
                         
                         else if (bt == ConditionalBlock.ConditionalBlockType.WHILE) {
@@ -112,7 +120,17 @@ public abstract class Block {
                  */
                 if (currentBlock != null) {
                     currentBlock.addLine("end");
-                    subBlocks.add(currentBlock);
+                    if (!(currentBlock instanceof Else)) subBlocks.add(currentBlock);
+                    
+                    if (currentBlock instanceof If) {
+                    	lastIf = (If) currentBlock;
+                    }
+                    
+                    else if (currentBlock instanceof Else) {
+                    	lastIf.setElse((Else) currentBlock);
+                    	lastIf = null;
+                    }
+                    
                     currentBlock = null;
                 }
 

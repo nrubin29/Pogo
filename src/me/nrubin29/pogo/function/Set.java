@@ -1,4 +1,4 @@
-package me.nrubin29.pogo.cmd;
+package me.nrubin29.pogo.function;
 
 import me.nrubin29.pogo.InvalidCodeException;
 import me.nrubin29.pogo.PogoPlayer;
@@ -8,14 +8,14 @@ import me.nrubin29.pogo.lang.Variable;
 
 import java.util.Arrays;
 
-public class Set extends Command {
+public class Set extends Function {
 
 	public Set() {
 		super("set");
 	}
 	
 	/*
-	 * set str Hello
+	 * Usage: set <variable> <value>
 	 */
 	public void run(Console console, Block b, String[] args) throws InvalidCodeException {
         Variable v = b.getVariable(args[0]);

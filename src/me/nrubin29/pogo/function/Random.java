@@ -1,11 +1,11 @@
-package me.nrubin29.pogo.cmd;
+package me.nrubin29.pogo.function;
 
 import me.nrubin29.pogo.InvalidCodeException;
 import me.nrubin29.pogo.gui.Console;
 import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Variable;
 
-public class Random extends Command {
+public class Random extends Function {
 
 	public Random() {
 		super("random");
@@ -14,7 +14,7 @@ public class Random extends Command {
     private java.util.Random random;
 
 	/*
-	 * random varname [ceiling]
+	 * Usage: random <variable> [ceiling]
 	 */
 	public void run(Console console, Block b, String[] args) throws InvalidCodeException {
         if (random == null) random = new java.util.Random();

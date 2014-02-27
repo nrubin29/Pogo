@@ -1,4 +1,4 @@
-package me.nrubin29.pogo.cmd;
+package me.nrubin29.pogo.function;
 
 import me.nrubin29.pogo.InvalidCodeException;
 import me.nrubin29.pogo.gui.Console;
@@ -7,13 +7,13 @@ import me.nrubin29.pogo.lang.Block;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class CommandManager {
+public class FunctionManager {
 
-	private final ArrayList<Command> cmds = new ArrayList<Command>();
+	private final ArrayList<Function> cmds = new ArrayList<Function>();
 	
 	private final Console console;
 	
-	public CommandManager(Console console) {
+	public FunctionManager(Console console) {
 		this.console = console;
 
         cmds.add(new Declare());
@@ -30,9 +30,9 @@ public class CommandManager {
         String cmd = all[0];
         String[] args = Arrays.copyOfRange(all, 1, all.length);
 
-        Command c = null;
+        Function c = null;
         
-        for (Command cm : cmds) {
+        for (Function cm : cmds) {
         	if (cm.getName().equals(cmd)) c = cm;
         }
         

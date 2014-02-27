@@ -1,4 +1,4 @@
-package me.nrubin29.pogo.cmd;
+package me.nrubin29.pogo.function;
 
 import me.nrubin29.pogo.InvalidCodeException;
 import me.nrubin29.pogo.PogoPlayer;
@@ -8,14 +8,14 @@ import me.nrubin29.pogo.lang.Variable.VariableType;
 
 import java.util.Arrays;
 
-public class Declare extends Command {
+public class Declare extends Function {
 
 	public Declare() {
 		super("declare");
 	}
 	
 	/*
-	 * declare string str = Hello World
+	 * Usage: declare <variabletype> <name> [= <value>]
 	 */
 	public void run(Console console, Block b, String[] args) throws InvalidCodeException {
         VariableType t = VariableType.match(args[0]);

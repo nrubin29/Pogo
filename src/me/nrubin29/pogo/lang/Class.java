@@ -1,7 +1,7 @@
 package me.nrubin29.pogo.lang;
 
 import me.nrubin29.pogo.InvalidCodeException;
-import me.nrubin29.pogo.cmd.CommandManager;
+import me.nrubin29.pogo.function.FunctionManager;
 import me.nrubin29.pogo.gui.Console;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ public class Class extends Block {
     private final String[] code;
 
 	private ArrayList<Method> methods;
-	CommandManager commandManager;
+	FunctionManager functionManager;
 
 	public Class(String[] code) {
         super(null);
@@ -21,7 +21,7 @@ public class Class extends Block {
 
     public void run(Console console) throws InvalidCodeException {
         this.methods = new ArrayList<Method>();
-        this.commandManager = new CommandManager(console);
+        this.functionManager = new FunctionManager(console);
 
         Method currentMethod = null;
 
@@ -41,7 +41,7 @@ public class Class extends Block {
                 currentMethod = null;
             }
 
-            else if (line.startsWith("declare")) commandManager.parse(this, line);
+            else if (line.startsWith("declare")) functionManager.parse(this, line);
 
             else {
                 if (currentMethod != null && !line.equals("") && !line.equals(" ")) currentMethod.addLine(line);

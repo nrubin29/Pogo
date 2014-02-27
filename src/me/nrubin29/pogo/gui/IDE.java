@@ -64,9 +64,18 @@ public class IDE extends JFrame {
 
                 if (chooser.showSaveDialog(IDE.this) == JFileChooser.APPROVE_OPTION) {
                     try {
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(new File(chooser.getSelectedFile().getAbsolutePath() + ".pogo")));
+                    	String fileName = chooser.getSelectedFile().getAbsolutePath();
+                    	if (!fileName.endsWith(".pogo")) fileName += ".pogo";
+                    	
+                        BufferedWriter writer = new BufferedWriter(new FileWriter(new File(fileName)));
 
-                        for (String line : text.getText().split("\n")) writer.write(line + "\n");
+                        String[] lines = text.getText().split("\n");
+                        
+                        for (int i = 0; i < lines.length; i++) {
+                        	writer.write(lines[i]);
+                        	
+                        	if (i + 1 != lines.length) writer.newLine();
+                        }
 
                         writer.close();
                     } catch (Exception ex) {
@@ -90,8 +99,9 @@ public class IDE extends JFrame {
                     try {
                         BufferedReader reader = new BufferedReader(new FileReader(chooser.getSelectedFile()));
 
-                        while (reader.ready())
+                        while (reader.ready()) {
                             text.getDocument().insertString(text.getDocument().getLength(), reader.readLine() + "\n", null);
+                        }
 
                         reader.close();
                     } catch (Exception ex) {

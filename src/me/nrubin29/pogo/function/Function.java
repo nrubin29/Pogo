@@ -1,14 +1,14 @@
-package me.nrubin29.pogo.cmd;
+package me.nrubin29.pogo.function;
 
 import me.nrubin29.pogo.InvalidCodeException;
 import me.nrubin29.pogo.gui.Console;
 import me.nrubin29.pogo.lang.Block;
 
-abstract class Command {
+abstract class Function {
 
 	private final String name;
 	
-	Command(String name) {
+	Function(String name) {
 		this.name = name;
 	}
 	

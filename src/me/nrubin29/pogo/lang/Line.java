@@ -13,6 +13,6 @@ public class Line extends Block {
     }
 
     public void runAfterParse() throws InvalidCodeException {
-        ((Class) getBlockTree()[0]).commandManager.parse(getSuperBlock(), line);
+        ((Class) getBlockTree()[0]).functionManager.parse(getSuperBlock(), line);
     }
 }

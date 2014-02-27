@@ -1,4 +1,4 @@
-package me.nrubin29.pogo.cmd;
+package me.nrubin29.pogo.function;
 
 import me.nrubin29.pogo.InvalidCodeException;
 import me.nrubin29.pogo.PogoPlayer;
@@ -10,7 +10,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import java.util.Arrays;
 
-public class Math extends Command {
+public class Math extends Function {
 
 	public Math() {
 		super("math");
@@ -19,7 +19,7 @@ public class Math extends Command {
     private ScriptEngine engine;
 	
 	/*
-	 * math varname expression
+	 * Usage: math <variable> <expression>
 	 */
 	public void run(Console console, Block b, String[] args) throws InvalidCodeException {
         if (engine == null) engine = new ScriptEngineManager().getEngineByName("JavaScript");

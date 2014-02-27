@@ -5,7 +5,7 @@ import me.nrubin29.pogo.InvalidCodeException;
 public abstract class ConditionalBlock extends Block {
 
     public enum ConditionalBlockType {
-        IF, WHILE
+        IF, ELSE, WHILE
     }
 
     public enum CompareOperation {
