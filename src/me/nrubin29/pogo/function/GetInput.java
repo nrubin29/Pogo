@@ -18,7 +18,7 @@ public class GetInput extends Function {
         Variable v = b.getVariable(args[0]);
         String in = console.prompt();
 
-        v.getType().validateValue(in);
+        v.getType().validateValue(in, b);
         v.setValue(in);
 	}
 }

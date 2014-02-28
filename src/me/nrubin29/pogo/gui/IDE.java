@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.*;
+import java.net.URI;
 
 public class IDE extends JFrame {
 
@@ -36,25 +37,30 @@ public class IDE extends JFrame {
         add(split);
         
         JMenuBar menuBar = new JMenuBar();
-        JMenu menu = new JMenu("File");
-        JMenuItem run = new JMenuItem("Run"), save = new JMenuItem("Save"), load = new JMenuItem("Load");
+        JMenu file = new JMenu("File"), help = new JMenu("Help");
+        JMenuItem run = new JMenuItem("Run"), save = new JMenuItem("Save"), load = new JMenuItem("Load"), gitHub = new JMenuItem("GitHub Wiki");
         
-        menuBar.add(menu);
+        menuBar.add(file);
+        menuBar.add(help);
         
-        menu.add(run);
-        menu.add(save);
-        menu.add(load);
+        file.add(run);
+        file.add(save);
+        file.add(load);
+        
+        help.add(gitHub);
         
         setJMenuBar(menuBar);
         
-        run.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, KeyEvent.META_DOWN_MASK));
+        int meta = System.getProperty("os.name").startsWith("Mac") ? KeyEvent.META_DOWN_MASK : KeyEvent.CTRL_DOWN_MASK;
+        
+        run.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, meta));
         run.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 console.run(new me.nrubin29.pogo.lang.Class(text.getText().split("\n")));
             }
         });
         
-        save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.META_DOWN_MASK));
+        save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, meta));
         save.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser chooser = new JFileChooser();
@@ -85,7 +91,7 @@ public class IDE extends JFrame {
             }
         });
         
-        load.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, KeyEvent.META_DOWN_MASK));
+        load.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, meta));
         load.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 JFileChooser chooser = new JFileChooser();
@@ -110,9 +116,18 @@ public class IDE extends JFrame {
                 }
             }
         });
+        
+        gitHub.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, meta + KeyEvent.SHIFT_DOWN_MASK));
+        gitHub.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try { Desktop.getDesktop().browse(new URI("http://www.github.com/nrubin29/Pogo/wiki")); }
+                catch (Exception ex) {
+                	Thread.currentThread().getUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new Exception("Could not open page."));
+                }
+            }
+        });
 
         setSize(640, 480);
-        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

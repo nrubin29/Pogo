@@ -5,7 +5,7 @@ import me.nrubin29.pogo.lang.Block;
 
 import javax.swing.*;
 
-public class PogoPlayer {
+public class Pogo {
 	
 	public static void main(String[] args) throws InvalidCodeException {
 		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -22,16 +22,25 @@ public class PogoPlayer {
     public static String implode(String[] strs, Block block) throws InvalidCodeException {
         StringBuilder builder = new StringBuilder();
 
+        boolean inQuotes = false;
+        
         for (String str : strs) {
-            if (str.startsWith("_") && block != null && block.getVariable(str.substring(1)) != null) {
-                builder.append(block.getVariable(str.substring(1)).getValue());
-            }
-            
-            else builder.append(str);
-
-            builder.append(" ");
+        	if (str.startsWith("\"")) inQuotes = true;
+        	
+        	if (inQuotes) builder.append(str.replaceAll("\"", ""));
+        	
+        	else {
+            	if (block != null) {
+            		if (block.getVariable(str) != null) builder.append(block.getVariable(str).getValue());
+            		else throw new InvalidCodeException("Variable " + str + " is not defined.");
+            	}
+        	}
+        	
+        	builder.append(" ");
+        	
+        	if (str.endsWith("\"")) inQuotes = false;
         }
-
+        
         return builder.toString().trim();
     }
 }

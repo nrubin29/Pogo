@@ -1,7 +1,7 @@
 package me.nrubin29.pogo.lang;
 
 import me.nrubin29.pogo.InvalidCodeException;
-import me.nrubin29.pogo.PogoPlayer;
+import me.nrubin29.pogo.Pogo;
 
 public class While extends ConditionalBlock {
 
@@ -15,8 +15,8 @@ public class While extends ConditionalBlock {
 
             do {
                 try {
-                    a = Integer.parseInt(PogoPlayer.implode(new String[]{ aVal }, this));
-                    b = Integer.parseInt(PogoPlayer.implode(new String[] { bVal }, this));
+                    a = Integer.parseInt(Pogo.implode(new String[]{ aVal }, this));
+                    b = Integer.parseInt(Pogo.implode(new String[] { bVal }, this));
                 }
                 catch (Exception e) {
                     throw new InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-integers.");
@@ -31,8 +31,8 @@ public class While extends ConditionalBlock {
 
             do {
                 try {
-                    a = Integer.parseInt(PogoPlayer.implode(new String[]{ aVal }, this));
-                    b = Integer.parseInt(PogoPlayer.implode(new String[] { bVal }, this));
+                    a = Integer.parseInt(Pogo.implode(new String[]{ aVal }, this));
+                    b = Integer.parseInt(Pogo.implode(new String[] { bVal }, this));
                 }
                 catch (Exception e) {
                     throw new InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-integers.");
@@ -47,8 +47,8 @@ public class While extends ConditionalBlock {
 
             do {
                 try {
-                    a = Integer.parseInt(PogoPlayer.implode(new String[]{ aVal }, this));
-                    b = Integer.parseInt(PogoPlayer.implode(new String[] { bVal }, this));
+                    a = Integer.parseInt(Pogo.implode(new String[]{ aVal }, this));
+                    b = Integer.parseInt(Pogo.implode(new String[] { bVal }, this));
                 }
                 catch (Exception e) {
                     throw new InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-integers.");
@@ -63,8 +63,8 @@ public class While extends ConditionalBlock {
 
             do {
                 try {
-                    a = Integer.parseInt(PogoPlayer.implode(new String[]{ aVal }, this));
-                    b = Integer.parseInt(PogoPlayer.implode(new String[] { bVal }, this));
+                    a = Integer.parseInt(Pogo.implode(new String[]{ aVal }, this));
+                    b = Integer.parseInt(Pogo.implode(new String[] { bVal }, this));
                 }
                 catch (Exception e) {
                     throw new InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-integers.");

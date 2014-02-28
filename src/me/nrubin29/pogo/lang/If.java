@@ -1,7 +1,7 @@
 package me.nrubin29.pogo.lang;
 
 import me.nrubin29.pogo.InvalidCodeException;
-import me.nrubin29.pogo.PogoPlayer;
+import me.nrubin29.pogo.Pogo;
 
 public class If extends ConditionalBlock {
 	
@@ -19,14 +19,14 @@ public class If extends ConditionalBlock {
     	boolean opSuccess = false;
     	
     	if (compareOp == ConditionalBlock.CompareOperation.EQUALS) {
-            if (PogoPlayer.implode(new String[] { aVal }, this).equals(PogoPlayer.implode(new String[] { bVal }, this))) {
+            if (Pogo.implode(new String[] { aVal }, this).equals(Pogo.implode(new String[] { bVal }, this))) {
                 doBlocks();
                 opSuccess = true;
             }
         }
 
         else if (compareOp == ConditionalBlock.CompareOperation.NOTEQUALS) {
-            if (!PogoPlayer.implode(new String[] { aVal }, this).equals(PogoPlayer.implode(new String[] { bVal }, this))) {
+            if (!Pogo.implode(new String[] { aVal }, this).equals(Pogo.implode(new String[] { bVal }, this))) {
                 doBlocks();
                 opSuccess = true;
             }
@@ -36,8 +36,8 @@ public class If extends ConditionalBlock {
         	int a, b;
         	
         	try {
-                a = Integer.parseInt(PogoPlayer.implode(new String[]{ aVal }, this));
-                b = Integer.parseInt(PogoPlayer.implode(new String[] { bVal }, this));
+                a = Integer.parseInt(Pogo.implode(new String[]{ aVal }, this));
+                b = Integer.parseInt(Pogo.implode(new String[] { bVal }, this));
             }
             catch (Exception e) {
                 throw new InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-integers.");
@@ -53,8 +53,8 @@ public class If extends ConditionalBlock {
         	int a, b;
         	
         	try {
-                a = Integer.parseInt(PogoPlayer.implode(new String[]{ aVal }, this));
-                b = Integer.parseInt(PogoPlayer.implode(new String[] { bVal }, this));
+                a = Integer.parseInt(Pogo.implode(new String[]{ aVal }, this));
+                b = Integer.parseInt(Pogo.implode(new String[] { bVal }, this));
             }
             catch (Exception e) {
                 throw new InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-integers.");

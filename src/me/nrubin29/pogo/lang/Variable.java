@@ -1,13 +1,14 @@
 package me.nrubin29.pogo.lang;
 
 import me.nrubin29.pogo.InvalidCodeException;
+import me.nrubin29.pogo.Pogo;
 
 import java.lang.Class;
 
 public class Variable {
 	
 	public enum VariableType {
-		BOOLEAN(Boolean.class), INTEGER(Integer.class), STRING(String.class);
+		VOID(null), BOOLEAN(Boolean.class), INTEGER(Integer.class), STRING(String.class);
 
         private final java.lang.Class<?> clazz;
 
@@ -23,9 +24,14 @@ public class Variable {
 			throw new InvalidCodeException("Variable type " + str + " doesn't exist.");
 		}
 
-        public void validateValue(Object value) {
-            try { clazz.getDeclaredMethod("valueOf", String.class).invoke(null, value); }
-            catch (Exception ignored) { }
+        public void validateValue(Object value, Block block) throws InvalidCodeException {
+            try {
+            	if (clazz != null) {
+            		String sValue = Pogo.implode(new String[] { String.valueOf(value) }, block);
+            		clazz.getDeclaredMethod("valueOf", String.class).invoke(null, sValue);
+            	}
+            }
+            catch (Exception e) { throw new InvalidCodeException("Invalid value for variable type " + this); }
         }
 	}
 

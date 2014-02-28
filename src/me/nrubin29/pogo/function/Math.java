@@ -1,7 +1,7 @@
 package me.nrubin29.pogo.function;
 
 import me.nrubin29.pogo.InvalidCodeException;
-import me.nrubin29.pogo.PogoPlayer;
+import me.nrubin29.pogo.Pogo;
 import me.nrubin29.pogo.gui.Console;
 import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Variable;
@@ -31,7 +31,7 @@ public class Math extends Function {
         }
 
         try {
-            v.setValue(new Double(Double.parseDouble(engine.eval(PogoPlayer.implode(Arrays.copyOfRange(args, 1, args.length), b)).toString())).intValue());
+            v.setValue(new Double(Double.parseDouble(engine.eval(Pogo.implode(Arrays.copyOfRange(args, 1, args.length), b)).toString())).intValue());
         }
         catch (Exception e) { throw new InvalidCodeException("Invalid math expression."); }
 	}

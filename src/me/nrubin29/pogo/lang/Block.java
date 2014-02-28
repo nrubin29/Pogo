@@ -8,16 +8,24 @@ import java.util.Collections;
 
 public abstract class Block {
 
+	private final ArrayList<CustomLineHandler> handlers;
+	
     private final Block superBlock;
     private final ArrayList<Variable> vars;
     private final ArrayList<Block> subBlocks;
     private final ArrayList<String> lines;
 
     Block(Block superBlock) {
+    	this.handlers = new ArrayList<CustomLineHandler>();
+    	
         this.superBlock = superBlock;
         this.vars = new ArrayList<Variable>();
         this.subBlocks = new ArrayList<Block>();
         this.lines = new ArrayList<String>();
+    }
+    
+    void registerCustomLineHandler(CustomLineHandler h) {
+    	handlers.add(h);
     }
 
     void addLine(String line) {
@@ -76,6 +84,13 @@ public abstract class Block {
         int numEndsIgnore = 0;
 
         lineLoop: for (String line : lines) {
+        	for (CustomLineHandler h : handlers) {
+        		if (line.startsWith(h.getStart())) {
+        			if (h.run(line, this)) break lineLoop; // This could be an issue...
+        			continue lineLoop;
+        		}
+        	}
+        	
         	for (ConditionalBlock.ConditionalBlockType bt : ConditionalBlock.ConditionalBlockType.values()) {
                 if (line.startsWith(bt.name().toLowerCase())) {
                 	if (currentBlock == null) {
@@ -111,7 +126,7 @@ public abstract class Block {
             	 */
             	if (numEndsIgnore > 0) {
             		numEndsIgnore--;
-            		currentBlock.addLine("end");
+            		if (currentBlock != null) currentBlock.addLine("end");
             		continue;
             	}
             	
@@ -127,7 +142,7 @@ public abstract class Block {
                     }
                     
                     else if (currentBlock instanceof Else) {
-                    	lastIf.setElse((Else) currentBlock);
+                        lastIf.setElse((Else) currentBlock);
                     	lastIf = null;
                     }
                     
@@ -156,4 +171,18 @@ public abstract class Block {
             block.run();
         }
     }
+}
+
+abstract class CustomLineHandler {
+	private final String start;
+	
+	public CustomLineHandler(String start) {
+		this.start = start;
+	}
+	
+	public String getStart() {
+		return start;
+	}
+	
+	public abstract boolean run(String line, Block sB) throws InvalidCodeException;
 }

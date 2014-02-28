@@ -3,6 +3,7 @@ package me.nrubin29.pogo.lang;
 import me.nrubin29.pogo.InvalidCodeException;
 import me.nrubin29.pogo.function.FunctionManager;
 import me.nrubin29.pogo.gui.Console;
+import me.nrubin29.pogo.lang.Variable.VariableType;
 
 import java.util.ArrayList;
 
@@ -24,15 +25,14 @@ public class Class extends Block {
         this.functionManager = new FunctionManager(console);
 
         Method currentMethod = null;
-
-		/*
-		 * Iterating over each line in the code.
-		 */
+        
         for (String line : code) {
             line = trimComments(line);
 
             if (line.startsWith("method ")) {
-                currentMethod = new Method(this, line.split(" ")[1]);
+            	String[] mArgs = line.split(" ")[1].split(":");
+            	if (mArgs.length == 1) throw new InvalidCodeException("Did not specify return type for method " + mArgs[0] + "."); 
+                currentMethod = new Method(this, mArgs[0], VariableType.match(mArgs[1]));
             }
 
             else if (currentMethod != null && line.equals("end " + currentMethod.getName())) {
@@ -48,7 +48,9 @@ public class Class extends Block {
             }
         }
 
-        getMethod("main").run();
+        Method main = getMethod("main");
+        main.run();
+        main.invoke();
 
         console.write("--Terminated.");
     }
