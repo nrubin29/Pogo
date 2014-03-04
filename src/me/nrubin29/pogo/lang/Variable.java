@@ -8,7 +8,7 @@ import java.lang.Class;
 public class Variable {
 	
 	public enum VariableType {
-		VOID(null), BOOLEAN(Boolean.class), INTEGER(Integer.class), STRING(String.class);
+		VOID(null), STRING(null), INTEGER(Integer.class), DECIMAL(Double.class), BOOLEAN(Boolean.class);
 
         private final java.lang.Class<?> clazz;
 

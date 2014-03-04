@@ -15,10 +15,10 @@ public class Pogo {
                 JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
-
+		
         new IDE();
 	}
-
+	
     public static String implode(String[] strs, Block block) throws InvalidCodeException {
         StringBuilder builder = new StringBuilder();
 
@@ -31,8 +31,21 @@ public class Pogo {
         	
         	else {
             	if (block != null) {
-            		if (block.getVariable(str) != null) builder.append(block.getVariable(str).getValue());
-            		else throw new InvalidCodeException("Variable " + str + " is not defined.");
+            		boolean isVar;
+            		
+            		try { Integer.valueOf(str); isVar = false; }
+            		catch (Exception e) { isVar = true; }
+            		
+            		if (isVar) {
+            			if (str.equals("true") || str.equals("false") || str.equals("+")) isVar = false;
+            		}
+            		
+            		if (isVar) {
+            			if (block.getVariable(str) != null) builder.append(block.getVariable(str).getValue());
+                		else throw new InvalidCodeException("Variable " + str + " is not defined.");
+            		}
+            		
+            		else builder.append(str);
             	}
         	}
         	

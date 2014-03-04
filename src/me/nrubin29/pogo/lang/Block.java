@@ -92,12 +92,18 @@ public abstract class Block {
         	}
         	
         	for (ConditionalBlock.ConditionalBlockType bt : ConditionalBlock.ConditionalBlockType.values()) {
-                if (line.startsWith(bt.name().toLowerCase())) {
+                if (line.split(" ")[0].equals(bt.name().toLowerCase())) {
                 	if (currentBlock == null) {
                     	String[] args = Arrays.copyOfRange(line.split(" "), 1, line.split(" ").length);
 
                         if (bt == ConditionalBlock.ConditionalBlockType.IF) {
                         	currentBlock = new If(this, args[1], args[2], ConditionalBlock.CompareOperation.match(args[0]));
+                        }
+                        
+                        else if (bt == ConditionalBlock.ConditionalBlockType.ELSEIF) {
+                        	if (lastIf == null) throw new InvalidCodeException("Else if without if.");
+                        	
+                        	currentBlock = new ElseIf(this, args[1], args[2], ConditionalBlock.CompareOperation.match(args[0]));
                         }
                         
                         else if (bt == ConditionalBlock.ConditionalBlockType.ELSE) {
@@ -139,6 +145,10 @@ public abstract class Block {
                     
                     if (currentBlock instanceof If) {
                     	lastIf = (If) currentBlock;
+                    }
+                    
+                    else if (currentBlock instanceof ElseIf) {
+                    	lastIf.addElseIf((ElseIf) currentBlock);
                     }
                     
                     else if (currentBlock instanceof Else) {
