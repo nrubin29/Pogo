@@ -6,25 +6,19 @@ import me.nrubin29.pogo.gui.Console;
 import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Variable;
 
-import java.util.Arrays;
-
 public class Set extends Function {
 
-	public Set() {
-		super("set");
-	}
-	
-	/*
-	 * Usage: set <variable> <value>
-	 */
-	public void run(Console console, Block b, String[] args) throws InvalidCodeException {
-        Variable v = b.getVariable(args[0]);
+    public Set() {
+        super("set");
+    }
 
-        if (v.getType() != Variable.VariableType.STRING) {
-            v.getType().validateValue(args[3], b);
-            v.setValue(args[3]);
-        }
+    /*
+     * Usage: set(<value>) <var>
+     */
+    public void run(Console console, Block b, String[] args, Variable receiver) throws InvalidCodeException {
+        if (receiver == null) throw new InvalidCodeException("Attempted to set variable but no variable specified.");
 
-		else v.setValue(Pogo.implode(Arrays.copyOfRange(args, 1, args.length), b));
-	}
+        receiver.getType().validateValue(args[0], b);
+        receiver.setValue(Pogo.implode(new String[]{args[0]}, b));
+    }
 }

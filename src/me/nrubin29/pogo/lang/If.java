@@ -27,8 +27,6 @@ public class If extends ConditionalBlock {
     public void runAfterParse() throws InvalidCodeException {
     	boolean opSuccess = false;
     	
-    	System.out.println(Pogo.implode(new String[] { aVal }, this) + " || " + Pogo.implode(new String[] { bVal }, this));
-    	
     	if (compareOp == ConditionalBlock.CompareOperation.EQUALS) {
             if (Pogo.implode(new String[] { aVal }, this).equals(Pogo.implode(new String[] { bVal }, this))) {
                 doBlocks();

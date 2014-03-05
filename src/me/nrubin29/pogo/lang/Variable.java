@@ -18,8 +18,8 @@ public class Variable {
 
         public static VariableType match(String str) throws InvalidCodeException {
 			for (VariableType t : values()) {
-				if (t.name().toLowerCase().equals(str)) return t;
-			}
+                if (t.name().toLowerCase().equals(str.toLowerCase())) return t;
+            }
 			
 			throw new InvalidCodeException("Variable type " + str + " doesn't exist.");
 		}
@@ -59,5 +59,10 @@ public class Variable {
 
     public void setValue(Object value) {
         this.value = String.valueOf(value);
+    }
+
+    @Override
+    public String toString() {
+        return "Variable name=" + getName() + " type=" + getType() + " value=" + getValue();
     }
 }

@@ -74,9 +74,9 @@ public abstract class Block {
 
         return false;
     }
-    
-    public void run() throws InvalidCodeException {
-    	subBlocks.clear();
+
+    void run() throws InvalidCodeException {
+        subBlocks.clear();
     	
     	If lastIf = null;
     	
@@ -180,6 +180,11 @@ public abstract class Block {
         for (Block block : subBlocks) {
             block.run();
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Block type=" + getClass().getSimpleName();
     }
 }
 

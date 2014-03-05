@@ -6,9 +6,9 @@ import me.nrubin29.pogo.lang.Block;
 import javax.swing.*;
 
 public class Pogo {
-	
-	public static void main(String[] args) throws InvalidCodeException {
-		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+
+    public static void main(String[] args) {
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             public void uncaughtException(Thread thread, Throwable e) {
             	System.out.println("The following stack trace was caught and will be shown to the user:");
                 e.printStackTrace();
@@ -31,22 +31,12 @@ public class Pogo {
         	
         	else {
             	if (block != null) {
-            		boolean isVar;
-            		
-            		try { Integer.valueOf(str); isVar = false; }
-            		catch (Exception e) { isVar = true; }
-            		
-            		if (isVar) {
-            			if (str.equals("true") || str.equals("false") || str.equals("+")) isVar = false;
-            		}
-            		
-            		if (isVar) {
-            			if (block.getVariable(str) != null) builder.append(block.getVariable(str).getValue());
-                		else throw new InvalidCodeException("Variable " + str + " is not defined.");
-            		}
-            		
-            		else builder.append(str);
-            	}
+                    try {
+                        builder.append(block.getVariable(str).getValue());
+                    } catch (InvalidCodeException e) {
+                        builder.append(str);
+                    }
+                }
         	}
         	
         	builder.append(" ");

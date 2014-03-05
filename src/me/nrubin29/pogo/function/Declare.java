@@ -4,9 +4,8 @@ import me.nrubin29.pogo.InvalidCodeException;
 import me.nrubin29.pogo.Pogo;
 import me.nrubin29.pogo.gui.Console;
 import me.nrubin29.pogo.lang.Block;
+import me.nrubin29.pogo.lang.Variable;
 import me.nrubin29.pogo.lang.Variable.VariableType;
-
-import java.util.Arrays;
 
 public class Declare extends Function {
 
@@ -15,27 +14,24 @@ public class Declare extends Function {
 	}
 	
 	/*
-	 * Usage: declare <variabletype> <name> [= <value>]
+    Usage: declare(<variabletype>, <name>, <value>)
 	 */
-	public void run(Console console, Block b, String[] args) throws InvalidCodeException {
+    public void run(Console console, Block b, String[] args, Variable receiver) throws InvalidCodeException {
         VariableType t = VariableType.match(args[0]);
-		String name = args[1];
-		
-		if (t == VariableType.VOID) throw new InvalidCodeException("Attempted to declare void variable.");
 
-        Object value = null;
+        if (t == VariableType.VOID) throw new InvalidCodeException("Attempted to declare void variable.");
 
-        if (args.length >= 4) {
-            if (t == VariableType.STRING) {
-                value = Pogo.implode(Arrays.copyOfRange(args, 3, args.length), b);
-            }
+        String name = args[1];
 
-            else {
-                t.validateValue(args[3], b);
-                value = args[3];
-            }
+        Object value;
+
+        if (t == VariableType.STRING) {
+            value = Pogo.implode(new String[]{args[2]}, b);
+        } else {
+            t.validateValue(args[2], b);
+            value = args[2];
         }
 
-		b.addVariable(t, name, value);
+        b.addVariable(t, name, value);
 	}
 }

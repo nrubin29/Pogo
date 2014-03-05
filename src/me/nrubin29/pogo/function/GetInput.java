@@ -7,18 +7,19 @@ import me.nrubin29.pogo.lang.Variable;
 
 public class GetInput extends Function {
 
-	public GetInput() {
-		super("getinput");
-	}
+    public GetInput() {
+        super("getinput");
+    }
 
     /*
-     * Usage: getinput <variable>
+    Usage: getinput() <var>
      */
-	public void run(Console console, Block b, String[] args) throws InvalidCodeException {
-        Variable v = b.getVariable(args[0]);
+    public void run(Console console, Block b, String[] args, Variable receiver) throws InvalidCodeException {
         String in = console.prompt();
 
-        v.getType().validateValue(in, b);
-        v.setValue(in);
-	}
+        if (receiver != null) {
+            receiver.getType().validateValue(in, b);
+            receiver.setValue(in);
+        }
+    }
 }

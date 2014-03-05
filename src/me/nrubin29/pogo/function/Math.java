@@ -8,31 +8,34 @@ import me.nrubin29.pogo.lang.Variable;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import java.util.Arrays;
 
 public class Math extends Function {
 
-	public Math() {
-		super("math");
-	}
+    public Math() {
+        super("math");
+    }
 
     private ScriptEngine engine;
-	
-	/*
-	 * Usage: math <variable> <expression>
-	 */
-	public void run(Console console, Block b, String[] args) throws InvalidCodeException {
+
+    /*
+    Usage: math(<expression>) <var>
+     */
+    public void run(Console console, Block b, String[] args, Variable receiver) throws InvalidCodeException {
         if (engine == null) engine = new ScriptEngineManager().getEngineByName("JavaScript");
 
-        Variable v = b.getVariable(args[0]);
+        if (receiver != null) {
+            if (receiver.getType() != Variable.VariableType.INTEGER && receiver.getType() != Variable.VariableType.DECIMAL) {
+                throw new InvalidCodeException("Attempted to assign math output to non-number.");
+            }
 
-        if (v.getType() != Variable.VariableType.INTEGER) {
-            throw new InvalidCodeException("Attempted to assign math output to non-integer.");
+        	/*
+        	Note: This needs to set an integer type to integer value of decimal type to decimal value (1.5 invalid for integer)
+        	 */
+            try {
+                receiver.setValue(Double.parseDouble(engine.eval(Pogo.implode(new String[]{args[0]}, b)).toString()));
+            } catch (Exception e) {
+                throw new InvalidCodeException("Invalid math expression.");
+            }
         }
-
-        try {
-            v.setValue(new Double(Double.parseDouble(engine.eval(Pogo.implode(Arrays.copyOfRange(args, 1, args.length), b)).toString())).intValue());
-        }
-        catch (Exception e) { throw new InvalidCodeException("Invalid math expression."); }
-	}
+    }
 }
