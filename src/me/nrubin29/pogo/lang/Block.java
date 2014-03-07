@@ -96,24 +96,23 @@ public abstract class Block {
                 	if (currentBlock == null) {
                     	String[] args = Arrays.copyOfRange(line.split(" "), 1, line.split(" ").length);
 
-                        if (bt == ConditionalBlock.ConditionalBlockType.IF) {
-                        	currentBlock = new If(this, args[1], args[2], ConditionalBlock.CompareOperation.match(args[0]));
-                        }
-                        
-                        else if (bt == ConditionalBlock.ConditionalBlockType.ELSEIF) {
-                        	if (lastIf == null) throw new InvalidCodeException("Else if without if.");
-                        	
-                        	currentBlock = new ElseIf(this, args[1], args[2], ConditionalBlock.CompareOperation.match(args[0]));
-                        }
-                        
-                        else if (bt == ConditionalBlock.ConditionalBlockType.ELSE) {
-                        	if (lastIf == null) throw new InvalidCodeException("Else without if.");
-                        	
-                        	currentBlock = new Else(this);
-                        }
-                        
-                        else if (bt == ConditionalBlock.ConditionalBlockType.WHILE) {
-                        	currentBlock = new While(this, args[1], args[2], ConditionalBlock.CompareOperation.match(args[0]));
+                        if (bt == ConditionalBlock.ConditionalBlockType.ELSE) {
+                            if (lastIf == null) throw new InvalidCodeException("Else without if.");
+
+                            currentBlock = new Else(this);
+                        } else {
+                            String a = args[0], b = args[2];
+                            ConditionalBlock.CompareOperation op = ConditionalBlock.CompareOperation.match(args[1]);
+
+                            if (bt == ConditionalBlock.ConditionalBlockType.IF) {
+                                currentBlock = new If(this, a, b, op);
+                            } else if (bt == ConditionalBlock.ConditionalBlockType.ELSEIF) {
+                                if (lastIf == null) throw new InvalidCodeException("Else if without if.");
+
+                                currentBlock = new ElseIf(this, a, b, op);
+                            } else if (bt == ConditionalBlock.ConditionalBlockType.WHILE) {
+                                currentBlock = new While(this, a, b, op);
+                            }
                         }
                     }
                     

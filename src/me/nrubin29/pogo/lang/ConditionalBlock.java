@@ -9,11 +9,21 @@ public abstract class ConditionalBlock extends Block {
     }
 
     public enum CompareOperation {
-        EQUALS, NOTEQUALS, GREATERTHAN, LESSTHAN;
+        EQUALS("="), NOTEQUALS("!="), GREATERTHAN(">"), LESSTHAN("<");
+
+        private final String op;
+
+        CompareOperation(String op) {
+            this.op = op;
+        }
+
+        public String getOp() {
+            return op;
+        }
 
         public static CompareOperation match(String str) throws InvalidCodeException {
             for (CompareOperation op : values()) {
-                if (op.name().toLowerCase().equals(str)) return op;
+                if (op.getOp().equals(str)) return op;
             }
 
             throw new InvalidCodeException("Comparison operation " + str + " doesn't exist.");

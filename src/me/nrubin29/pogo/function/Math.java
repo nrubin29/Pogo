@@ -2,7 +2,7 @@ package me.nrubin29.pogo.function;
 
 import me.nrubin29.pogo.InvalidCodeException;
 import me.nrubin29.pogo.Pogo;
-import me.nrubin29.pogo.gui.Console;
+import me.nrubin29.pogo.ide.Console;
 import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Variable;
 
@@ -29,7 +29,7 @@ public class Math extends Function {
             }
 
         	/*
-        	Note: This needs to set an integer type to integer value of decimal type to decimal value (1.5 invalid for integer)
+            Note: This needs to set an integer type to integer value of decimal type to decimal value (1.5 invalid for integer)
         	 */
             try {
                 receiver.setValue(Double.parseDouble(engine.eval(Pogo.implode(new String[]{args[0]}, b)).toString()));

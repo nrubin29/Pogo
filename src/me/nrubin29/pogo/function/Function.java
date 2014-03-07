@@ -1,7 +1,7 @@
 package me.nrubin29.pogo.function;
 
 import me.nrubin29.pogo.InvalidCodeException;
-import me.nrubin29.pogo.gui.Console;
+import me.nrubin29.pogo.ide.Console;
 import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Variable;
 

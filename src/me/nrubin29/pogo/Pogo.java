@@ -1,6 +1,6 @@
 package me.nrubin29.pogo;
 
-import me.nrubin29.pogo.gui.IDE;
+import me.nrubin29.pogo.ide.IDE;
 import me.nrubin29.pogo.lang.Block;
 
 import javax.swing.*;
@@ -18,8 +18,8 @@ public class Pogo {
 		
         new IDE();
 	}
-	
-    public static String implode(String[] strs, Block block) throws InvalidCodeException {
+
+    public static String implode(String[] strs, Block block) {
         StringBuilder builder = new StringBuilder();
 
         boolean inQuotes = false;

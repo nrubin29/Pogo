@@ -2,20 +2,20 @@ package me.nrubin29.pogo.function;
 
 import me.nrubin29.pogo.InvalidCodeException;
 import me.nrubin29.pogo.Pogo;
-import me.nrubin29.pogo.gui.Console;
+import me.nrubin29.pogo.ide.Console;
 import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Variable;
 import me.nrubin29.pogo.lang.Variable.VariableType;
 
 public class Declare extends Function {
 
-	public Declare() {
-		super("declare");
-	}
-	
-	/*
+    public Declare() {
+        super("declare");
+    }
+
+    /*
     Usage: declare(<variabletype>, <name>, <value>)
-	 */
+     */
     public void run(Console console, Block b, String[] args, Variable receiver) throws InvalidCodeException {
         VariableType t = VariableType.match(args[0]);
 
@@ -33,5 +33,5 @@ public class Declare extends Function {
         }
 
         b.addVariable(t, name, value);
-	}
+    }
 }

@@ -1,4 +1,4 @@
-package me.nrubin29.pogo.gui;
+package me.nrubin29.pogo.ide;
 
 import javax.swing.*;
 import javax.swing.text.*;
@@ -17,25 +17,29 @@ public class Console extends JTextPane {
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
         addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_UP) { e.consume(); }
-
-                else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                if (e.getKeyCode() == KeyEvent.VK_UP) {
+                    e.consume();
+                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     try {
                         lastInput = getText().split("\n")[getText().split("\n").length - 1];
 
                         if (waiting) result = lastInput;
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
-                    catch (Exception ex) { ex.printStackTrace(); }
                 }
             }
         });
     }
-    
+
     public void run(final me.nrubin29.pogo.lang.Class clazz) {
-    	new Thread(new Runnable() {
+        new Thread(new Runnable() {
             public void run() {
-                try { clazz.run(Console.this); }
-                catch (Exception e) { Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e); }
+                try {
+                    clazz.run(Console.this);
+                } catch (Exception e) {
+                    Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
+                }
             }
         }).start();
     }
@@ -48,8 +52,10 @@ public class Console extends JTextPane {
         setEditable(true);
 
         while (result == null) {
-            try { Thread.sleep(100); }
-            catch (Exception ignored) { }
+            try {
+                Thread.sleep(100);
+            } catch (Exception ignored) {
+            }
         }
 
         waiting = false;
@@ -63,8 +69,10 @@ public class Console extends JTextPane {
     public void write(final String txt) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                try { getDocument().insertString(getDocument().getLength(), txt + "\n", null); }
-                catch (Exception ignored) { }
+                try {
+                    getDocument().insertString(getDocument().getLength(), txt + "\n", null);
+                } catch (Exception ignored) {
+                }
 
                 setCaret();
             }
@@ -121,7 +129,10 @@ public class Console extends JTextPane {
     }
 
     private void setCaret() {
-        try { setCaretPosition(getDocument().getLength()); }
-        catch (Exception e) { e.printStackTrace(); }
+        try {
+            setCaretPosition(getDocument().getLength());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
