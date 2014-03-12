@@ -1,7 +1,7 @@
 package me.nrubin29.pogo.lang;
 
 import me.nrubin29.pogo.InvalidCodeException;
-import me.nrubin29.pogo.Pogo;
+import me.nrubin29.pogo.Utils;
 
 public class ElseIf extends ConditionalBlock {
 
@@ -13,23 +13,23 @@ public class ElseIf extends ConditionalBlock {
         boolean opSuccess = false;
 
         if (compareOp == ConditionalBlock.CompareOperation.EQUALS) {
-            if (Pogo.implode(new String[]{aVal}, this).equals(Pogo.implode(new String[]{bVal}, this))) {
+            if (Utils.implode(aVal, this).equals(Utils.implode(bVal, this))) {
                 doBlocks();
                 opSuccess = true;
             }
         } else if (compareOp == ConditionalBlock.CompareOperation.NOTEQUALS) {
-            if (!Pogo.implode(new String[]{aVal}, this).equals(Pogo.implode(new String[]{bVal}, this))) {
+            if (!Utils.implode(aVal, this).equals(Utils.implode(bVal, this))) {
                 doBlocks();
                 opSuccess = true;
             }
         } else if (compareOp == CompareOperation.GREATERTHAN) {
-            int a, b;
+            double a, b;
 
             try {
-                a = Integer.parseInt(Pogo.implode(new String[]{aVal}, this));
-                b = Integer.parseInt(Pogo.implode(new String[]{bVal}, this));
+                a = Double.valueOf(Utils.implode(aVal, this));
+                b = Double.valueOf(Utils.implode(bVal, this));
             } catch (Exception e) {
-                throw new InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-integers.");
+                throw new InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-numbers.");
             }
 
             if (a > b) {
@@ -37,13 +37,13 @@ public class ElseIf extends ConditionalBlock {
                 opSuccess = true;
             }
         } else if (compareOp == CompareOperation.LESSTHAN) {
-            int a, b;
+            double a, b;
 
             try {
-                a = Integer.parseInt(Pogo.implode(new String[]{aVal}, this));
-                b = Integer.parseInt(Pogo.implode(new String[]{bVal}, this));
+                a = Double.valueOf(Utils.implode(aVal, this));
+                b = Double.valueOf(Utils.implode(bVal, this));
             } catch (Exception e) {
-                throw new InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-integers.");
+                throw new InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-numbers.");
             }
 
             if (a < b) {
@@ -55,7 +55,13 @@ public class ElseIf extends ConditionalBlock {
         return opSuccess;
     }
 
+    @Override
     public void runAfterParse() throws InvalidCodeException {
         // We need to use runElseIf() because it returns a boolean.
+    }
+
+    @Override
+    public String toString() {
+        return "ElseIf aVal=" + aVal + " bVal=" + bVal + " compareOp=" + compareOp.name();
     }
 }

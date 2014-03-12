@@ -5,7 +5,7 @@ import me.nrubin29.pogo.InvalidCodeException;
 public abstract class ConditionalBlock extends Block {
 
     public enum ConditionalBlockType {
-        IF, ELSEIF, ELSE, WHILE
+        IF, ELSEIF, ELSE, FOR, WHILE
     }
 
     public enum CompareOperation {
@@ -43,4 +43,9 @@ public abstract class ConditionalBlock extends Block {
     }
 
     public abstract void runAfterParse() throws InvalidCodeException;
+
+    @Override
+    public String toString() {
+        return "ConditionalBlock type=" + getClass().getSimpleName();
+    }
 }

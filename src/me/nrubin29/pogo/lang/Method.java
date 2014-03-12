@@ -1,7 +1,7 @@
 package me.nrubin29.pogo.lang;
 
 import me.nrubin29.pogo.InvalidCodeException;
-import me.nrubin29.pogo.Pogo;
+import me.nrubin29.pogo.Utils;
 import me.nrubin29.pogo.lang.Variable.VariableType;
 
 public class Method extends Block {
@@ -16,11 +16,12 @@ public class Method extends Block {
         super(superBlock);
 
         registerCustomLineHandler(new CustomLineHandler("return") {
+            @Override
             public boolean run(String line, Block sB) throws InvalidCodeException {
                 if (getReturnType() == VariableType.VOID) return true;
 
                 getReturnType().validateValue(line.split(" ")[1], sB);
-                retValue = Pogo.implode(new String[]{line.split(" ")[1]}, sB);
+                retValue = Utils.implode(line.split(" ")[1], sB);
                 return true;
             }
         });
@@ -45,7 +46,8 @@ public class Method extends Block {
          */
         for (int i = 0; i < params.length; i++) {
             String[] args = params[i].split(":");
-            addVariable(VariableType.match(args[0]), args[1], invokeParams[i]);
+            ((Class) getBlockTree()[0]).functionManager.parse(this, "declare(" + args[0] + "," + args[1] + "," + invokeParams[i]);
+//            addVariable(VariableType.match(args[0]), args[1], invokeParams[i]);
         }
 
         run();
@@ -59,6 +61,7 @@ public class Method extends Block {
         return localRetValue;
     }
 
+    @Override
     public void runAfterParse() throws InvalidCodeException {
         // We don't want to use runAfterParse() because we use invoke().
     }

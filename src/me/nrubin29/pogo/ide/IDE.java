@@ -12,12 +12,14 @@ import java.net.URI;
 public class IDE extends JFrame {
 
     private final JTextPane text;
+
+    private final JToolBar consolePane;
     private final Console console;
 
-    private final Preferences prefs;
+    private File currentFile;
 
     public IDE() {
-        super("Pogo IDE");
+        super("Pogo IDE - No File");
 
         text = new JTextPane();
         text.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
@@ -26,33 +28,51 @@ public class IDE extends JFrame {
         scroll.setBorder(null);
         scroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
 
+        add(scroll);
+
         console = new Console();
 
-        prefs = new Preferences(this);
-
         JScrollPane consoleScroll = new JScrollPane(console);
-        scroll.setBorder(null);
-        scroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
+        consoleScroll.setBorder(null);
+        consoleScroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
 
-        JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scroll, consoleScroll);
-        split.setOneTouchExpandable(true);
-        split.setDividerLocation(320);
+        consolePane = new JToolBar("Pogo Console");
+        consolePane.setFloatable(false);
+        consolePane.setVisible(false);
+        consolePane.add(consoleScroll);
 
-        add(split);
+        add(consolePane);
 
         JMenuBar menuBar = new JMenuBar();
-        JMenu file = new JMenu("File"), help = new JMenu("Help");
-        JMenuItem run = new JMenuItem("Run"), save = new JMenuItem("Save"), load = new JMenuItem("Load"), preferences = new JMenuItem("Preferences"), gitHub = new JMenuItem("GitHub Wiki");
+        JMenu file = new JMenu("File"), settings = new JMenu("Settings"), orientation = new JMenu("Orientation"), help = new JMenu("Help");
+        JMenuItem
+                save = new JMenuItem("Save"),
+                load = new JMenuItem("Load"),
+                run = new JMenuItem("Run"),
+                closeConsole = new JMenuItem("Close Console"),
+                horizontal = new JRadioButtonMenuItem("Horizontal"),
+                vertical = new JRadioButtonMenuItem("Vertical"),
+                gitHub = new JMenuItem("GitHub Wiki");
 
         menuBar.add(file);
+        menuBar.add(settings);
         menuBar.add(help);
 
         file.add(save);
         file.add(load);
-        file.addSeparator();
         file.add(run);
-        file.addSeparator();
-        file.add(preferences);
+
+        settings.add(closeConsole);
+        settings.add(orientation);
+
+        ButtonGroup orientationGroup = new ButtonGroup();
+        orientationGroup.add(horizontal);
+        orientationGroup.add(vertical);
+
+        vertical.setSelected(true);
+
+        orientation.add(vertical);
+        orientation.add(horizontal);
 
         help.add(gitHub);
 
@@ -62,37 +82,59 @@ public class IDE extends JFrame {
 
         save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, meta));
         save.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-                JFileChooser chooser = new JFileChooser();
-                chooser.setFileFilter(new FileNameExtensionFilter("Pogo Code", "pogo"));
-                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                chooser.setMultiSelectionEnabled(false);
+                File toUse = null;
 
-                if (chooser.showSaveDialog(IDE.this) == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        String fileName = chooser.getSelectedFile().getAbsolutePath();
-                        if (!fileName.endsWith(".pogo")) fileName += ".pogo";
+                if (currentFile != null) toUse = currentFile;
 
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(new File(fileName)));
+                else {
+                    JFileChooser chooser = new JFileChooser();
+                    chooser.setFileFilter(new FileNameExtensionFilter("Pogo Code", "pogo"));
+                    chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+                    chooser.setMultiSelectionEnabled(false);
 
-                        String[] lines = text.getText().split("\n");
-
-                        for (int i = 0; i < lines.length; i++) {
-                            writer.write(lines[i]);
-
-                            if (i + 1 != lines.length) writer.newLine();
-                        }
-
-                        writer.close();
-                    } catch (Exception ex) {
-                        Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), ex);
+                    if (chooser.showSaveDialog(IDE.this) == JFileChooser.APPROVE_OPTION) {
+                        toUse = chooser.getSelectedFile();
                     }
+                }
+
+                if (toUse == null) return;
+
+                try {
+                    String fileName = toUse.getAbsolutePath();
+                    if (!fileName.endsWith(".pogo")) fileName += ".pogo";
+
+                    BufferedWriter writer = new BufferedWriter(new FileWriter(new File(fileName)));
+
+                    String[] lines = text.getText().split("\n");
+
+                    for (int i = 0; i < lines.length; i++) {
+                        writer.write(lines[i]);
+
+                        if (i + 1 != lines.length) writer.newLine();
+                    }
+
+                    writer.close();
+
+                    currentFile = toUse;
+
+                    String goodName;
+
+                    if (toUse.getName().contains("."))
+                        goodName = toUse.getName().substring(0, toUse.getName().lastIndexOf("."));
+                    else goodName = toUse.getName();
+
+                    setTitle("Pogo IDE - " + goodName);
+                } catch (Exception ex) {
+                    Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), ex);
                 }
             }
         });
 
         load.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, meta));
         load.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 JFileChooser chooser = new JFileChooser();
                 chooser.setFileFilter(new FileNameExtensionFilter("Pogo Code", "pogo"));
@@ -110,6 +152,9 @@ public class IDE extends JFrame {
                         }
 
                         reader.close();
+
+                        currentFile = chooser.getSelectedFile();
+                        setTitle("Pogo IDE - " + currentFile.getName().substring(0, currentFile.getName().lastIndexOf(".")));
                     } catch (Exception ex) {
                         Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), ex);
                     }
@@ -117,40 +162,60 @@ public class IDE extends JFrame {
             }
         });
 
-        preferences.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_COMMA, meta));
-        preferences.setEnabled(false);
-        preferences.addActionListener(new ActionListener() {
+        run.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, meta));
+        run.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(IDE.this, prefs, "Preferences", JOptionPane.PLAIN_MESSAGE);
+                if (!consolePane.isVisible()) consolePane.setVisible(true);
+                console.run(new me.nrubin29.pogo.lang.Class(text.getText().split("\n")));
             }
         });
 
-        run.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, meta));
-        run.addActionListener(new ActionListener() {
+        closeConsole.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, meta + KeyEvent.SHIFT_DOWN_MASK));
+        closeConsole.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
-                console.run(new me.nrubin29.pogo.lang.Class(text.getText().split("\n")));
+                consolePane.setVisible(false);
+            }
+        });
+
+        vertical.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean visible = consolePane.isVisible();
+                if (visible) consolePane.setVisible(false);
+                setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+                if (visible) consolePane.setVisible(true);
+            }
+        });
+
+        horizontal.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean visible = consolePane.isVisible();
+                if (visible) consolePane.setVisible(false);
+                setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
+                if (visible) consolePane.setVisible(true);
             }
         });
 
         gitHub.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, meta + KeyEvent.SHIFT_DOWN_MASK));
         gitHub.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     Desktop.getDesktop().browse(new URI("http://www.github.com/nrubin29/Pogo/wiki"));
                 } catch (Exception ex) {
-                    Thread.currentThread().getUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new Exception("Could not open page."));
+                    Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new Exception("Could not open page."));
                 }
             }
         });
 
+        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
         setSize(640, 480);
         setResizable(false);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
-    }
-
-    public void setIDEFont(Font font) {
-        text.setFont(font);
     }
 }

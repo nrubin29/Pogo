@@ -1,6 +1,7 @@
 package me.nrubin29.pogo.function;
 
 import me.nrubin29.pogo.InvalidCodeException;
+import me.nrubin29.pogo.Utils;
 import me.nrubin29.pogo.ide.Console;
 import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Class;
@@ -15,9 +16,9 @@ public class FunctionManager {
     private final ArrayList<Function> functs = new ArrayList<Function>();
 
     private final Console console;
-	
-	public FunctionManager(Console console) {
-		this.console = console;
+
+    public FunctionManager(Console console) {
+        this.console = console;
 
         functs.add(new Declare());
         functs.add(new GetInput());
@@ -33,13 +34,17 @@ public class FunctionManager {
     public void parse(Block b, String input) throws InvalidCodeException {
         String funct = input.substring(0, input.indexOf("(")).trim();
 
-        String[] args = input.substring(input.indexOf("(") + 1, input.indexOf(")")).replaceAll(" ", "").split(",");
+        String[] args = Utils.changeCommas(input.substring(input.indexOf("(") + 1, input.indexOf(")"))).split(",");
+
+        for (int i = 0; i < args.length; i++) {
+            args[i] = Utils.unchangeCommas(args[i]);
+        }
 
         Variable receiver = null;
 
         try {
             receiver = b.getVariable(input.substring(input.indexOf(")") + 1).trim());
-        } catch (InvalidCodeException e) {
+        } catch (InvalidCodeException ignored) {
         }
 
         try {

@@ -8,32 +8,27 @@ import java.awt.event.KeyEvent;
 
 public class Console extends JTextPane {
 
-    private String lastInput;
-
     public Console() {
-        Filter f = new Filter();
-        ((AbstractDocument) getDocument()).setDocumentFilter(f);
-        setEditable(false);
-        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
+        ((AbstractDocument) getDocument()).setDocumentFilter(new Filter());
+
         addKeyListener(new KeyAdapter() {
+            @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_UP) {
                     e.consume();
                 } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    try {
-                        lastInput = getText().split("\n")[getText().split("\n").length - 1];
-
-                        if (waiting) result = lastInput;
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
+                    if (waiting) result = getText().split("\n")[getText().split("\n").length - 1];
                 }
             }
         });
+
+        setEditable(false);
+        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
     }
 
     public void run(final me.nrubin29.pogo.lang.Class clazz) {
         new Thread(new Runnable() {
+            @Override
             public void run() {
                 try {
                     clazz.run(Console.this);
@@ -48,6 +43,9 @@ public class Console extends JTextPane {
     private String result = null;
 
     public String prompt() {
+        setVisible(true);
+        getParent().requestFocusInWindow();
+
         waiting = true;
         setEditable(true);
 
@@ -68,6 +66,7 @@ public class Console extends JTextPane {
 
     public void write(final String txt) {
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 try {
                     getDocument().insertString(getDocument().getLength(), txt + "\n", null);
@@ -80,6 +79,7 @@ public class Console extends JTextPane {
     }
 
     private class Filter extends DocumentFilter {
+        @Override
         public void insertString(final FilterBypass fb, final int offset, final String string, final AttributeSet attr)
                 throws BadLocationException {
             if (getLineStartOffset(getLineOfOffset(offset)) == getLineStartOffset(getLineOfOffset(getDocument().getLength()))) {
@@ -88,6 +88,7 @@ public class Console extends JTextPane {
             setCaret();
         }
 
+        @Override
         public void remove(final FilterBypass fb, final int offset, final int length) throws BadLocationException {
             if (getLineStartOffset(getLineOfOffset(offset)) == getLineStartOffset(getLineOfOffset(getDocument().getLength()))) {
                 super.remove(fb, offset, length);
@@ -95,6 +96,7 @@ public class Console extends JTextPane {
             setCaret();
         }
 
+        @Override
         public void replace(final FilterBypass fb, final int offset, final int length, final String string, final AttributeSet attrs)
                 throws BadLocationException {
             if (getLineStartOffset(getLineOfOffset(offset)) == getLineStartOffset(getLineOfOffset(getDocument().getLength()))) {
@@ -131,8 +133,7 @@ public class Console extends JTextPane {
     private void setCaret() {
         try {
             setCaretPosition(getDocument().getLength());
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ignored) {
         }
     }
 }

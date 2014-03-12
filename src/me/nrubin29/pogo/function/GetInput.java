@@ -14,6 +14,7 @@ public class GetInput extends Function {
     /*
     Usage: getinput() <var>
      */
+    @Override
     public void run(Console console, Block b, String[] args, Variable receiver) throws InvalidCodeException {
         String in = console.prompt();
 

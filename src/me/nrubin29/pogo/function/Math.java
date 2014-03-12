@@ -1,7 +1,7 @@
 package me.nrubin29.pogo.function;
 
 import me.nrubin29.pogo.InvalidCodeException;
-import me.nrubin29.pogo.Pogo;
+import me.nrubin29.pogo.Utils;
 import me.nrubin29.pogo.ide.Console;
 import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Variable;
@@ -20,6 +20,7 @@ public class Math extends Function {
     /*
     Usage: math(<expression>) <var>
      */
+    @Override
     public void run(Console console, Block b, String[] args, Variable receiver) throws InvalidCodeException {
         if (engine == null) engine = new ScriptEngineManager().getEngineByName("JavaScript");
 
@@ -32,7 +33,7 @@ public class Math extends Function {
             Note: This needs to set an integer type to integer value of decimal type to decimal value (1.5 invalid for integer)
         	 */
             try {
-                receiver.setValue(Double.parseDouble(engine.eval(Pogo.implode(new String[]{args[0]}, b)).toString()));
+                receiver.setValue(Double.parseDouble(engine.eval(Utils.implode(args[0], b)).toString()));
             } catch (Exception e) {
                 throw new InvalidCodeException("Invalid math expression.");
             }

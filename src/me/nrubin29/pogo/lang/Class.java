@@ -83,4 +83,9 @@ public class Class extends Block {
     public void runAfterParse() throws InvalidCodeException {
         // No need to do anything here.
     }
+
+    @Override
+    public String toString() {
+        return "Class methods=" + Arrays.toString(methods.toArray()) + " code=" + Arrays.toString(code);
+    }
 }

@@ -8,24 +8,24 @@ import java.util.Collections;
 
 public abstract class Block {
 
-	private final ArrayList<CustomLineHandler> handlers;
-	
+    private final ArrayList<CustomLineHandler> handlers;
+
     private final Block superBlock;
     private final ArrayList<Variable> vars;
     private final ArrayList<Block> subBlocks;
     private final ArrayList<String> lines;
 
     Block(Block superBlock) {
-    	this.handlers = new ArrayList<CustomLineHandler>();
-    	
+        this.handlers = new ArrayList<CustomLineHandler>();
+
         this.superBlock = superBlock;
         this.vars = new ArrayList<Variable>();
         this.subBlocks = new ArrayList<Block>();
         this.lines = new ArrayList<String>();
     }
-    
+
     void registerCustomLineHandler(CustomLineHandler h) {
-    	handlers.add(h);
+        handlers.add(h);
     }
 
     void addLine(String line) {
@@ -51,8 +51,8 @@ public abstract class Block {
         return tree.toArray(new Block[tree.size()]);
     }
 
-    public void addVariable(Variable.VariableType t, String name, Object value) {
-        vars.add(new Variable(t, name, value));
+    public void addVariable(Variable.VariableType t, String name, boolean isArray, Object value) {
+        vars.add(new Variable(t, name, isArray, value));
     }
 
     public Variable getVariable(String name) throws InvalidCodeException {
@@ -77,28 +77,30 @@ public abstract class Block {
 
     void run() throws InvalidCodeException {
         subBlocks.clear();
-    	
-    	If lastIf = null;
-    	
+
+        If lastIf = null;
+
         Block currentBlock = null;
         int numEndsIgnore = 0;
 
-        lineLoop: for (String line : lines) {
-        	for (CustomLineHandler h : handlers) {
-        		if (line.startsWith(h.getStart())) {
-        			if (h.run(line, this)) break lineLoop; // This could be an issue...
-        			continue lineLoop;
-        		}
-        	}
-        	
-        	for (ConditionalBlock.ConditionalBlockType bt : ConditionalBlock.ConditionalBlockType.values()) {
+        lineLoop:
+        for (String line : lines) {
+            for (CustomLineHandler h : handlers) {
+                if (line.startsWith(h.getStart())) {
+                    if (h.run(line, this)) break lineLoop; // This could be an issue...
+                    continue lineLoop;
+                }
+            }
+
+            for (ConditionalBlock.ConditionalBlockType bt : ConditionalBlock.ConditionalBlockType.values()) {
                 if (line.split(" ")[0].equals(bt.name().toLowerCase())) {
-                	if (currentBlock == null) {
-                    	String[] args = Arrays.copyOfRange(line.split(" "), 1, line.split(" ").length);
+                    if (currentBlock == null) {
+                        String[] args = Arrays.copyOfRange(line.split(" "), 1, line.split(" ").length);
 
-                        if (bt == ConditionalBlock.ConditionalBlockType.ELSE) {
+                        if (bt == ConditionalBlock.ConditionalBlockType.FOR) {
+                            currentBlock = new For(this, args[0], args[1]);
+                        } else if (bt == ConditionalBlock.ConditionalBlockType.ELSE) {
                             if (lastIf == null) throw new InvalidCodeException("Else without if.");
-
                             currentBlock = new Else(this);
                         } else {
                             String a = args[0], b = args[2];
@@ -108,53 +110,46 @@ public abstract class Block {
                                 currentBlock = new If(this, a, b, op);
                             } else if (bt == ConditionalBlock.ConditionalBlockType.ELSEIF) {
                                 if (lastIf == null) throw new InvalidCodeException("Else if without if.");
-
                                 currentBlock = new ElseIf(this, a, b, op);
                             } else if (bt == ConditionalBlock.ConditionalBlockType.WHILE) {
                                 currentBlock = new While(this, a, b, op);
                             }
                         }
+                    } else {
+                        currentBlock.addLine(line);
+                        numEndsIgnore++;
                     }
-                    
-                    else {
-                    	currentBlock.addLine(line);
-                    	numEndsIgnore++;
-                    }
-                    
+
                     continue lineLoop;
                 }
             }
 
             if (line.equals("end")) {
-            	/*
-            	If we are supposed to ignore this "end"
+                /*
+                If we are supposed to ignore this "end"
             	 */
-            	if (numEndsIgnore > 0) {
-            		numEndsIgnore--;
-            		if (currentBlock != null) currentBlock.addLine("end");
-            		continue;
-            	}
-            	
+                if (numEndsIgnore > 0) {
+                    numEndsIgnore--;
+                    if (currentBlock != null) currentBlock.addLine("end");
+                    continue;
+                }
+
                 /*
                 If the end pertains to a nested statement...
                  */
                 if (currentBlock != null) {
                     currentBlock.addLine("end");
                     if (!(currentBlock instanceof Else)) subBlocks.add(currentBlock);
-                    
+
                     if (currentBlock instanceof If) {
-                    	lastIf = (If) currentBlock;
-                    }
-                    
-                    else if (currentBlock instanceof ElseIf) {
-                    	lastIf.addElseIf((ElseIf) currentBlock);
-                    }
-                    
-                    else if (currentBlock instanceof Else) {
+                        lastIf = (If) currentBlock;
+                    } else if (currentBlock instanceof ElseIf) {
+                        lastIf.addElseIf((ElseIf) currentBlock);
+                    } else if (currentBlock instanceof Else) {
                         lastIf.setElse((Else) currentBlock);
-                    	lastIf = null;
+                        lastIf = null;
                     }
-                    
+
                     currentBlock = null;
                 }
 
@@ -162,9 +157,7 @@ public abstract class Block {
                 If the end pertains to this statement...
                  */
                 else break;
-            }
-
-            else {
+            } else {
                 if (currentBlock != null) currentBlock.addLine(line);
                 else subBlocks.add(new Line(this, line));
             }
@@ -188,15 +181,15 @@ public abstract class Block {
 }
 
 abstract class CustomLineHandler {
-	private final String start;
-	
-	public CustomLineHandler(String start) {
-		this.start = start;
-	}
-	
-	public String getStart() {
-		return start;
-	}
-	
-	public abstract boolean run(String line, Block sB) throws InvalidCodeException;
+    private final String start;
+
+    public CustomLineHandler(String start) {
+        this.start = start;
+    }
+
+    public String getStart() {
+        return start;
+    }
+
+    public abstract boolean run(String line, Block sB) throws InvalidCodeException;
 }
