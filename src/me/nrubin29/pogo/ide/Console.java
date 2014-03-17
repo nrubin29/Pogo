@@ -12,7 +12,7 @@ public class Console extends JTextPane {
         OUTPUT(Color.BLACK),
         ERROR(Color.RED);
 
-        private SimpleAttributeSet attributes;
+        private final SimpleAttributeSet attributes;
 
         MessageType(Color color) {
             attributes = new SimpleAttributeSet();
