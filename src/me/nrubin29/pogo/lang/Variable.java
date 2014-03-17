@@ -40,7 +40,7 @@ public class Variable {
             try {
                 if (clazz != null) {
                     return clazz.getDeclaredMethod("valueOf", String.class).invoke(null, value);
-                } else return null;
+                } else return value;
             } catch (Exception e) {
                 throw new InvalidCodeException("Formatted invalid value " + value + " for variable type " + name().toLowerCase());
             }
@@ -52,10 +52,14 @@ public class Variable {
     private final boolean isArray;
     private final ArrayList<Object> values;
 
-    public Variable(VariableType type, String name, boolean isArray, Object... values) {
+    public Variable(VariableType type, String name, boolean isArray, Object... values) throws InvalidCodeException {
         this.type = type;
         this.name = name;
         this.isArray = isArray;
+
+        if (!isArray && values.length > 1)
+            throw new InvalidCodeException("Attempted to initialize non-array with more than one value.");
+
         this.values = new ArrayList<Object>(Arrays.asList(values));
     }
 
@@ -76,15 +80,21 @@ public class Variable {
         return values.get(0);
     }
 
+    public Object getValue(int index) throws InvalidCodeException {
+        if (!isArray) throw new InvalidCodeException("Attempted to access values of non-array.");
+        if (index >= values.size()) throw new InvalidCodeException("Index does not exist.");
+        return values.toArray()[index];
+    }
+
     public Object[] getValues() throws InvalidCodeException {
         if (!isArray) throw new InvalidCodeException("Attempted to access values of non-array.");
-        System.out.println(Arrays.toString(values.toArray()));
         return values.toArray();
     }
 
     public void setValue(Object value) throws InvalidCodeException {
         if (isArray()) throw new InvalidCodeException("Attempted to set value of array.");
-        values.set(0, getType().formatValue(value));
+        values.clear();
+        values.add(getType().formatValue(value));
     }
 
     public void setValue(Object value, int index) throws InvalidCodeException {

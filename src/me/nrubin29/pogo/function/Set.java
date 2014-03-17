@@ -11,14 +11,6 @@ public class Set extends Function {
     public Set() {
         super("set");
     }
-    
-    /*
-    method main:void
-	declare(string[], args)
-	set("Hello",0) args
-	print(args)
-	end main
-     */
 
     /*
     Usage: set(<value>, [index]) <var>

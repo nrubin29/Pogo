@@ -16,11 +16,6 @@ public class GetInput extends Function {
      */
     @Override
     public void run(Console console, Block b, String[] args, Variable receiver) throws InvalidCodeException {
-        String in = console.prompt();
-
-        if (receiver != null) {
-            receiver.getType().validateValue(in, b);
-            receiver.setValue(in);
-        }
+        if (receiver != null) receiver.setValue(console.prompt());
     }
 }

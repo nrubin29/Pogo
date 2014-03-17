@@ -8,6 +8,22 @@ import java.awt.event.KeyEvent;
 
 public class Console extends JTextPane {
 
+    public enum MessageType {
+        OUTPUT(Color.BLACK),
+        ERROR(Color.RED);
+
+        private SimpleAttributeSet attributes;
+
+        MessageType(Color color) {
+            attributes = new SimpleAttributeSet();
+            StyleConstants.setForeground(attributes, color);
+        }
+
+        public SimpleAttributeSet getAttributes() {
+            return attributes;
+        }
+    }
+
     public Console() {
         ((AbstractDocument) getDocument()).setDocumentFilter(new Filter());
 
@@ -64,12 +80,12 @@ public class Console extends JTextPane {
         return localResult;
     }
 
-    public void write(final String txt) {
+    public void write(final String txt, final MessageType messageType) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 try {
-                    getDocument().insertString(getDocument().getLength(), txt + "\n", null);
+                    getDocument().insertString(getDocument().getLength(), txt + "\n", messageType.getAttributes());
                 } catch (Exception ignored) {
                 }
 

@@ -3,9 +3,11 @@ package me.nrubin29.pogo;
 import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Variable;
 
+import java.util.Arrays;
+
 public class Utils {
 
-    public static String implode(String s, Block block) {
+    public static String implode(String s, Block block) throws InvalidCodeException {
         StringBuilder builder = new StringBuilder();
 
         boolean inQuotes = false;
@@ -17,13 +19,15 @@ public class Utils {
 
             else {
                 if (block != null) {
-                    boolean isPossiblyArray = str.contains("[") && str.contains("]") && str.substring(str.lastIndexOf("[") + 1, str.lastIndexOf("]")).matches("[/[0-9]+/]");
                     try {
-                        Variable v = block.getVariable(isPossiblyArray ? str.substring(0, str.lastIndexOf("[")) : str);
-                        if (v.isArray())
-                            builder.append(v.getValues()[Integer.parseInt(str.substring(str.lastIndexOf("[") + 1, str.lastIndexOf("]")))]);
-                        else builder.append(v.getValue());
+                        Variable v = block.getVariable(str.contains(":") ? str.substring(0, str.lastIndexOf(":")) : str);
+                        if (v.isArray()) {
+                            if (str.contains(":"))
+                                builder.append(v.getValue(Integer.parseInt(implode(str.substring(str.lastIndexOf(":") + 1), block))));
+                            else builder.append(Arrays.toString(v.getValues()));
+                        } else builder.append(v.getValue());
                     } catch (InvalidCodeException e) {
+                        if (e.getMessage().equals("Index does not exist.")) throw e;
                         builder.append(str);
                     }
                 }
@@ -37,6 +41,16 @@ public class Utils {
         return builder.toString().trim();
     }
 
+    public static String[] implode(String[] s, Block block) throws InvalidCodeException {
+        String[] imploded = new String[s.length];
+
+        for (int i = 0; i < s.length; i++) {
+            imploded[i] = implode(s[i], block);
+        }
+
+        return imploded;
+    }
+
     public static String changeCommas(String commaStr) {
         StringBuilder builder = new StringBuilder();
 
@@ -48,6 +62,7 @@ public class Utils {
                     builder.append(" ");
                 } else if (c == '"') {
                     inQuotes = !inQuotes;
+                    builder.append("\"");
                 } else if (c == ',') {
                     if (inQuotes) builder.append("__comma__");
                     else builder.append(",");
@@ -55,6 +70,7 @@ public class Utils {
                     builder.append(c);
                 }
             }
+            builder.append(" ");
         }
 
         return builder.toString().trim();

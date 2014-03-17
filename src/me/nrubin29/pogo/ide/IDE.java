@@ -218,4 +218,8 @@ public class IDE extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
     }
+
+    public Console getConsole() {
+        return console;
+    }
 }

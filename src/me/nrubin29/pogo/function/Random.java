@@ -16,6 +16,7 @@ public class Random extends Function {
     /*
     Usage: random([ceiling]) <var>
      */
+    @Override
     public void run(Console console, Block b, String[] args, Variable receiver) throws InvalidCodeException {
         if (random == null) random = new java.util.Random();
 
@@ -34,11 +35,13 @@ public class Random extends Function {
                 }
             }
 
-            /*
-            This should check if integer or decimal and use nextInt() or nextDouble() accordingly.
-             */
-            if (ceil == -1) receiver.setValue(random.nextInt());
-            else receiver.setValue(random.nextInt(ceil));
+            if (receiver.getType() == Variable.VariableType.INTEGER) {
+                if (ceil == -1) receiver.setValue(random.nextInt());
+                else receiver.setValue(random.nextInt(ceil));
+            } else if (receiver.getType() == Variable.VariableType.DECIMAL) {
+                if (ceil == -1) receiver.setValue(random.nextDouble());
+                else receiver.setValue(random.nextInt(ceil));
+            }
         }
     }
 }

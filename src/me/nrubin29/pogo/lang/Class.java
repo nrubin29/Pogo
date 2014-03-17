@@ -3,6 +3,7 @@ package me.nrubin29.pogo.lang;
 import me.nrubin29.pogo.InvalidCodeException;
 import me.nrubin29.pogo.function.FunctionManager;
 import me.nrubin29.pogo.ide.Console;
+import me.nrubin29.pogo.ide.Console.MessageType;
 import me.nrubin29.pogo.lang.Variable.VariableType;
 
 import java.util.ArrayList;
@@ -58,7 +59,7 @@ public class Class extends Block {
         main.run();
         main.invoke(new String[0]);
 
-        console.write("--Terminated.");
+        console.write("--Terminated.", MessageType.OUTPUT);
     }
 
     private String trimComments(String str) {
@@ -80,6 +81,7 @@ public class Class extends Block {
         throw new InvalidCodeException("Method " + name + " does not exist.");
     }
 
+    @Override
     public void runAfterParse() throws InvalidCodeException {
         // No need to do anything here.
     }

@@ -51,9 +51,9 @@ public class FunctionManager {
             Method method = ((Class) b.getBlockTree()[0]).getMethod(funct);
             Object retValue = method.invoke(args);
             if (receiver != null) {
-                if (method.getReturnType() == VariableType.VOID)
+                if (method.getReturnType() == VariableType.VOID) {
                     throw new InvalidCodeException("Attempted to store result of void method to variable.");
-                receiver.getType().validateValue(retValue, b);
+                }
                 receiver.setValue(retValue);
             }
         } catch (InvalidCodeException e) {

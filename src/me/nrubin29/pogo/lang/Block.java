@@ -5,6 +5,7 @@ import me.nrubin29.pogo.InvalidCodeException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.regex.Pattern;
 
 public abstract class Block {
 
@@ -51,8 +52,8 @@ public abstract class Block {
         return tree.toArray(new Block[tree.size()]);
     }
 
-    public void addVariable(Variable.VariableType t, String name, boolean isArray, Object value) {
-        vars.add(new Variable(t, name, isArray, value));
+    public void addVariable(Variable.VariableType t, String name, boolean isArray, Object... values) throws InvalidCodeException {
+        vars.add(new Variable(t, name, isArray, values));
     }
 
     public Variable getVariable(String name) throws InvalidCodeException {
@@ -87,18 +88,21 @@ public abstract class Block {
         for (String line : lines) {
             for (CustomLineHandler h : handlers) {
                 if (line.startsWith(h.getStart())) {
-                    if (h.run(line, this)) break lineLoop; // This could be an issue...
+                    if (h.run(line, this)) break lineLoop; // This could be an issue if the block isn't a return.
                     continue lineLoop;
                 }
             }
 
             for (ConditionalBlock.ConditionalBlockType bt : ConditionalBlock.ConditionalBlockType.values()) {
-                if (line.split(" ")[0].equals(bt.name().toLowerCase())) {
+                if (line.split(" ")[0].equals(bt.name().toLowerCase()) || line.split(Pattern.quote("("))[0].equals(bt.name().toLowerCase())) {
                     if (currentBlock == null) {
-                        String[] args = Arrays.copyOfRange(line.split(" "), 1, line.split(" ").length);
+                        String[] splitSpace = line.substring(line.indexOf("(") + 1, line.indexOf(")")).split(" ");
+                        String[] args = Arrays.copyOfRange(splitSpace, 0, splitSpace.length);
 
                         if (bt == ConditionalBlock.ConditionalBlockType.FOR) {
                             currentBlock = new For(this, args[0], args[1]);
+                        } else if (bt == ConditionalBlock.ConditionalBlockType.FOREACH) {
+                            currentBlock = new Foreach(this, args[0], args[1]);
                         } else if (bt == ConditionalBlock.ConditionalBlockType.ELSE) {
                             if (lastIf == null) throw new InvalidCodeException("Else without if.");
                             currentBlock = new Else(this);

@@ -29,11 +29,10 @@ public class Math extends Function {
                 throw new InvalidCodeException("Attempted to assign math output to non-number.");
             }
 
-        	/*
-            Note: This needs to set an integer type to integer value of decimal type to decimal value (1.5 invalid for integer)
-        	 */
             try {
-                receiver.setValue(Double.parseDouble(engine.eval(Utils.implode(args[0], b)).toString()));
+                if (receiver.getType() == Variable.VariableType.INTEGER) {
+                    receiver.setValue(Integer.parseInt(engine.eval(Utils.implode(args[0], b)).toString()));
+                } else receiver.setValue(Double.parseDouble(engine.eval(Utils.implode(args[0], b)).toString()));
             } catch (Exception e) {
                 throw new InvalidCodeException("Invalid math expression.");
             }

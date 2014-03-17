@@ -7,6 +7,8 @@ import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Variable;
 import me.nrubin29.pogo.lang.Variable.VariableType;
 
+import java.util.Arrays;
+
 public class Declare extends Function {
 
     public Declare() {
@@ -14,13 +16,13 @@ public class Declare extends Function {
     }
 
     /*
-    Usage: declare(<variabletype>([]), <name>, [value])
+    Usage: declare(<variabletype>(:), <name>, [value(s)])
      */
     @Override
     public void run(Console console, Block b, String[] args, Variable receiver) throws InvalidCodeException {
-        boolean isArray = args[0].endsWith("[]");
+        boolean isArray = args[0].endsWith(":");
 
-        if (isArray) args[0] = args[0].substring(0, args[0].length() - 2);
+        if (isArray) args[0] = args[0].substring(0, args[0].length() - 1);
 
         VariableType t = VariableType.match(args[0]);
 
@@ -28,17 +30,12 @@ public class Declare extends Function {
 
         String name = args[1];
 
-        Object value = null;
+        Object[] values = new String[args.length - 2];
 
         if (args.length >= 3) {
-            if (t == VariableType.STRING) {
-                value = Utils.implode(args[2], b);
-            } else {
-                t.validateValue(args[2], b);
-                value = args[2];
-            }
+            values = Utils.implode(Arrays.copyOfRange(args, 2, args.length), b);
         }
 
-        b.addVariable(t, name, isArray, value);
+        b.addVariable(t, name, isArray, values);
     }
 }
