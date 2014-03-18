@@ -1,8 +1,8 @@
-package me.nrubin29.pogo.function;
+package me.nrubin29.pogo.lang.function;
 
 import me.nrubin29.pogo.InvalidCodeException;
 import me.nrubin29.pogo.Utils;
-import me.nrubin29.pogo.ide.Console;
+import me.nrubin29.pogo.Utils.Writable;
 import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Class;
 import me.nrubin29.pogo.lang.Method;
@@ -15,10 +15,10 @@ public class FunctionManager {
 
     private final ArrayList<Function> functs = new ArrayList<Function>();
 
-    private final Console console;
+    private final Writable writable;
 
-    public FunctionManager(Console console) {
-        this.console = console;
+    public FunctionManager(Writable writable) {
+        this.writable = writable;
 
         functs.add(new Declare());
         functs.add(new GetInput());
@@ -65,7 +65,7 @@ public class FunctionManager {
 
             if (fun == null) throw new InvalidCodeException("Function " + funct + " does not exist.");
 
-            else fun.run(console, b, args, receiver);
+            else fun.run(writable, b, args, receiver);
         }
     }
 }

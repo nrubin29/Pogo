@@ -1,7 +1,7 @@
-package me.nrubin29.pogo.function;
+package me.nrubin29.pogo.lang.function;
 
 import me.nrubin29.pogo.InvalidCodeException;
-import me.nrubin29.pogo.ide.Console;
+import me.nrubin29.pogo.Utils.Writable;
 import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Variable;
 
@@ -17,7 +17,7 @@ abstract class Function {
         return name;
     }
 
-    public abstract void run(Console console, Block b, String[] args, Variable receiver) throws InvalidCodeException;
+    public abstract void run(Writable writable, Block b, String[] args, Variable receiver) throws InvalidCodeException;
 
     @Override
     public String toString() {

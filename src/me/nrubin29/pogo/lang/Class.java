@@ -1,10 +1,10 @@
 package me.nrubin29.pogo.lang;
 
 import me.nrubin29.pogo.InvalidCodeException;
-import me.nrubin29.pogo.function.FunctionManager;
-import me.nrubin29.pogo.ide.Console;
+import me.nrubin29.pogo.Utils.Writable;
 import me.nrubin29.pogo.ide.Console.MessageType;
 import me.nrubin29.pogo.lang.Variable.VariableType;
+import me.nrubin29.pogo.lang.function.FunctionManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,9 +12,8 @@ import java.util.Arrays;
 public class Class extends Block {
 
     private final String[] code;
-
-    private ArrayList<Method> methods;
     FunctionManager functionManager;
+    private ArrayList<Method> methods;
 
     public Class(String[] code) {
         super(null);
@@ -22,9 +21,9 @@ public class Class extends Block {
         this.code = code;
     }
 
-    public void run(Console console) throws InvalidCodeException {
+    public void run(Writable writable) throws InvalidCodeException {
         this.methods = new ArrayList<Method>();
-        this.functionManager = new FunctionManager(console);
+        this.functionManager = new FunctionManager(writable);
 
         Method currentMethod = null;
 
@@ -59,7 +58,7 @@ public class Class extends Block {
         main.run();
         main.invoke(new String[0]);
 
-        console.write("--Terminated.", MessageType.OUTPUT);
+        writable.write("--Terminated.", MessageType.OUTPUT);
     }
 
     private String trimComments(String str) {

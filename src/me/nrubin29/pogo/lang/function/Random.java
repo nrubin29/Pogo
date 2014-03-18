@@ -1,23 +1,23 @@
-package me.nrubin29.pogo.function;
+package me.nrubin29.pogo.lang.function;
 
 import me.nrubin29.pogo.InvalidCodeException;
-import me.nrubin29.pogo.ide.Console;
+import me.nrubin29.pogo.Utils.Writable;
 import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Variable;
 
 public class Random extends Function {
 
+    private java.util.Random random;
+
     public Random() {
         super("random");
     }
-
-    private java.util.Random random;
 
     /*
     Usage: random([ceiling]) <var>
      */
     @Override
-    public void run(Console console, Block b, String[] args, Variable receiver) throws InvalidCodeException {
+    public void run(Writable writable, Block b, String[] args, Variable receiver) throws InvalidCodeException {
         if (random == null) random = new java.util.Random();
 
         if (receiver != null) {

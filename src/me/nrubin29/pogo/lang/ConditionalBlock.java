@@ -4,32 +4,6 @@ import me.nrubin29.pogo.InvalidCodeException;
 
 public abstract class ConditionalBlock extends Block {
 
-    public enum ConditionalBlockType {
-        IF, ELSEIF, ELSE, FOR, FOREACH, WHILE
-    }
-
-    public enum CompareOperation {
-        EQUALS("="), NOTEQUALS("!="), GREATERTHAN(">"), LESSTHAN("<");
-
-        private final String op;
-
-        CompareOperation(String op) {
-            this.op = op;
-        }
-
-        public String getOp() {
-            return op;
-        }
-
-        public static CompareOperation match(String str) throws InvalidCodeException {
-            for (CompareOperation op : values()) {
-                if (op.getOp().equals(str)) return op;
-            }
-
-            throw new InvalidCodeException("Comparison operation " + str + " doesn't exist.");
-        }
-    }
-
     final String aVal;
     final String bVal;
     final ConditionalBlock.CompareOperation compareOp;
@@ -48,5 +22,31 @@ public abstract class ConditionalBlock extends Block {
     @Override
     public String toString() {
         return "ConditionalBlock type=" + getClass().getSimpleName();
+    }
+
+    public enum ConditionalBlockType {
+        IF, ELSEIF, ELSE, FOR, FOREACH, WHILE
+    }
+
+    public enum CompareOperation {
+        EQUALS("="), NOTEQUALS("!="), GREATERTHAN(">"), LESSTHAN("<");
+
+        private final String op;
+
+        CompareOperation(String op) {
+            this.op = op;
+        }
+
+        public static CompareOperation match(String str) throws InvalidCodeException {
+            for (CompareOperation op : values()) {
+                if (op.getOp().equals(str)) return op;
+            }
+
+            throw new InvalidCodeException("Comparison operation " + str + " doesn't exist.");
+        }
+
+        public String getOp() {
+            return op;
+        }
     }
 }

@@ -1,8 +1,8 @@
-package me.nrubin29.pogo.function;
+package me.nrubin29.pogo.lang.function;
 
 import me.nrubin29.pogo.InvalidCodeException;
 import me.nrubin29.pogo.Utils;
-import me.nrubin29.pogo.ide.Console;
+import me.nrubin29.pogo.Utils.Writable;
 import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Variable;
 
@@ -11,17 +11,17 @@ import javax.script.ScriptEngineManager;
 
 public class Math extends Function {
 
+    private ScriptEngine engine;
+
     public Math() {
         super("math");
     }
-
-    private ScriptEngine engine;
 
     /*
     Usage: math(<expression>) <var>
      */
     @Override
-    public void run(Console console, Block b, String[] args, Variable receiver) throws InvalidCodeException {
+    public void run(Writable writable, Block b, String[] args, Variable receiver) throws InvalidCodeException {
         if (engine == null) engine = new ScriptEngineManager().getEngineByName("JavaScript");
 
         if (receiver != null) {

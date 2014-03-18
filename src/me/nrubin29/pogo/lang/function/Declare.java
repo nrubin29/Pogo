@@ -1,8 +1,8 @@
-package me.nrubin29.pogo.function;
+package me.nrubin29.pogo.lang.function;
 
 import me.nrubin29.pogo.InvalidCodeException;
 import me.nrubin29.pogo.Utils;
-import me.nrubin29.pogo.ide.Console;
+import me.nrubin29.pogo.Utils.Writable;
 import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Variable;
 import me.nrubin29.pogo.lang.Variable.VariableType;
@@ -19,7 +19,7 @@ public class Declare extends Function {
     Usage: declare(<variabletype>(:), <name>, [value(s)])
      */
     @Override
-    public void run(Console console, Block b, String[] args, Variable receiver) throws InvalidCodeException {
+    public void run(Writable writable, Block b, String[] args, Variable receiver) throws InvalidCodeException {
         boolean isArray = args[0].endsWith(":");
 
         if (isArray) args[0] = args[0].substring(0, args[0].length() - 1);

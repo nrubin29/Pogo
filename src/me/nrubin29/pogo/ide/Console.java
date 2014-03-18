@@ -1,28 +1,17 @@
 package me.nrubin29.pogo.ide;
 
+import me.nrubin29.pogo.Utils.Writable;
+
 import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class Console extends JTextPane {
+public class Console extends JTextPane implements Writable {
 
-    public enum MessageType {
-        OUTPUT(Color.BLACK),
-        ERROR(Color.RED);
-
-        private final SimpleAttributeSet attributes;
-
-        MessageType(Color color) {
-            attributes = new SimpleAttributeSet();
-            StyleConstants.setForeground(attributes, color);
-        }
-
-        public SimpleAttributeSet getAttributes() {
-            return attributes;
-        }
-    }
+    private boolean waiting = false;
+    private String result = null;
 
     public Console() {
         ((AbstractDocument) getDocument()).setDocumentFilter(new Filter());
@@ -54,9 +43,6 @@ public class Console extends JTextPane {
             }
         }).start();
     }
-
-    private boolean waiting = false;
-    private String result = null;
 
     public String prompt() {
         setVisible(true);
@@ -94,34 +80,6 @@ public class Console extends JTextPane {
         });
     }
 
-    private class Filter extends DocumentFilter {
-        @Override
-        public void insertString(final FilterBypass fb, final int offset, final String string, final AttributeSet attr)
-                throws BadLocationException {
-            if (getLineStartOffset(getLineOfOffset(offset)) == getLineStartOffset(getLineOfOffset(getDocument().getLength()))) {
-                super.insertString(fb, getDocument().getLength(), string, null);
-            }
-            setCaret();
-        }
-
-        @Override
-        public void remove(final FilterBypass fb, final int offset, final int length) throws BadLocationException {
-            if (getLineStartOffset(getLineOfOffset(offset)) == getLineStartOffset(getLineOfOffset(getDocument().getLength()))) {
-                super.remove(fb, offset, length);
-            }
-            setCaret();
-        }
-
-        @Override
-        public void replace(final FilterBypass fb, final int offset, final int length, final String string, final AttributeSet attrs)
-                throws BadLocationException {
-            if (getLineStartOffset(getLineOfOffset(offset)) == getLineStartOffset(getLineOfOffset(getDocument().getLength()))) {
-                super.replace(fb, offset, length, string, null);
-            }
-            setCaret();
-        }
-    }
-
     private int getLineOfOffset(int offset) throws BadLocationException {
         Document doc = getDocument();
         if (offset < 0) {
@@ -150,6 +108,50 @@ public class Console extends JTextPane {
         try {
             setCaretPosition(getDocument().getLength());
         } catch (Exception ignored) {
+        }
+    }
+
+    public enum MessageType {
+        OUTPUT(Color.BLACK),
+        ERROR(Color.RED);
+
+        private final SimpleAttributeSet attributes;
+
+        MessageType(Color color) {
+            attributes = new SimpleAttributeSet();
+            StyleConstants.setForeground(attributes, color);
+        }
+
+        public SimpleAttributeSet getAttributes() {
+            return attributes;
+        }
+    }
+
+    private class Filter extends DocumentFilter {
+        @Override
+        public void insertString(final FilterBypass fb, final int offset, final String string, final AttributeSet attr)
+                throws BadLocationException {
+            if (getLineStartOffset(getLineOfOffset(offset)) == getLineStartOffset(getLineOfOffset(getDocument().getLength()))) {
+                super.insertString(fb, getDocument().getLength(), string, null);
+            }
+            setCaret();
+        }
+
+        @Override
+        public void remove(final FilterBypass fb, final int offset, final int length) throws BadLocationException {
+            if (getLineStartOffset(getLineOfOffset(offset)) == getLineStartOffset(getLineOfOffset(getDocument().getLength()))) {
+                super.remove(fb, offset, length);
+            }
+            setCaret();
+        }
+
+        @Override
+        public void replace(final FilterBypass fb, final int offset, final int length, final String string, final AttributeSet attrs)
+                throws BadLocationException {
+            if (getLineStartOffset(getLineOfOffset(offset)) == getLineStartOffset(getLineOfOffset(getDocument().getLength()))) {
+                super.replace(fb, offset, length, string, null);
+            }
+            setCaret();
         }
     }
 }
