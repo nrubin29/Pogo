@@ -1,6 +1,5 @@
 package me.nrubin29.pogo.lang;
 
-import me.nrubin29.pogo.InvalidCodeException;
 import me.nrubin29.pogo.Utils;
 
 public class For extends Block {
@@ -15,14 +14,14 @@ public class For extends Block {
     }
 
     @Override
-    public void runAfterParse() throws InvalidCodeException {
+    public void run() throws Utils.InvalidCodeException {
         double a, b;
 
         try {
             a = Double.valueOf(Utils.implode(lower, this));
             b = Double.valueOf(Utils.implode(upper, this));
         } catch (Exception e) {
-            throw new InvalidCodeException("Attempted to use for loop with non-number bounds.");
+            throw new Utils.InvalidCodeException("Attempted to use for loop with non-number bounds.");
         }
 
         double larger = Math.max(a, b), smaller = Math.min(a, b);
@@ -33,7 +32,7 @@ public class For extends Block {
             } catch (Exception ignored) {
             }
 
-            doBlocks();
+            super.run();
         }
     }
 

@@ -1,6 +1,6 @@
 package me.nrubin29.pogo.lang;
 
-import me.nrubin29.pogo.InvalidCodeException;
+import me.nrubin29.pogo.Utils;
 
 public abstract class ConditionalBlock extends Block {
 
@@ -15,9 +15,6 @@ public abstract class ConditionalBlock extends Block {
         this.bVal = bVal;
         this.compareOp = compareOp;
     }
-
-    @Override
-    public abstract void runAfterParse() throws InvalidCodeException;
 
     @Override
     public String toString() {
@@ -37,12 +34,12 @@ public abstract class ConditionalBlock extends Block {
             this.op = op;
         }
 
-        public static CompareOperation match(String str) throws InvalidCodeException {
+        public static CompareOperation match(String str) throws Utils.InvalidCodeException {
             for (CompareOperation op : values()) {
                 if (op.getOp().equals(str)) return op;
             }
 
-            throw new InvalidCodeException("Comparison operation " + str + " doesn't exist.");
+            throw new Utils.InvalidCodeException("Comparison operation " + str + " doesn't exist.");
         }
 
         public String getOp() {

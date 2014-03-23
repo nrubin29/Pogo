@@ -1,6 +1,5 @@
 package me.nrubin29.pogo.ide;
 
-import me.nrubin29.pogo.IDEException;
 import me.nrubin29.pogo.Utils;
 
 import javax.swing.*;
@@ -15,15 +14,35 @@ import java.net.URI;
 
 public class IDE extends JFrame {
 
-    private final JTextPane text;
-    private final Console console;
-    private final JToolBar consolePane;
+    private final ProjectChooser pC;
+
+    private ButtonGroup filesGroup;
+    private JMenu files;
+
+    private JTextPane text;
+    private Console console;
+    private JToolBar consolePane;
 
     private Project currentProject;
     private File currentFile;
 
     public IDE() {
-        updateTitle();
+        super("Pogo IDE");
+
+        add(pC = new ProjectChooser(this));
+
+        setSize(640, 480);
+        setResizable(false);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setVisible(true);
+    }
+
+    private void setup() {
+        remove(pC);
+
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         text = new JTextPane();
         text.setEditable(false);
@@ -33,7 +52,7 @@ public class IDE extends JFrame {
         scroll.setBorder(null);
         scroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
 
-        add(scroll);
+        panel.add(scroll);
 
         console = new Console();
 
@@ -46,31 +65,22 @@ public class IDE extends JFrame {
         consolePane.setVisible(false);
         consolePane.add(consoleScroll);
 
-        add(consolePane);
-        
-        /*
-        File			Project				Settings			Help
-         Save File		 New Project 		 Close Console		 GitHub Wiki
-         Run			 Load Project		 Orientation
-	     			 	 Choose File          Horizontal
-	     				 Add File		  	  Vertical
-         */
+        panel.add(consolePane);
 
         JMenuBar menuBar = new JMenuBar();
 
         final JMenu
                 file = new JMenu("File"),
                 project = new JMenu("Project"),
-                files = new JMenu("Choose File"),
                 settings = new JMenu("Settings"),
                 orientation = new JMenu("Orientation"),
                 help = new JMenu("Help");
 
-        JMenuItem
+        files = new JMenu("Choose File");
+
+        final JMenuItem
                 save = new JMenuItem("Save File"),
                 run = new JMenuItem("Run File"),
-                newProj = new JMenuItem("New Project"),
-                load = new JMenuItem("Load Project"),
                 addFile = new JMenuItem("Add File"),
                 closeConsole = new JMenuItem("Close Console"),
                 horizontal = new JRadioButtonMenuItem("Horizontal"),
@@ -85,13 +95,13 @@ public class IDE extends JFrame {
         file.add(save);
         file.add(run);
 
-        project.add(newProj);
-        project.add(load);
-        project.addSeparator();
-        project.add(files);
         project.add(addFile);
+        project.add(files);
 
-        final ButtonGroup filesGroup = new ButtonGroup();
+        filesGroup = new ButtonGroup();
+        for (File f : currentProject.getFiles()) addFileMenuItem(f);
+        if (files.getItemCount() > 0) files.getItem(0).doClick();
+        else updateTitle();
 
         settings.add(closeConsole);
         settings.add(orientation);
@@ -111,29 +121,6 @@ public class IDE extends JFrame {
 
         int meta = System.getProperty("os.name").startsWith("Mac") ? KeyEvent.META_DOWN_MASK : KeyEvent.CTRL_DOWN_MASK;
 
-        newProj.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, meta));
-        newProj.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser chooser = new JFileChooser("Choose Save Directory and Name");
-                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                chooser.setAcceptAllFileFilterUsed(false);
-
-                if (chooser.showSaveDialog(IDE.this) == JFileChooser.APPROVE_OPTION) {
-                    File toUse = chooser.getSelectedFile();
-
-                    try {
-                        toUse.mkdir();
-                        currentProject = new Project(toUse);
-                        for (File f : currentProject.getFiles()) addFileMenuItem(f, filesGroup, files);
-                        updateTitle();
-                    } catch (Exception ex) {
-                        Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new IDEException("Could not create new project."));
-                    }
-                }
-            }
-        });
-
         save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, meta));
         save.addActionListener(new ActionListener() {
             @Override
@@ -150,23 +137,7 @@ public class IDE extends JFrame {
 
                     writer.close();
                 } catch (Exception ex) {
-                    Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new IDEException("Could not save file."));
-                }
-            }
-        });
-
-        load.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, meta));
-        load.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JFileChooser chooser = new JFileChooser();
-                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                chooser.setMultiSelectionEnabled(false);
-
-                if (chooser.showOpenDialog(IDE.this) == JFileChooser.APPROVE_OPTION) {
-                    currentProject = new Project(chooser.getSelectedFile());
-                    for (File f : currentProject.getFiles()) addFileMenuItem(f, filesGroup, files);
-                    updateTitle();
+                    Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new Utils.IDEException("Could not save file."));
                 }
             }
         });
@@ -176,8 +147,10 @@ public class IDE extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (currentProject == null) return;
-                File f = currentProject.addFile(JOptionPane.showInputDialog(IDE.this, "What would you like to name the file?"));
-                addFileMenuItem(f, filesGroup, files);
+                String in = JOptionPane.showInputDialog(IDE.this, "What would you like to name the file?");
+                if (in == null) return;
+                File f = currentProject.addFile(in);
+                addFileMenuItem(f).doClick();
             }
         });
 
@@ -186,7 +159,8 @@ public class IDE extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!consolePane.isVisible()) consolePane.setVisible(true);
-                console.run(new me.nrubin29.pogo.lang.Class(text.getText().split("\n")));
+                save.doClick();
+                console.run(currentProject);
             }
         });
 
@@ -225,23 +199,24 @@ public class IDE extends JFrame {
                 try {
                     Desktop.getDesktop().browse(new URI("http://www.github.com/nrubin29/Pogo/wiki"));
                 } catch (Exception ex) {
-                    Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new IDEException("Could not open page."));
+                    Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new Utils.IDEException("Could not open page."));
                 }
             }
         });
 
-        setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-        setSize(640, 480);
-        setResizable(false);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setVisible(true);
+        add(panel);
+
+        panel.validate();
+        panel.repaint();
+
+        validate();
+        repaint();
     }
 
-    private void addFileMenuItem(final File f, ButtonGroup filesGroup, JMenu superMenu) {
+    private JMenuItem addFileMenuItem(final File f) {
         JMenuItem fItem = new JMenuItem(f.getName().substring(0, f.getName().lastIndexOf(".")));
         filesGroup.add(fItem);
-        superMenu.add(fItem);
+        files.add(fItem);
         fItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -251,6 +226,37 @@ public class IDE extends JFrame {
                 text.setText(Utils.readFile(f, "\n"));
             }
         });
+
+        return fItem;
+    }
+
+    void doOpen() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setMultiSelectionEnabled(false);
+
+        if (chooser.showOpenDialog(IDE.this) == JFileChooser.APPROVE_OPTION) {
+            currentProject = new Project(chooser.getSelectedFile());
+            setup();
+        }
+    }
+
+    void doNewProject() {
+        JFileChooser chooser = new JFileChooser("Choose Save Directory and Name");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setAcceptAllFileFilterUsed(false);
+
+        if (chooser.showSaveDialog(IDE.this) == JFileChooser.APPROVE_OPTION) {
+            File toUse = chooser.getSelectedFile();
+
+            try {
+                toUse.mkdir();
+                currentProject = new Project(toUse);
+                setup();
+            } catch (Exception ex) {
+                Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new Utils.IDEException("Could not create new project."));
+            }
+        }
     }
 
     private void updateTitle() {

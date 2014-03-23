@@ -1,6 +1,5 @@
 package me.nrubin29.pogo.lang;
 
-import me.nrubin29.pogo.InvalidCodeException;
 import me.nrubin29.pogo.Utils;
 
 public class While extends ConditionalBlock {
@@ -10,7 +9,7 @@ public class While extends ConditionalBlock {
     }
 
     @Override
-    public void runAfterParse() throws InvalidCodeException {
+    public void run() throws Utils.InvalidCodeException {
         if (compareOp == ConditionalBlock.CompareOperation.EQUALS) {
             double a, b;
 
@@ -19,10 +18,10 @@ public class While extends ConditionalBlock {
                     a = Double.valueOf(Utils.implode(aVal, this));
                     b = Double.valueOf(Utils.implode(bVal, this));
                 } catch (Exception e) {
-                    throw new InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-numbers.");
+                    throw new Utils.InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-numbers.");
                 }
 
-                doBlocks();
+                super.run();
             } while (a == b);
         } else if (compareOp == CompareOperation.NOTEQUALS) {
             double a, b;
@@ -32,10 +31,10 @@ public class While extends ConditionalBlock {
                     a = Double.valueOf(Utils.implode(aVal, this));
                     b = Double.valueOf(Utils.implode(bVal, this));
                 } catch (Exception e) {
-                    throw new InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-numbers.");
+                    throw new Utils.InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-numbers.");
                 }
 
-                doBlocks();
+                super.run();
             } while (a != b);
         } else if (compareOp == CompareOperation.GREATERTHAN) {
             double a, b;
@@ -45,10 +44,10 @@ public class While extends ConditionalBlock {
                     a = Double.valueOf(Utils.implode(aVal, this));
                     b = Double.valueOf(Utils.implode(bVal, this));
                 } catch (Exception e) {
-                    throw new InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-numbers.");
+                    throw new Utils.InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-numbers.");
                 }
 
-                doBlocks();
+                super.run();
             } while (a > b);
         } else if (compareOp == CompareOperation.LESSTHAN) {
             double a, b;
@@ -58,10 +57,10 @@ public class While extends ConditionalBlock {
                     a = Double.valueOf(Utils.implode(aVal, this));
                     b = Double.valueOf(Utils.implode(bVal, this));
                 } catch (Exception e) {
-                    throw new InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-numbers.");
+                    throw new Utils.InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-numbers.");
                 }
 
-                doBlocks();
+                super.run();
             } while (a < b);
         }
     }

@@ -1,6 +1,6 @@
 package me.nrubin29.pogo.lang;
 
-import me.nrubin29.pogo.InvalidCodeException;
+import me.nrubin29.pogo.Utils;
 
 public class Line extends Block {
 
@@ -12,8 +12,8 @@ public class Line extends Block {
         this.line = line;
     }
 
-    public void runAfterParse() throws InvalidCodeException {
-        ((Class) getBlockTree()[0]).functionManager.parse(getSuperBlock(), line);
+    public void run() throws Utils.InvalidCodeException {
+        ((Class) getBlockTree()[0]).methodParser.parse(getSuperBlock(), line);
     }
 
     @Override

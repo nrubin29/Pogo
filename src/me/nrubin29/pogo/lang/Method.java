@@ -1,8 +1,9 @@
 package me.nrubin29.pogo.lang;
 
-import me.nrubin29.pogo.InvalidCodeException;
 import me.nrubin29.pogo.Utils;
 import me.nrubin29.pogo.lang.Variable.VariableType;
+
+import java.util.Arrays;
 
 public class Method extends Block {
 
@@ -17,7 +18,7 @@ public class Method extends Block {
 
         registerCustomLineHandler(new CustomLineHandler("return") {
             @Override
-            public boolean run(String line, Block sB) throws InvalidCodeException {
+            public boolean run(String line, Block sB) throws Utils.InvalidCodeException {
                 if (getReturnType() == VariableType.VOID) return true;
 
                 getReturnType().validateValue(line.split(" ")[1], sB);
@@ -39,22 +40,24 @@ public class Method extends Block {
         return retType;
     }
 
-    public synchronized Object invoke(Object[] invokeParams) throws InvalidCodeException {
+    public synchronized Object invoke(Object[] invokeParams) throws Utils.InvalidCodeException {
+        if (invokeParams.length != params.length)
+            throw new Utils.InvalidCodeException("Wrong number of parameters supplied.");
+
         /*
         integer:i
         string:str
          */
         for (int i = 0; i < params.length; i++) {
             String[] args = params[i].split(":");
-            ((Class) getBlockTree()[0]).functionManager.parse(this, "declare(" + args[0] + "," + args[1] + "," + invokeParams[i]);
-//            addVariable(VariableType.match(args[0]), args[1], invokeParams[i]);
+            ((Class) getBlockTree()[0]).methodParser.parse(this, "declare(" + args[0] + "," + args[1] + "," + invokeParams[i] + ")");
         }
 
-        run();
-        doBlocks();
+        super.run();
 
-        if (getReturnType() != VariableType.VOID && retValue == null)
-            throw new InvalidCodeException("No return for method " + getName());
+        if (getReturnType() != VariableType.VOID && retValue == null) {
+            throw new Utils.InvalidCodeException("No return for method " + getName());
+        }
 
         Object localRetValue = retValue;
         retValue = null;
@@ -62,7 +65,7 @@ public class Method extends Block {
     }
 
     @Override
-    public void runAfterParse() throws InvalidCodeException {
-        // We don't want to use runAfterParse() because we use invoke().
+    public String toString() {
+        return "Method name=" + getName() + " returnType=" + getReturnType() + " params=" + Arrays.toString(params);
     }
 }

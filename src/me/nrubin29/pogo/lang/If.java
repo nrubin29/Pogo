@@ -1,6 +1,5 @@
 package me.nrubin29.pogo.lang;
 
-import me.nrubin29.pogo.InvalidCodeException;
 import me.nrubin29.pogo.Utils;
 
 import java.util.ArrayList;
@@ -25,17 +24,17 @@ public class If extends ConditionalBlock {
     }
 
     @Override
-    public void runAfterParse() throws InvalidCodeException {
+    public void run() throws Utils.InvalidCodeException {
         boolean opSuccess = false;
 
         if (compareOp == ConditionalBlock.CompareOperation.EQUALS) {
             if (Utils.implode(aVal, this).equals(Utils.implode(bVal, this))) {
-                doBlocks();
+                super.run();
                 opSuccess = true;
             }
         } else if (compareOp == ConditionalBlock.CompareOperation.NOTEQUALS) {
             if (!Utils.implode(aVal, this).equals(Utils.implode(bVal, this))) {
-                doBlocks();
+                super.run();
                 opSuccess = true;
             }
         } else if (compareOp == CompareOperation.GREATERTHAN) {
@@ -45,11 +44,11 @@ public class If extends ConditionalBlock {
                 a = Double.valueOf(Utils.implode(aVal, this));
                 b = Double.valueOf(Utils.implode(bVal, this));
             } catch (Exception e) {
-                throw new InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-numbers.");
+                throw new Utils.InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-numbers.");
             }
 
             if (a > b) {
-                doBlocks();
+                super.run();
                 opSuccess = true;
             }
         } else if (compareOp == CompareOperation.LESSTHAN) {
@@ -59,11 +58,11 @@ public class If extends ConditionalBlock {
                 a = Double.valueOf(Utils.implode(aVal, this));
                 b = Double.valueOf(Utils.implode(bVal, this));
             } catch (Exception e) {
-                throw new InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-numbers.");
+                throw new Utils.InvalidCodeException("Attempted to use " + compareOp.name().toLowerCase() + " on non-numbers.");
             }
 
             if (a < b) {
-                doBlocks();
+                super.run();
                 opSuccess = true;
             }
         }
@@ -81,7 +80,6 @@ public class If extends ConditionalBlock {
 
             if (!elzeIfRan && elze != null) {
                 elze.run();
-                elze.doBlocks();
             }
         }
     }

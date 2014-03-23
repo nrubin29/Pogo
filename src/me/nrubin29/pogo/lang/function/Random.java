@@ -1,11 +1,11 @@
 package me.nrubin29.pogo.lang.function;
 
-import me.nrubin29.pogo.InvalidCodeException;
+import me.nrubin29.pogo.Utils;
 import me.nrubin29.pogo.Utils.Writable;
 import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Variable;
 
-public class Random extends Function {
+public class Random extends SystemMethod {
 
     private java.util.Random random;
 
@@ -17,12 +17,12 @@ public class Random extends Function {
     Usage: random([ceiling]) <var>
      */
     @Override
-    public void run(Writable writable, Block b, String[] args, Variable receiver) throws InvalidCodeException {
+    public void run(Writable writable, Block b, String[] args, Variable receiver) throws Utils.InvalidCodeException {
         if (random == null) random = new java.util.Random();
 
         if (receiver != null) {
             if (receiver.getType() != Variable.VariableType.INTEGER && receiver.getType() != Variable.VariableType.DECIMAL) {
-                throw new InvalidCodeException("Attempted to assign random number to non-number.");
+                throw new Utils.InvalidCodeException("Attempted to assign random number to non-number.");
             }
 
             int ceil = -1;
@@ -31,7 +31,7 @@ public class Random extends Function {
                 try {
                     ceil = Integer.parseInt(args[0]);
                 } catch (Exception e) {
-                    throw new InvalidCodeException("Invalid ceiling.");
+                    throw new Utils.InvalidCodeException("Invalid ceiling.");
                 }
             }
 

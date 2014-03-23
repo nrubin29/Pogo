@@ -1,6 +1,6 @@
 package me.nrubin29.pogo.lang;
 
-import me.nrubin29.pogo.InvalidCodeException;
+import me.nrubin29.pogo.Utils;
 
 public class Foreach extends Block {
 
@@ -15,16 +15,16 @@ public class Foreach extends Block {
     }
 
     @Override
-    public void runAfterParse() throws InvalidCodeException {
+    public void run() throws Utils.InvalidCodeException {
         Variable arrayVar = getSuperBlock().getVariable(arrayName);
 
-        if (!arrayVar.isArray()) throw new InvalidCodeException("Attempted to use foreach on non-array");
+        if (!arrayVar.isArray()) throw new Utils.InvalidCodeException("Attempted to use foreach on non-array");
 
         addVariable(arrayVar.getType(), varName, false);
 
         for (Object val : arrayVar.getValues()) {
             getVariable(varName).setValue(val);
-            doBlocks();
+            super.run();
         }
     }
 

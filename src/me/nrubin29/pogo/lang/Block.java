@@ -1,6 +1,6 @@
 package me.nrubin29.pogo.lang;
 
-import me.nrubin29.pogo.InvalidCodeException;
+import me.nrubin29.pogo.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,11 +52,11 @@ public abstract class Block {
         return tree.toArray(new Block[tree.size()]);
     }
 
-    public void addVariable(Variable.VariableType t, String name, boolean isArray, Object... values) throws InvalidCodeException {
+    public void addVariable(Variable.VariableType t, String name, boolean isArray, Object... values) throws Utils.InvalidCodeException {
         vars.add(new Variable(t, name, isArray, values));
     }
 
-    public Variable getVariable(String name) throws InvalidCodeException {
+    public Variable getVariable(String name) throws Utils.InvalidCodeException {
         for (Block b : Arrays.copyOfRange(getBlockTree(), 0, getBlockTree().length - 1)) {
             if (b.hasVariable(name)) return b.getVariable(name);
         }
@@ -65,7 +65,7 @@ public abstract class Block {
             if (v.getName().equals(name)) return v;
         }
 
-        throw new InvalidCodeException("Variable " + name + " is not declared.");
+        throw new Utils.InvalidCodeException("Variable " + name + " is not declared.");
     }
 
     boolean hasVariable(String name) {
@@ -76,7 +76,7 @@ public abstract class Block {
         return false;
     }
 
-    void run() throws InvalidCodeException {
+    void parse() throws Utils.InvalidCodeException {
         subBlocks.clear();
 
         If lastIf = null;
@@ -88,7 +88,7 @@ public abstract class Block {
         for (String line : lines) {
             for (CustomLineHandler h : handlers) {
                 if (line.startsWith(h.getStart())) {
-                    if (h.run(line, this)) break lineLoop; // This could be an issue if the block isn't a return.
+                    if (h.run(line, this)) break lineLoop;
                     continue lineLoop;
                 }
             }
@@ -104,7 +104,7 @@ public abstract class Block {
                         } else if (bt == ConditionalBlock.ConditionalBlockType.FOREACH) {
                             currentBlock = new Foreach(this, args[0], args[1]);
                         } else if (bt == ConditionalBlock.ConditionalBlockType.ELSE) {
-                            if (lastIf == null) throw new InvalidCodeException("Else without if.");
+                            if (lastIf == null) throw new Utils.InvalidCodeException("Else without if.");
                             currentBlock = new Else(this);
                         } else {
                             String a = args[0], b = args[2];
@@ -113,7 +113,7 @@ public abstract class Block {
                             if (bt == ConditionalBlock.ConditionalBlockType.IF) {
                                 currentBlock = new If(this, a, b, op);
                             } else if (bt == ConditionalBlock.ConditionalBlockType.ELSEIF) {
-                                if (lastIf == null) throw new InvalidCodeException("Else if without if.");
+                                if (lastIf == null) throw new Utils.InvalidCodeException("Else if without if.");
                                 currentBlock = new ElseIf(this, a, b, op);
                             } else if (bt == ConditionalBlock.ConditionalBlockType.WHILE) {
                                 currentBlock = new While(this, a, b, op);
@@ -129,21 +129,19 @@ public abstract class Block {
             }
 
             if (line.equals("end")) {
-                /*
-                If we are supposed to ignore this "end"
-            	 */
                 if (numEndsIgnore > 0) {
                     numEndsIgnore--;
                     if (currentBlock != null) currentBlock.addLine("end");
                     continue;
                 }
 
-                /*
-                If the end pertains to a nested statement...
-                 */
                 if (currentBlock != null) {
                     currentBlock.addLine("end");
-                    if (!(currentBlock instanceof Else)) subBlocks.add(currentBlock);
+                    currentBlock.parse();
+
+                    if (!(currentBlock instanceof Else) && !(currentBlock instanceof ElseIf)) {
+                        subBlocks.add(currentBlock);
+                    }
 
                     if (currentBlock instanceof If) {
                         lastIf = (If) currentBlock;
@@ -166,13 +164,9 @@ public abstract class Block {
                 else subBlocks.add(new Line(this, line));
             }
         }
-
-        runAfterParse();
     }
 
-    protected abstract void runAfterParse() throws InvalidCodeException;
-
-    final void doBlocks() throws InvalidCodeException {
+    public void run() throws Utils.InvalidCodeException {
         for (Block block : subBlocks) {
             block.run();
         }
@@ -195,5 +189,6 @@ abstract class CustomLineHandler {
         return start;
     }
 
-    public abstract boolean run(String line, Block sB) throws InvalidCodeException;
+    /* If true is returned, the parser stops. This is only useful for the return keyword. */
+    public abstract boolean run(String line, Block sB) throws Utils.InvalidCodeException;
 }

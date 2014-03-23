@@ -31,12 +31,12 @@ public class Console extends JTextPane implements Writable {
         setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
     }
 
-    public void run(final me.nrubin29.pogo.lang.Class clazz) {
+    public void run(final Project project) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    clazz.run(Console.this);
+                    Instance.createInstance(project, Console.this);
                 } catch (Exception e) {
                     Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
                 }

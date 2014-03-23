@@ -123,4 +123,22 @@ public class Utils {
     public static interface Writable {
         public void write(String text, Console.MessageType messageType);
     }
+
+    public static class ConsoleException extends Exception {
+        public ConsoleException(String msg) {
+            super(msg);
+        }
+    }
+
+    public static class IDEException extends Exception {
+        public IDEException(String msg) {
+            super(msg);
+        }
+    }
+
+    public static class InvalidCodeException extends Exception {
+        public InvalidCodeException(String msg) {
+            super(msg);
+        }
+    }
 }
