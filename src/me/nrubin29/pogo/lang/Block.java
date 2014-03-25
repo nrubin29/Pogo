@@ -68,7 +68,7 @@ public abstract class Block {
         throw new Utils.InvalidCodeException("Variable " + name + " is not declared.");
     }
 
-    boolean hasVariable(String name) {
+    public boolean hasVariable(String name) {
         for (Variable v : vars) {
             if (v.getName().equals(name)) return true;
         }

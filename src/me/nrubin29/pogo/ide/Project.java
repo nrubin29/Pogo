@@ -30,10 +30,13 @@ public class Project {
         return files.toArray(new File[files.size()]);
     }
 
-    public File getFile(String name) throws Utils.IDEException {
+    public File getFile(String name) {
         File file = new File(pogoProj, name + ".pogo");
 
-        if (!file.exists()) throw new Utils.IDEException("Attempted to get non-existent file.");
+        if (!file.exists()) {
+            Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new Utils.IDEException("File does not exist."));
+            return null;
+        }
 
         return file;
     }
@@ -49,7 +52,9 @@ public class Project {
         }
     }
 
-    public void deleteFile(String name) throws Utils.IDEException {
-        if (!new File(pogoProj, name + ".pogo").delete()) throw new Utils.IDEException("Could not delete file.");
+    public void deleteFile(String name) {
+        if (!new File(pogoProj, name + ".pogo").delete()) {
+            Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new Utils.IDEException("Could not delete file."));
+        }
     }
 }

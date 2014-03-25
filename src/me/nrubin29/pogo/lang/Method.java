@@ -1,12 +1,13 @@
 package me.nrubin29.pogo.lang;
 
 import me.nrubin29.pogo.Utils;
+import me.nrubin29.pogo.Utils.Invokable;
 import me.nrubin29.pogo.lang.Variable.SystemVariableType;
 import me.nrubin29.pogo.lang.Variable.VariableType;
 
 import java.util.Arrays;
 
-public class Method extends Block {
+public class Method extends Block implements Invokable {
 
     private final Visibility vis;
     private final String name;
@@ -35,6 +36,7 @@ public class Method extends Block {
         this.params = params;
     }
 
+    @Override
     public Visibility getVisibility() {
         return vis;
     }
@@ -43,11 +45,12 @@ public class Method extends Block {
         return name;
     }
 
-    public VariableType getReturnType() {
+    VariableType getReturnType() {
         return retType;
     }
 
-    public synchronized Object invoke(Object[] invokeParams) throws Utils.InvalidCodeException {
+    @Override
+    public void invoke(Block b, String[] invokeParams, Variable receiver) throws Utils.InvalidCodeException {
         if (invokeParams.length != params.length)
             throw new Utils.InvalidCodeException("Wrong number of parameters supplied.");
 
@@ -63,12 +66,12 @@ public class Method extends Block {
         super.run();
 
         if (getReturnType() != SystemVariableType.VOID && retValue == null) {
-            throw new Utils.InvalidCodeException("No return for method " + getName());
+            throw new Utils.InvalidCodeException("No return for systemmethod " + getName());
         }
 
         Object localRetValue = retValue;
         retValue = null;
-        return localRetValue;
+        if (receiver != null) receiver.setValue(localRetValue);
     }
 
     @Override

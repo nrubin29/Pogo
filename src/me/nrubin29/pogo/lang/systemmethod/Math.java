@@ -1,7 +1,6 @@
-package me.nrubin29.pogo.lang.method;
+package me.nrubin29.pogo.lang.systemmethod;
 
 import me.nrubin29.pogo.Utils;
-import me.nrubin29.pogo.Utils.Writable;
 import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Variable;
 
@@ -20,7 +19,7 @@ public class Math extends SystemMethod {
     Usage: math(<expression>) <var>
      */
     @Override
-    public void run(Writable writable, Block b, String[] args, Variable receiver) throws Utils.InvalidCodeException {
+    public void invoke(Block b, String[] params, Variable receiver) throws Utils.InvalidCodeException {
         if (engine == null) engine = new ScriptEngineManager().getEngineByName("JavaScript");
 
         if (receiver != null) {
@@ -30,8 +29,8 @@ public class Math extends SystemMethod {
 
             try {
                 if (receiver.getType() == Variable.SystemVariableType.INTEGER) {
-                    receiver.setValue(Integer.parseInt(engine.eval(Utils.implode(args[0], b)).toString()));
-                } else receiver.setValue(Double.parseDouble(engine.eval(Utils.implode(args[0], b)).toString()));
+                    receiver.setValue(Integer.parseInt(engine.eval(Utils.implode(params[0], b)).toString()));
+                } else receiver.setValue(Double.parseDouble(engine.eval(Utils.implode(params[0], b)).toString()));
             } catch (Exception e) {
                 throw new Utils.InvalidCodeException("Invalid math expression.");
             }

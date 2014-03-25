@@ -4,7 +4,7 @@ import me.nrubin29.pogo.Utils;
 import me.nrubin29.pogo.Utils.InvalidCodeException;
 import me.nrubin29.pogo.lang.Method.Visibility;
 import me.nrubin29.pogo.lang.Variable.VariableType;
-import me.nrubin29.pogo.lang.method.MethodParser;
+import me.nrubin29.pogo.lang.systemmethod.MethodParser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,21 +12,19 @@ import java.util.Arrays;
 public class Class extends Block implements VariableType {
 
     private final String[] code;
-    private final Utils.Writable writable;
     MethodParser methodParser;
     private String name;
     private ArrayList<Method> methods;
 
-    public Class(String[] code, Utils.Writable writable) {
+    public Class(String[] code) {
         super(null);
 
         this.code = code;
-        this.writable = writable;
     }
 
     public void parseClass() throws Utils.InvalidCodeException {
         this.methods = new ArrayList<Method>();
-        this.methodParser = new MethodParser(writable);
+        this.methodParser = new MethodParser();
 
         Method currentMethod = null;
 
@@ -35,11 +33,11 @@ public class Class extends Block implements VariableType {
 
             if (line.startsWith("class ")) {
                 this.name = line.split(" ")[1];
-            } else if (line.startsWith("method ")) { // method public void main
+            } else if (line.startsWith("systemmethod ")) { // systemmethod public void main
                 String[] args = line.split(" ");
 
                 if (args.length < 4) {
-                    throw new Utils.InvalidCodeException("Missing arguments in method declaration: " + line + ".");
+                    throw new Utils.InvalidCodeException("Missing arguments in systemmethod declaration: " + line + ".");
                 }
 
                 Visibility vis = Visibility.match(args[1]);
@@ -90,7 +88,7 @@ public class Class extends Block implements VariableType {
             if (m.getName().equals(name)) return m;
         }
 
-        throw new Utils.InvalidCodeException("Method " + name + " does not exist.");
+        throw new Utils.InvalidCodeException("Method " + name + " does not exist in " + name() + ".");
     }
 
     @Override

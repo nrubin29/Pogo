@@ -3,6 +3,8 @@ package me.nrubin29.pogo.ide;
 import me.nrubin29.pogo.Utils;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,13 +18,11 @@ public class IDE extends JFrame {
 
     private final ProjectChooser pC;
 
-    private ButtonGroup filesGroup;
-    private JMenu files;
-
-    private JTextPane text;
+    private JTabbedPane tabs;
     private Console console;
     private JToolBar consolePane;
 
+    private JTextPane text;
     private Project currentProject;
     private File currentFile;
 
@@ -31,6 +31,7 @@ public class IDE extends JFrame {
 
         add(pC = new ProjectChooser(this));
 
+        setBackground(Color.WHITE);
         setSize(640, 480);
         setResizable(false);
         setLocationRelativeTo(null);
@@ -44,15 +45,18 @@ public class IDE extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        text = new JTextPane();
-        text.setEditable(false);
-        text.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
+        tabs = new JTabbedPane();
+        tabs.setPreferredSize(new Dimension(640, 280));
 
-        JScrollPane scroll = new JScrollPane(text);
-        scroll.setBorder(null);
-        scroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
+        tabs.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                text = (JTextPane) ((JScrollPane) tabs.getSelectedComponent()).getViewport().getView();
+                currentFile = currentProject.getFile(tabs.getTitleAt(tabs.getSelectedIndex()));
+            }
+        });
 
-        panel.add(scroll);
+        panel.add(tabs);
 
         console = new Console();
 
@@ -76,11 +80,10 @@ public class IDE extends JFrame {
                 orientation = new JMenu("Console Orientation"),
                 help = new JMenu("Help");
 
-        files = new JMenu("Choose File");
-
         final JMenuItem
-                save = new JMenuItem("Save File"),
-                run = new JMenuItem("Run Project"),
+                saveFile = new JMenuItem("Save File"),
+                removeFile = new JMenuItem("Remove File"),
+                runProject = new JMenuItem("Run Project"),
                 addFile = new JMenuItem("Add File"),
                 closeConsole = new JMenuItem("Close Console"),
                 horizontal = new JRadioButtonMenuItem("Horizontal"),
@@ -92,17 +95,18 @@ public class IDE extends JFrame {
         menuBar.add(settings);
         menuBar.add(help);
 
-        file.add(save);
+        file.add(saveFile);
+        file.add(removeFile);
 
-        project.add(run);
+        project.add(runProject);
         project.addSeparator();
         project.add(addFile);
-        project.add(files);
 
-        filesGroup = new ButtonGroup();
-        for (File f : currentProject.getFiles()) addFileMenuItem(f);
-        if (files.getItemCount() > 0) files.getItem(0).doClick();
-        else updateTitle();
+        for (File f : currentProject.getFiles()) {
+            tabs.addTab(f.getName().substring(0, f.getName().lastIndexOf(".")), createCodeTab(f));
+        }
+
+        updateTitle();
 
         settings.add(closeConsole);
         settings.add(orientation);
@@ -122,8 +126,8 @@ public class IDE extends JFrame {
 
         int meta = System.getProperty("os.name").startsWith("Mac") ? KeyEvent.META_DOWN_MASK : KeyEvent.CTRL_DOWN_MASK;
 
-        save.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, meta));
-        save.addActionListener(new ActionListener() {
+        saveFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, meta));
+        saveFile.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -143,24 +147,39 @@ public class IDE extends JFrame {
             }
         });
 
+        removeFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, meta + KeyEvent.SHIFT_DOWN_MASK));
+        removeFile.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (currentProject == null) return;
+
+                String fileName = currentFile.getName().substring(0, currentFile.getName().lastIndexOf("."));
+
+                currentProject.deleteFile(fileName);
+
+                tabs.removeTabAt(tabs.getSelectedIndex());
+            }
+        });
+
         addFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, meta + KeyEvent.SHIFT_DOWN_MASK));
         addFile.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (currentProject == null) return;
+
                 String in = JOptionPane.showInputDialog(IDE.this, "What would you like to name the file?");
                 if (in == null) return;
-                File f = currentProject.addFile(in);
-                addFileMenuItem(f).doClick();
+
+                createCodeTab(currentProject.addFile(in));
             }
         });
 
-        run.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, meta));
-        run.addActionListener(new ActionListener() {
+        runProject.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, meta));
+        runProject.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!consolePane.isVisible()) consolePane.setVisible(true);
-                save.doClick();
+                saveFile.doClick();
                 console.run(currentProject);
             }
         });
@@ -214,21 +233,17 @@ public class IDE extends JFrame {
         repaint();
     }
 
-    private JMenuItem addFileMenuItem(final File f) {
-        JMenuItem fItem = new JMenuItem(f.getName().substring(0, f.getName().lastIndexOf(".")));
-        filesGroup.add(fItem);
-        files.add(fItem);
-        fItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                currentFile = f;
-                updateTitle();
-                text.setEditable(true);
-                text.setText(Utils.readFile(f, "\n"));
-            }
-        });
+    private JScrollPane createCodeTab(File f) {
+        JTextPane text = new JTextPane();
+        text.setText(Utils.readFile(f, "\n"));
+        text.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
 
-        return fItem;
+        JScrollPane scroll = new JScrollPane(text);
+        scroll.setBackground(Color.WHITE);
+        scroll.setBorder(null);
+        scroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
+
+        return scroll;
     }
 
     void doOpen() {

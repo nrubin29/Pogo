@@ -2,6 +2,7 @@ package me.nrubin29.pogo;
 
 import me.nrubin29.pogo.ide.Console;
 import me.nrubin29.pogo.lang.Block;
+import me.nrubin29.pogo.lang.Method.Visibility;
 import me.nrubin29.pogo.lang.Variable;
 
 import java.io.BufferedReader;
@@ -48,14 +49,14 @@ public class Utils {
         return builder.toString().trim();
     }
 
-    public static String[] implode(String[] s, Block block) throws InvalidCodeException {
-        String[] imploded = new String[s.length];
+    public static Object[] implode(String[] s, Block block) throws InvalidCodeException {
+        Object[] objs = new Object[s.length];
 
-        for (int i = 0; i < s.length; i++) {
-            imploded[i] = implode(s[i], block);
+        for (int i = 0; i < objs.length; i++) {
+            objs[i] = implode(s[i], block);
         }
 
-        return imploded;
+        return objs;
     }
 
     public static String changeCommas(String commaStr) {
@@ -130,6 +131,12 @@ public class Utils {
 
     public static interface Writable {
         public void write(String text, Console.MessageType messageType);
+    }
+
+    public static interface Invokable {
+        public void invoke(Block b, String[] params, Variable receiver) throws Utils.InvalidCodeException;
+
+        public Visibility getVisibility();
     }
 
     public static class ConsoleException extends Exception {

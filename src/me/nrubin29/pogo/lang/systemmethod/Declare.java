@@ -1,7 +1,6 @@
-package me.nrubin29.pogo.lang.method;
+package me.nrubin29.pogo.lang.systemmethod;
 
 import me.nrubin29.pogo.Utils;
-import me.nrubin29.pogo.Utils.Writable;
 import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Variable;
 import me.nrubin29.pogo.lang.Variable.SystemVariableType;
@@ -19,21 +18,21 @@ public class Declare extends SystemMethod {
     Usage: declare(<variabletype>(:), <name>, [value(s)])
      */
     @Override
-    public void run(Writable writable, Block b, String[] args, Variable receiver) throws Utils.InvalidCodeException {
-        boolean isArray = args[0].endsWith(":");
+    public void invoke(Block b, String[] params, Variable receiver) throws Utils.InvalidCodeException {
+        boolean isArray = params[0].endsWith(":");
 
-        if (isArray) args[0] = args[0].substring(0, args[0].length() - 1);
+        if (isArray) params[0] = params[0].substring(0, params[0].length() - 1);
 
-        VariableType t = VariableType.VariableTypeMatcher.match(args[0]);
+        VariableType t = VariableType.VariableTypeMatcher.match(params[0]);
 
         if (t == SystemVariableType.VOID) throw new Utils.InvalidCodeException("Attempted to declare void variable.");
 
-        String name = args[1];
+        String name = params[1];
 
-        Object[] values = new String[args.length - 2];
+        Object[] values = new Object[0];
 
-        if (args.length >= 3) {
-            values = Utils.implode(Arrays.copyOfRange(args, 2, args.length), b);
+        if (params.length >= 3) {
+            values = Utils.implode(Arrays.copyOfRange(params, 2, params.length), b);
         }
 
         b.addVariable(t, name, isArray, values);
