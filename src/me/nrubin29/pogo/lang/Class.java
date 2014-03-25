@@ -1,13 +1,15 @@
 package me.nrubin29.pogo.lang;
 
 import me.nrubin29.pogo.Utils;
+import me.nrubin29.pogo.Utils.InvalidCodeException;
+import me.nrubin29.pogo.lang.Method.Visibility;
 import me.nrubin29.pogo.lang.Variable.VariableType;
-import me.nrubin29.pogo.lang.function.MethodParser;
+import me.nrubin29.pogo.lang.method.MethodParser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Class extends Block {
+public class Class extends Block implements VariableType {
 
     private final String[] code;
     private final Utils.Writable writable;
@@ -33,18 +35,17 @@ public class Class extends Block {
 
             if (line.startsWith("class ")) {
                 this.name = line.split(" ")[1];
-            } else if (line.startsWith("method ")) {
+            } else if (line.startsWith("method ")) { // method public void main
                 String[] args = line.split(" ");
-                String[] mArgs = args[1].split(":");
-                String methodName = mArgs[0];
 
-                if (mArgs.length == 1) {
-                    throw new Utils.InvalidCodeException("Did not specify return type for method " + methodName + ".");
+                if (args.length < 4) {
+                    throw new Utils.InvalidCodeException("Missing arguments in method declaration: " + line + ".");
                 }
 
-                VariableType returnType = VariableType.match(mArgs[1]);
-                String[] params = Arrays.copyOfRange(args, 2, args.length);
-                currentMethod = new Method(this, methodName, returnType, params);
+                Visibility vis = Visibility.match(args[1]);
+                VariableType returnType = VariableType.VariableTypeMatcher.match(args[2]);
+                String[] params = Arrays.copyOfRange(args, 4, args.length);
+                currentMethod = new Method(this, vis, args[3], returnType, params);
             } else if (currentMethod != null && line.equals("end " + currentMethod.getName())) {
                 methods.add(currentMethod);
                 currentMethod.parse();
@@ -70,7 +71,8 @@ public class Class extends Block {
         return fin.toString().trim();
     }
 
-    public String getName() {
+    @Override
+    public String name() {
         return name;
     }
 
@@ -89,6 +91,19 @@ public class Class extends Block {
         }
 
         throw new Utils.InvalidCodeException("Method " + name + " does not exist.");
+    }
+
+    @Override
+    public void validateValue(Object value, Block block) throws InvalidCodeException {
+        if (!value.toString().equals("new"))
+            throw new InvalidCodeException("Attempted to instantiate class without using \"new\" value");
+    }
+
+    @Override
+    public Object formatValue(Object value) throws InvalidCodeException {
+        if (!value.toString().equals("new"))
+            throw new InvalidCodeException("Attempted to instantiate class without using \"new\" value");
+        return value;
     }
 
     @Override

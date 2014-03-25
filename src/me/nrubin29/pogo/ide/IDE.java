@@ -73,14 +73,14 @@ public class IDE extends JFrame {
                 file = new JMenu("File"),
                 project = new JMenu("Project"),
                 settings = new JMenu("Settings"),
-                orientation = new JMenu("Orientation"),
+                orientation = new JMenu("Console Orientation"),
                 help = new JMenu("Help");
 
         files = new JMenu("Choose File");
 
         final JMenuItem
                 save = new JMenuItem("Save File"),
-                run = new JMenuItem("Run File"),
+                run = new JMenuItem("Run Project"),
                 addFile = new JMenuItem("Add File"),
                 closeConsole = new JMenuItem("Close Console"),
                 horizontal = new JRadioButtonMenuItem("Horizontal"),
@@ -93,8 +93,9 @@ public class IDE extends JFrame {
         menuBar.add(help);
 
         file.add(save);
-        file.add(run);
 
+        project.add(run);
+        project.addSeparator();
         project.add(addFile);
         project.add(files);
 

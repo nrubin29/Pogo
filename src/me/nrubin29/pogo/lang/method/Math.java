@@ -1,4 +1,4 @@
-package me.nrubin29.pogo.lang.function;
+package me.nrubin29.pogo.lang.method;
 
 import me.nrubin29.pogo.Utils;
 import me.nrubin29.pogo.Utils.Writable;
@@ -24,12 +24,12 @@ public class Math extends SystemMethod {
         if (engine == null) engine = new ScriptEngineManager().getEngineByName("JavaScript");
 
         if (receiver != null) {
-            if (receiver.getType() != Variable.VariableType.INTEGER && receiver.getType() != Variable.VariableType.DECIMAL) {
+            if (receiver.getType() != Variable.SystemVariableType.INTEGER && receiver.getType() != Variable.SystemVariableType.DECIMAL) {
                 throw new Utils.InvalidCodeException("Attempted to assign math output to non-number.");
             }
 
             try {
-                if (receiver.getType() == Variable.VariableType.INTEGER) {
+                if (receiver.getType() == Variable.SystemVariableType.INTEGER) {
                     receiver.setValue(Integer.parseInt(engine.eval(Utils.implode(args[0], b)).toString()));
                 } else receiver.setValue(Double.parseDouble(engine.eval(Utils.implode(args[0], b)).toString()));
             } catch (Exception e) {

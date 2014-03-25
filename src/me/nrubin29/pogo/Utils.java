@@ -87,6 +87,14 @@ public class Utils {
         return commaStr.replaceAll("__comma__", ",").trim();
     }
 
+    public static Object[] replace(Object[] array, Object old, Object n) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].equals(old)) array[i] = n;
+        }
+
+        return array;
+    }
+
     public static String[] readFile(File file) {
         try {
             StringBuilder builder = new StringBuilder();

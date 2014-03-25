@@ -1,13 +1,15 @@
-package me.nrubin29.pogo.lang.function;
+package me.nrubin29.pogo.lang.method;
 
 import me.nrubin29.pogo.Utils;
+import me.nrubin29.pogo.Utils.InvalidCodeException;
 import me.nrubin29.pogo.Utils.Writable;
 import me.nrubin29.pogo.ide.Instance;
 import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Class;
 import me.nrubin29.pogo.lang.Method;
+import me.nrubin29.pogo.lang.Method.Visibility;
 import me.nrubin29.pogo.lang.Variable;
-import me.nrubin29.pogo.lang.Variable.VariableType;
+import me.nrubin29.pogo.lang.Variable.SystemVariableType;
 
 import java.util.ArrayList;
 
@@ -65,13 +67,24 @@ public class MethodParser {
             else met.run(writable, b, args, receiver);
         } else {
             Method nonSystemMethod;
+            boolean success = false;
 
             if (clazz.equals("this")) nonSystemMethod = ((Class) b.getBlockTree()[0]).getMethod(method);
             else nonSystemMethod = Instance.CURRENT_INSTANCE.getPogoClass(clazz).getMethod(method);
 
+            if (clazz.equals("this")) {
+                success = true;
+            } else {
+                if (nonSystemMethod.getVisibility() == Visibility.PUBLIC) success = true;
+            }
+
+            if (!success) {
+                throw new InvalidCodeException("Method " + method + " in " + clazz + " is not accessible from " + ((Class) b.getBlockTree()[0]).name() + ".");
+            }
+
             Object retValue = nonSystemMethod.invoke(args);
             if (receiver != null) {
-                if (nonSystemMethod.getReturnType() == VariableType.VOID) {
+                if (nonSystemMethod.getReturnType() == SystemVariableType.VOID) {
                     throw new Utils.InvalidCodeException("Attempted to store result of void method to variable.");
                 }
                 receiver.setValue(retValue);

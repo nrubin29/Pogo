@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-class Project {
+public class Project {
 
     private final File pogoProj;
 

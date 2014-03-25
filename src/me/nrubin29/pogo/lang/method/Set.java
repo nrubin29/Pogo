@@ -1,4 +1,4 @@
-package me.nrubin29.pogo.lang.function;
+package me.nrubin29.pogo.lang.method;
 
 import me.nrubin29.pogo.Utils;
 import me.nrubin29.pogo.Utils.Writable;

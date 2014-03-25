@@ -1,6 +1,8 @@
 package me.nrubin29.pogo.lang;
 
 import me.nrubin29.pogo.Utils;
+import me.nrubin29.pogo.Utils.InvalidCodeException;
+import me.nrubin29.pogo.ide.Instance;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,10 +19,11 @@ public class Variable {
         this.name = name;
         this.isArray = isArray;
 
-        if (!isArray && values.length > 1)
+        if (!isArray && values.length > 1) {
             throw new Utils.InvalidCodeException("Attempted to initialize non-array with more than one value.");
+        }
 
-        this.values = new ArrayList<Object>(Arrays.asList(values));
+        this.values = new ArrayList<Object>(Arrays.asList(Utils.replace(values.clone(), "new", Instance.CURRENT_INSTANCE.getPogoClass(type.name()))));
     }
 
     public VariableType getType() {
@@ -67,23 +70,24 @@ public class Variable {
         return "Variable name=" + getName() + " type=" + getType() + " isArray=" + isArray + " values=" + Arrays.toString(values.toArray());
     }
 
-    public enum VariableType {
+    public enum SystemVariableType implements VariableType {
         VOID(null), STRING(null), INTEGER(Integer.class), DECIMAL(Double.class), BOOLEAN(Boolean.class);
 
         private final java.lang.Class<?> clazz;
 
-        VariableType(java.lang.Class<?> clazz) {
+        SystemVariableType(java.lang.Class<?> clazz) {
             this.clazz = clazz;
         }
 
         public static VariableType match(String str) throws Utils.InvalidCodeException {
-            for (VariableType t : values()) {
+            for (SystemVariableType t : values()) {
                 if (t.name().toLowerCase().equals(str.toLowerCase())) return t;
             }
 
-            throw new Utils.InvalidCodeException("Variable type " + str + " doesn't exist.");
+            throw new Utils.InvalidCodeException("System variable type " + str + " does not exist.");
         }
 
+        @Override
         public void validateValue(Object value, Block block) throws Utils.InvalidCodeException {
             try {
                 if (clazz != null) {
@@ -91,17 +95,40 @@ public class Variable {
                     clazz.getDeclaredMethod("valueOf", String.class).invoke(null, sValue);
                 }
             } catch (Exception e) {
-                throw new Utils.InvalidCodeException("Validated invalid value " + value + " for variable type " + name().toLowerCase());
+                throw new Utils.InvalidCodeException("Validated invalid value " + value + " for system variable type " + name().toLowerCase());
             }
         }
 
+        @Override
         public Object formatValue(Object value) throws Utils.InvalidCodeException {
             try {
                 if (clazz != null) {
                     return clazz.getDeclaredMethod("valueOf", String.class).invoke(null, value);
                 } else return value;
             } catch (Exception e) {
-                throw new Utils.InvalidCodeException("Formatted invalid value " + value + " for variable type " + name().toLowerCase());
+                throw new Utils.InvalidCodeException("Formatted invalid value " + value + " for system variable type " + name().toLowerCase());
+            }
+        }
+    }
+
+    public interface VariableType {
+        public void validateValue(Object value, Block block) throws Utils.InvalidCodeException;
+
+        public Object formatValue(Object value) throws Utils.InvalidCodeException;
+
+        public String name();
+
+        public static class VariableTypeMatcher {
+            public static VariableType match(String str) throws InvalidCodeException {
+                try {
+                    return SystemVariableType.match(str);
+                } catch (InvalidCodeException e) {
+                    if (Instance.CURRENT_INSTANCE.getPogoClass(str) != null) {
+                        return Instance.CURRENT_INSTANCE.getPogoClass(str);
+                    } else {
+                        throw new InvalidCodeException("No variable type for " + str + ".");
+                    }
+                }
             }
         }
     }

@@ -42,7 +42,7 @@ public class Instance {
 
     public Class getPogoClass(String name) {
         for (Class c : classes) {
-            if (c.getName().equals(name)) return c;
+            if (c.name().equals(name)) return c;
         }
 
         return null;

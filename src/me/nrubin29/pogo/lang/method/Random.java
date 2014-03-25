@@ -1,4 +1,4 @@
-package me.nrubin29.pogo.lang.function;
+package me.nrubin29.pogo.lang.method;
 
 import me.nrubin29.pogo.Utils;
 import me.nrubin29.pogo.Utils.Writable;
@@ -21,7 +21,7 @@ public class Random extends SystemMethod {
         if (random == null) random = new java.util.Random();
 
         if (receiver != null) {
-            if (receiver.getType() != Variable.VariableType.INTEGER && receiver.getType() != Variable.VariableType.DECIMAL) {
+            if (receiver.getType() != Variable.SystemVariableType.INTEGER && receiver.getType() != Variable.SystemVariableType.DECIMAL) {
                 throw new Utils.InvalidCodeException("Attempted to assign random number to non-number.");
             }
 
@@ -35,10 +35,10 @@ public class Random extends SystemMethod {
                 }
             }
 
-            if (receiver.getType() == Variable.VariableType.INTEGER) {
+            if (receiver.getType() == Variable.SystemVariableType.INTEGER) {
                 if (ceil == -1) receiver.setValue(random.nextInt());
                 else receiver.setValue(random.nextInt(ceil));
-            } else if (receiver.getType() == Variable.VariableType.DECIMAL) {
+            } else if (receiver.getType() == Variable.SystemVariableType.DECIMAL) {
                 if (ceil == -1) receiver.setValue(random.nextDouble());
                 else receiver.setValue(random.nextInt(ceil));
             }
