@@ -33,11 +33,11 @@ public class Class extends Block implements VariableType {
 
             if (line.startsWith("class ")) {
                 this.name = line.split(" ")[1];
-            } else if (line.startsWith("systemmethod ")) { // systemmethod public void main
+            } else if (line.startsWith("method ")) {
                 String[] args = line.split(" ");
 
                 if (args.length < 4) {
-                    throw new Utils.InvalidCodeException("Missing arguments in systemmethod declaration: " + line + ".");
+                    throw new Utils.InvalidCodeException("Missing arguments in method declaration: " + line + ".");
                 }
 
                 Visibility vis = Visibility.match(args[1]);
