@@ -1,53 +1,32 @@
 package me.nrubin29.pogo.ide;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javafx.scene.Cursor;
+import javafx.scene.control.Button;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 
-class ProjectChooser extends Box {
+class ProjectChooser extends VBox {
 
     public ProjectChooser(final IDE ide) {
-        super(BoxLayout.Y_AXIS);
+        Text title = new Text("Pogo");
+        Button newProj = new Button("New Project"), open = new Button("Open Project");
 
-        JLabel title = new JLabel("Pogo");
-        JButton newProj = new JButton("New Project"), open = new JButton("Open Project");
+        title.setFont(Font.font("Sans serif", FontWeight.NORMAL, FontPosture.REGULAR, 64));
 
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        title.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 64));
+        newProj.setCursor(Cursor.HAND);
+        newProj.setOnAction(e -> ide.doNewProject());
 
-        newProj.setAlignmentX(Component.CENTER_ALIGNMENT);
-        newProj.setBorderPainted(false);
-        newProj.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        newProj.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ide.doNewProject();
-            }
-        });
+        open.setCursor(Cursor.HAND);
+        open.setOnAction(e -> ide.doOpen());
 
-        open.setAlignmentX(Component.CENTER_ALIGNMENT);
-        open.setBorderPainted(false);
-        open.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        open.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ide.doOpen();
-            }
-        });
+        getChildren().add(title);
+        getChildren().add(newProj);
+        getChildren().add(open);
 
-        add(Box.createVerticalGlue());
-        add(title);
-        add(Box.createVerticalStrut(20));
-        add(newProj);
-        add(open);
-        add(Box.createVerticalGlue());
-
-        setOpaque(true);
-        setBackground(Color.WHITE);
-        setAlignmentX(JComponent.CENTER_ALIGNMENT);
-        setAlignmentY(JComponent.CENTER_ALIGNMENT);
-        setSize(640, 200);
+        setPrefSize(640, 200);
         setVisible(true);
     }
 }

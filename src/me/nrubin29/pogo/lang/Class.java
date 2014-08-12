@@ -2,6 +2,7 @@ package me.nrubin29.pogo.lang;
 
 import me.nrubin29.pogo.Utils;
 import me.nrubin29.pogo.Utils.InvalidCodeException;
+import me.nrubin29.pogo.ide.Instance;
 import me.nrubin29.pogo.lang.Method.Visibility;
 import me.nrubin29.pogo.lang.Variable.VariableType;
 import me.nrubin29.pogo.lang.systemmethod.MethodParser;
@@ -32,8 +33,25 @@ public class Class extends Block implements VariableType {
             line = trimComments(line);
 
             if (line.startsWith("class ")) {
-                this.name = line.split(" ")[1];
+                if (currentMethod != null) {
+                    methods.add(currentMethod);
+                    currentMethod.parse();
+                    currentMethod = null;
+                }
+
+                String[] args = line.split(" ");
+                this.name = args[1];
+                if (args.length > 2) {
+                    if (args[2].equals("is")) {
+                        setSuperBlock(Instance.CURRENT_INSTANCE.getPogoClass(args[3]));
+                    }
+                }
             } else if (line.startsWith("method ")) {
+                if (currentMethod != null) {
+                    methods.add(currentMethod);
+                    currentMethod.parse();
+                }
+
                 String[] args = line.split(" ");
 
                 if (args.length < 4) {
@@ -44,18 +62,24 @@ public class Class extends Block implements VariableType {
                 VariableType returnType = VariableType.VariableTypeMatcher.match(args[2]);
                 String[] params = Arrays.copyOfRange(args, 4, args.length);
                 currentMethod = new Method(this, vis, args[3], returnType, params);
-            } else if (currentMethod != null && line.equals("end " + currentMethod.getName())) {
-                methods.add(currentMethod);
-                currentMethod.parse();
-                currentMethod = null;
-            } else if (line.startsWith("declare")) methodParser.parse(this, line);
+            } else if (line.startsWith("declare")) {
+                if (currentMethod != null) {
+                    methods.add(currentMethod);
+                    currentMethod.parse();
+                    currentMethod = null;
+                }
 
-            else {
-                if (currentMethod != null && !line.equals("") && !line.equals(" ")) currentMethod.addLine(line);
+                methodParser.parse(this, line);
+            } else {
+                if (currentMethod != null && !line.equals("") && !line.equals(" ")) {
+                    currentMethod.addLine(line);
+                }
             }
         }
 
-        if (name == null) throw new Utils.InvalidCodeException("Did not specify name for class.");
+        if (name == null) {
+            throw new Utils.InvalidCodeException("Did not specify name for class.");
+        }
     }
 
     private String trimComments(String str) {

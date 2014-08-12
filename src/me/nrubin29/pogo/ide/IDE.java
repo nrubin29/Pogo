@@ -1,270 +1,292 @@
 package me.nrubin29.pogo.ide;
 
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.input.KeyCharacterCombination;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 import me.nrubin29.pogo.Utils;
+import org.controlsfx.dialog.Dialogs;
+import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.LineNumberFactory;
+import org.fxmisc.richtext.StyleSpans;
+import org.fxmisc.richtext.StyleSpansBuilder;
 
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.net.URI;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class IDE extends JFrame {
+import static javafx.scene.input.KeyCombination.META_DOWN;
+import static javafx.scene.input.KeyCombination.SHIFT_DOWN;
 
-    private final ProjectChooser pC;
+public class IDE {
 
-    private JTabbedPane tabs;
+    private Stage stage;
+    private Scene scene;
+
+    private HashMap<String, ScrollPane> files;
+    private ListView<String> list;
     private Console console;
-    private JToolBar consolePane;
+    private ToolBar consolePane;
 
-    private JTextPane text;
+    private CodeArea currentCode;
     private Project currentProject;
     private File currentFile;
 
-    public IDE() {
-        super("Pogo IDE");
+    public void start(Stage stage) {
+        this.stage = stage;
 
-        add(pC = new ProjectChooser(this));
-
-        setBackground(Color.WHITE);
-        setSize(640, 480);
-        setResizable(false);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setVisible(true);
+        stage.setScene(scene = new Scene(new ProjectChooser(this), 640, 480));
+        stage.setTitle("Pogo IDE");
+        stage.show();
     }
 
     private void setup() {
-        remove(pC);
+        VBox vBox = new VBox();
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        GridPane box = new GridPane();
+        box.getColumnConstraints().addAll(JFXUtils.columnConstraints(33), JFXUtils.columnConstraints(1), JFXUtils.columnConstraints(66));
 
-        tabs = new JTabbedPane();
-        tabs.setPreferredSize(new Dimension(640, 280));
+        files = new HashMap<>();
 
-        tabs.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                text = (JTextPane) ((JScrollPane) tabs.getSelectedComponent()).getViewport().getView();
-                currentFile = currentProject.getFile(tabs.getTitleAt(tabs.getSelectedIndex()));
+        list = new ListView<>();
+
+        list.setOnMouseClicked(e -> {
+            String selected = list.getSelectionModel().getSelectedItem();
+
+            if (currentCode != null) {
+                box.getChildren().remove(currentCode);
             }
+
+            currentCode = (CodeArea) files.get(selected).getContent();
+            currentFile = currentProject.getFile(selected);
+
+            box.add(currentCode, 2, 0);
         });
 
-        panel.add(tabs);
+        box.add(list, 0, 0);
+        box.add(JFXUtils.region(0, 0), 1, 0);
+
+//        box.getChildren().add(list);
 
         console = new Console();
 
-        JScrollPane consoleScroll = new JScrollPane(console);
-        consoleScroll.setBorder(null);
-        consoleScroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
+//        JScrollPane consoleScroll = new JScrollPane(console);
+//        consoleScroll.setBorder(null);
+//        consoleScroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
 
-        consolePane = new JToolBar();
-        consolePane.setFloatable(false);
+        consolePane = new ToolBar();
         consolePane.setVisible(false);
-        consolePane.add(consoleScroll);
+        consolePane.getItems().add(console);
 
-        panel.add(consolePane);
+//        box.getChildren().add(consolePane);
 
-        JMenuBar menuBar = new JMenuBar();
+        MenuBar menuBar = new MenuBar();
 
-        final JMenu
-                file = new JMenu("File"),
-                project = new JMenu("Project"),
-                settings = new JMenu("Settings"),
-                orientation = new JMenu("Console Orientation"),
-                help = new JMenu("Help");
+        final Menu
+                file = new Menu("File"),
+                project = new Menu("Project"),
+                settings = new Menu("Settings"),
+                orientation = new Menu("Console Orientation"),
+                help = new Menu("Help");
 
-        final JMenuItem
-                saveFile = new JMenuItem("Save File"),
-                removeFile = new JMenuItem("Remove File"),
-                runProject = new JMenuItem("Run Project"),
-                addFile = new JMenuItem("Add File"),
-                closeConsole = new JMenuItem("Close Console"),
-                horizontal = new JRadioButtonMenuItem("Horizontal"),
-                vertical = new JRadioButtonMenuItem("Vertical"),
-                gitHub = new JMenuItem("GitHub Wiki");
+        final MenuItem
+                saveFile = new MenuItem("Save File"),
+                removeFile = new MenuItem("Remove File"),
+                runProject = new MenuItem("Run Project"),
+                addFile = new MenuItem("Add File"),
+                closeConsole = new MenuItem("Close Console"),
+                horizontal = new MenuItem("Horizontal"), // Radio Button Menu Item
+                vertical = new MenuItem("Vertical"),
+                gitHub = new MenuItem("GitHub Wiki");
 
-        menuBar.add(file);
-        menuBar.add(project);
-        menuBar.add(settings);
-        menuBar.add(help);
+        menuBar.getMenus().add(file);
+        menuBar.getMenus().add(project);
+        menuBar.getMenus().add(settings);
+        menuBar.getMenus().add(help);
 
-        file.add(saveFile);
-        file.add(removeFile);
+        file.getItems().add(saveFile);
+        file.getItems().add(removeFile);
 
-        project.add(runProject);
-        project.addSeparator();
-        project.add(addFile);
+        project.getItems().add(runProject);
+//        project.getItems().add() // Separator
+        project.getItems().add(addFile);
 
         for (File f : currentProject.getFiles()) {
-            tabs.addTab(f.getName().substring(0, f.getName().lastIndexOf(".")), createCodeTab(f));
+            files.put(f.getName().substring(0, f.getName().lastIndexOf(".")), createCodeTab(f));
+            list.getItems().add(f.getName().substring(0, f.getName().lastIndexOf(".")));
         }
 
         updateTitle();
 
-        settings.add(closeConsole);
-        settings.add(orientation);
+        settings.getItems().add(closeConsole);
+        settings.getItems().add(orientation);
 
-        ButtonGroup orientationGroup = new ButtonGroup();
-        orientationGroup.add(horizontal);
-        orientationGroup.add(vertical);
+//        ButtonGroup orientationGroup = new ButtonGroup();
+//        orientationGroup.add(horizontal);
+//        orientationGroup.add(vertical);
+//
+//        vertical.setSelected(true);
 
-        vertical.setSelected(true);
+        orientation.getItems().add(vertical);
+        orientation.getItems().add(horizontal);
 
-        orientation.add(vertical);
-        orientation.add(horizontal);
+        help.getItems().add(gitHub);
 
-        help.add(gitHub);
+        vBox.getChildren().addAll(menuBar);
 
-        setJMenuBar(menuBar);
+        saveFile.setAccelerator(new KeyCharacterCombination("S", META_DOWN));
+        saveFile.setOnAction(e -> {
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(currentFile));
 
-        int meta = System.getProperty("os.name").startsWith("Mac") ? KeyEvent.META_DOWN_MASK : KeyEvent.CTRL_DOWN_MASK;
+                String[] lines = currentCode.getText().split("\n");
 
-        saveFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, meta));
-        saveFile.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    BufferedWriter writer = new BufferedWriter(new FileWriter(currentFile));
-
-                    String[] lines = text.getText().split("\n");
-
-                    for (int i = 0; i < lines.length; i++) {
-                        writer.write(lines[i]);
-                        if (i + 1 != lines.length) writer.newLine();
-                    }
-
-                    writer.close();
-                } catch (Exception ex) {
-                    Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new Utils.IDEException("Could not save file."));
+                for (int i = 0; i < lines.length; i++) {
+                    writer.write(lines[i]);
+                    if (i + 1 != lines.length) writer.newLine();
                 }
+
+                writer.close();
+            } catch (Exception ex) {
+                Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new Utils.IDEException("Could not save file."));
             }
         });
 
-        removeFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, meta + KeyEvent.SHIFT_DOWN_MASK));
-        removeFile.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (currentProject == null) return;
+        removeFile.setAccelerator(new KeyCharacterCombination("R", META_DOWN, SHIFT_DOWN));
+        removeFile.setOnAction(e -> {
+            if (currentProject == null) return;
 
-                String fileName = currentFile.getName().substring(0, currentFile.getName().lastIndexOf("."));
+            String fileName = currentFile.getName().substring(0, currentFile.getName().lastIndexOf("."));
 
-                currentProject.deleteFile(fileName);
+            currentProject.deleteFile(fileName);
 
-                tabs.removeTabAt(tabs.getSelectedIndex());
+            list.getItems().remove(list.getSelectionModel().getSelectedIndex());
+        });
+
+        addFile.setAccelerator(new KeyCharacterCombination("A", META_DOWN, SHIFT_DOWN));
+        addFile.setOnAction(e -> {
+            if (currentProject == null) return;
+
+            Optional<String> response = Dialogs.create()
+                    .owner(stage)
+                    .title("Add File")
+                    .masthead("Add File")
+                    .message("What would you like to name the file?")
+                    .showTextInput();
+
+            if (response.isPresent()) {
+                createCodeTab(currentProject.addFile(response.get()));
             }
         });
 
-        addFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, meta + KeyEvent.SHIFT_DOWN_MASK));
-        addFile.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (currentProject == null) return;
+        runProject.setAccelerator(new KeyCharacterCombination("R", META_DOWN));
+        runProject.setOnAction(e -> {
+            if (!consolePane.isVisible()) consolePane.setVisible(true);
+            saveFile.getOnAction().handle(e);
+            console.run(currentProject);
+        });
 
-                String in = JOptionPane.showInputDialog(IDE.this, "What would you like to name the file?");
-                if (in == null) return;
+        closeConsole.setAccelerator(new KeyCharacterCombination("X", META_DOWN, SHIFT_DOWN));
+        closeConsole.setOnAction(e -> consolePane.setVisible(false));
 
-                createCodeTab(currentProject.addFile(in));
+        vertical.setOnAction(e -> {
+            boolean visible = consolePane.isVisible();
+            if (visible) consolePane.setVisible(false);
+//            setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+            if (visible) consolePane.setVisible(true);
+        });
+
+        horizontal.setOnAction(e -> {
+            boolean visible = consolePane.isVisible();
+            if (visible) consolePane.setVisible(false);
+//            setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
+            if (visible) consolePane.setVisible(true);
+        });
+
+        gitHub.setAccelerator(new KeyCharacterCombination("H", META_DOWN, SHIFT_DOWN));
+        gitHub.setOnAction(e -> {
+            try {
+                Desktop.getDesktop().browse(new URI("http://www.github.com/nrubin29/Pogo/wiki"));
+            } catch (Exception ex) {
+                Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new Utils.IDEException("Could not open page."));
             }
         });
 
-        runProject.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_R, meta));
-        runProject.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!consolePane.isVisible()) consolePane.setVisible(true);
-                saveFile.doClick();
-                console.run(currentProject);
-            }
-        });
-
-        closeConsole.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, meta + KeyEvent.SHIFT_DOWN_MASK));
-        closeConsole.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                consolePane.setVisible(false);
-            }
-        });
-
-        vertical.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                boolean visible = consolePane.isVisible();
-                if (visible) consolePane.setVisible(false);
-                setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-                if (visible) consolePane.setVisible(true);
-            }
-        });
-
-        horizontal.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                boolean visible = consolePane.isVisible();
-                if (visible) consolePane.setVisible(false);
-                setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
-                if (visible) consolePane.setVisible(true);
-            }
-        });
-
-        gitHub.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, meta + KeyEvent.SHIFT_DOWN_MASK));
-        gitHub.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    Desktop.getDesktop().browse(new URI("http://www.github.com/nrubin29/Pogo/wiki"));
-                } catch (Exception ex) {
-                    Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new Utils.IDEException("Could not open page."));
-                }
-            }
-        });
-
-        add(panel);
-
-        panel.validate();
-        panel.repaint();
-
-        validate();
-        repaint();
+        vBox.getChildren().add(box);
+        scene.setRoot(vBox);
     }
 
-    private JScrollPane createCodeTab(File f) {
-        JTextPane text = new JTextPane();
-        text.setText(Utils.readFile(f, "\n"));
-        text.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
+    private ScrollPane createCodeTab(File f) {
+        CodeArea text = new CodeArea();
+        text.setParagraphGraphicFactory(LineNumberFactory.get(text));
+        text.textProperty().addListener((obs, oldText, newText) -> {
+            text.setStyleSpans(0, computeHighlighting(newText));
+        });
+        text.replaceText(0, 0, Utils.readFile(f, "\n"));
+        text.getStylesheets().add(getClass().getResource("/res/keywords.css").toExternalForm());
 
-        JScrollPane scroll = new JScrollPane(text);
-        scroll.setBackground(Color.WHITE);
+        ScrollPane scroll = new ScrollPane(text);
         scroll.setBorder(null);
-        scroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
 
         return scroll;
     }
 
-    void doOpen() {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        chooser.setMultiSelectionEnabled(false);
+    private static final String[] KEYWORDS = new String[]{
+            "boolean", "class", "double", "else",
+            "end", "for", "foreach", "if",
+            "instance", "int", "method", "new",
+            "private", "public", "return", "this",
+            "void", "while"
+    };
 
-        if (chooser.showOpenDialog(IDE.this) == JFileChooser.APPROVE_OPTION) {
-            currentProject = new Project(chooser.getSelectedFile());
+    private static final Pattern KEYWORD_PATTERN = Pattern.compile("\\b(" + String.join("|", KEYWORDS) + ")\\b");
+
+    private static StyleSpans<Collection<String>> computeHighlighting(String text) {
+        Matcher matcher = KEYWORD_PATTERN.matcher(text);
+        int lastKwEnd = 0;
+        StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
+        while (matcher.find()) {
+            spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
+            spansBuilder.add(Collections.singleton("keyword"), matcher.end() - matcher.start());
+            lastKwEnd = matcher.end();
+        }
+        spansBuilder.add(Collections.emptyList(), text.length() - lastKwEnd);
+        return spansBuilder.create();
+    }
+
+    void doOpen() {
+        DirectoryChooser chooser = new DirectoryChooser();
+
+        File toUse = chooser.showDialog(stage);
+
+        if (toUse != null) {
+            currentProject = new Project(toUse);
             setup();
         }
     }
 
     void doNewProject() {
-        JFileChooser chooser = new JFileChooser("Choose Save Directory and Name");
-        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        chooser.setAcceptAllFileFilterUsed(false);
+        DirectoryChooser chooser = new DirectoryChooser();
+        chooser.setTitle("Choose Save Directory and Name");
 
-        if (chooser.showSaveDialog(IDE.this) == JFileChooser.APPROVE_OPTION) {
-            File toUse = chooser.getSelectedFile();
+        File toUse = chooser.showDialog(stage);
 
+        if (toUse != null) {
             try {
                 toUse.mkdir();
                 currentProject = new Project(toUse);
@@ -276,7 +298,7 @@ public class IDE extends JFrame {
     }
 
     private void updateTitle() {
-        setTitle(
+        stage.setTitle(
                 "Pogo IDE - " +
                         (currentProject != null ? currentProject.getName() : "No Project") +
                         " - " +

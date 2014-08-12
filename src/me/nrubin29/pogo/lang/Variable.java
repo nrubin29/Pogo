@@ -23,7 +23,7 @@ public class Variable {
             throw new Utils.InvalidCodeException("Attempted to initialize non-array with more than one value.");
         }
 
-        this.values = new ArrayList<Object>(Arrays.asList(Utils.replace(values.clone(), "new", Instance.CURRENT_INSTANCE.getPogoClass(type.name()))));
+        this.values = new ArrayList<>(Arrays.asList(Utils.replace(values.clone(), "new", Instance.CURRENT_INSTANCE.getPogoClass(type.name()))));
     }
 
     public VariableType getType() {

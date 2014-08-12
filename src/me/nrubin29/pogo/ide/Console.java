@@ -1,52 +1,44 @@
 package me.nrubin29.pogo.ide;
 
+import javafx.application.Platform;
+import javafx.scene.control.TextArea;
+import javafx.scene.input.KeyCode;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import me.nrubin29.pogo.Utils.Writable;
 
-import javax.swing.*;
-import javax.swing.text.*;
-import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-
-public class Console extends JTextPane implements Writable {
+public class Console extends TextArea implements Writable {
 
     private boolean waiting = false;
     private String result = null;
 
     public Console() {
-        ((AbstractDocument) getDocument()).setDocumentFilter(new Filter());
-
-        addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_UP) {
-                    e.consume();
-                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    if (waiting) result = getText().split("\n")[getText().split("\n").length - 1];
-                }
+        setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.UP) {
+                e.consume();
+            } else if (e.getCode() == KeyCode.ENTER) {
+                if (waiting) result = getText().split("\n")[getText().split("\n").length - 1];
             }
         });
 
         setEditable(false);
-        setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 16));
+        setFont(Font.font("Sans serif", FontWeight.NORMAL, FontPosture.REGULAR, 16));
     }
 
     public void run(final Project project) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Instance.createInstance(project, Console.this);
-                } catch (Exception e) {
-                    Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
-                }
+        new Thread(() -> {
+            try {
+                Instance.createInstance(project, Console.this);
+            } catch (Exception e) {
+                Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
             }
         }).start();
     }
 
     public String prompt() {
         setVisible(true);
-        getParent().requestFocusInWindow();
 
         waiting = true;
         setEditable(true);
@@ -67,91 +59,21 @@ public class Console extends JTextPane implements Writable {
     }
 
     public void write(final String txt, final MessageType messageType) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    getDocument().insertString(getDocument().getLength(), txt + "\n", messageType.getAttributes());
-                } catch (Exception ignored) {
-                }
-
-                setCaret();
-            }
-        });
-    }
-
-    private int getLineOfOffset(int offset) throws BadLocationException {
-        Document doc = getDocument();
-        if (offset < 0) {
-            throw new BadLocationException("Can't translate offset to line", -1);
-        } else if (offset > doc.getLength()) {
-            throw new BadLocationException("Can't translate offset to line", doc.getLength() + 1);
-        } else {
-            Element map = doc.getDefaultRootElement();
-            return map.getElementIndex(offset);
-        }
-    }
-
-    private int getLineStartOffset(int line) throws BadLocationException {
-        Element map = getDocument().getDefaultRootElement();
-        if (line < 0) {
-            throw new BadLocationException("Negative line", -1);
-        } else if (line > map.getElementCount()) {
-            throw new BadLocationException("Given line too big", getDocument().getLength() + 1);
-        } else {
-            Element lineElem = map.getElement(line);
-            return lineElem.getStartOffset();
-        }
-    }
-
-    private void setCaret() {
-        try {
-            setCaretPosition(getDocument().getLength());
-        } catch (Exception ignored) {
-        }
+        Platform.runLater(() -> appendText(txt));
     }
 
     public enum MessageType {
         OUTPUT(Color.BLACK),
         ERROR(Color.RED);
 
-        private final SimpleAttributeSet attributes;
+        private final Color color;
 
         MessageType(Color color) {
-            attributes = new SimpleAttributeSet();
-            StyleConstants.setForeground(attributes, color);
+            this.color = color;
         }
 
-        public SimpleAttributeSet getAttributes() {
-            return attributes;
-        }
-    }
-
-    private class Filter extends DocumentFilter {
-        @Override
-        public void insertString(final FilterBypass fb, final int offset, final String string, final AttributeSet attr)
-                throws BadLocationException {
-            if (getLineStartOffset(getLineOfOffset(offset)) == getLineStartOffset(getLineOfOffset(getDocument().getLength()))) {
-                super.insertString(fb, getDocument().getLength(), string, null);
-            }
-            setCaret();
-        }
-
-        @Override
-        public void remove(final FilterBypass fb, final int offset, final int length) throws BadLocationException {
-            if (getLineStartOffset(getLineOfOffset(offset)) == getLineStartOffset(getLineOfOffset(getDocument().getLength()))) {
-                super.remove(fb, offset, length);
-            }
-            setCaret();
-        }
-
-        @Override
-        public void replace(final FilterBypass fb, final int offset, final int length, final String string, final AttributeSet attrs)
-                throws BadLocationException {
-            if (getLineStartOffset(getLineOfOffset(offset)) == getLineStartOffset(getLineOfOffset(getDocument().getLength()))) {
-                super.replace(fb, offset, length, string, null);
-            }
-            setCaret();
+        public Color getColor() {
+            return color;
         }
     }
 }

@@ -11,7 +11,7 @@ public abstract class Block {
 
     private final ArrayList<CustomLineHandler> handlers;
 
-    private final Block superBlock;
+    private Block superBlock;
     private final ArrayList<Variable> vars;
     private final ArrayList<Block> subBlocks;
     private final ArrayList<String> lines;
@@ -35,6 +35,10 @@ public abstract class Block {
 
     Block getSuperBlock() {
         return superBlock;
+    }
+
+    public void setSuperBlock(Block superBlock) {
+        this.superBlock = superBlock;
     }
 
     public Block[] getBlockTree() {
