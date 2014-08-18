@@ -28,7 +28,11 @@ public class Variable implements Type, Nameable {
     }
 
     public Object getValue() {
-        if (type == PrimitiveType.INTEGER) {
+        if (type == PrimitiveType.BOOLEAN) {
+            return Boolean.valueOf(value.toString());
+        } else if (type == PrimitiveType.DOUBLE) {
+            return Double.valueOf(value.toString());
+        } else if (type == PrimitiveType.INTEGER) {
             return Integer.valueOf(value.toString());
         } else if (type == PrimitiveType.STRING) {
             return value.toString();
@@ -37,13 +41,12 @@ public class Variable implements Type, Nameable {
         }
     }
 
-    @Override
-    public String toString() {
-        return getClass() + " name=" + name + " type=" + type + " value=" + value;
-    }
-
     public void setValue(Object value) {
-        if (type == PrimitiveType.INTEGER) {
+        if (type == PrimitiveType.BOOLEAN) {
+            this.value = Boolean.valueOf(value.toString());
+        } else if (type == PrimitiveType.DOUBLE) {
+            this.value = Double.valueOf(value.toString());
+        } else if (type == PrimitiveType.INTEGER) {
             this.value = Integer.valueOf(value.toString());
         } else if (type == PrimitiveType.STRING) {
             this.value = value.toString();
@@ -54,5 +57,10 @@ public class Variable implements Type, Nameable {
 
     public Block getBlock() {
         return block;
+    }
+
+    @Override
+    public String toString() {
+        return getClass() + " name=" + name + " type=" + type + " value=" + value;
     }
 }

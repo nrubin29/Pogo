@@ -19,25 +19,7 @@ public class VariableParser extends Parser {
 
         tokenizer.nextToken();
 
-        Type type = null;
-
-        try {
-            type = PrimitiveType.valueOf(tokenizer.sval.toUpperCase());
-        } catch (Exception ignored) {
-
-        }
-
-        if (type != null && type == PrimitiveType.VOID) {
-            throw new InvalidCodeException("Attempted to instantiate variable with type void.");
-        }
-
-        if (type == null) {
-            type = IDEInstance.CURRENT_INSTANCE.getPogoClass(tokenizer.sval);
-        }
-
-        if (type == null) {
-            throw new InvalidCodeException("Expected type, got " + tokenizer.sval);
-        }
+        Type type = Type.match(tokenizer.sval);
 
         tokenizer.nextToken();
 

@@ -253,9 +253,9 @@ public class IDE {
     private static final String[] KEYWORDS = new String[]{
             "boolean", "class", "double", "else",
             "end", "for", "foreach", "if",
-            "instance", "int", "method", "new",
-            "private", "public", "return", "this",
-            "void", "while"
+            "instance", "integer", "method", "new",
+            "private", "public", "return", "string",
+            "this", "var", "void", "while"
     };
 
     private static final Pattern KEYWORD_PATTERN = Pattern.compile("\\b(" + String.join("|", KEYWORDS) + ")\\b");

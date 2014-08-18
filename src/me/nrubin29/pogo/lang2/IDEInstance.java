@@ -55,7 +55,7 @@ public class IDEInstance {
             }
 
             if (block != null) {
-                classes[i] = (Class) block.getBlockTree()[0]; // I don't see why this wouldn't work...
+                classes[i] = (Class) block.getBlockTree()[0];
             }
 
             if (classes[i].hasSubBlock(Method.class, "main")) {

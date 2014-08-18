@@ -44,8 +44,13 @@ public class Utils {
 
     public static StreamTokenizer tokenize(String str) {
         StreamTokenizer tokenizer = new StreamTokenizer(new StringReader(str)); // I think this should be ok?
+        tokenizer.slashSlashComments(true);
+        tokenizer.slashStarComments(true);
         tokenizer.wordChars('=', '=');
         tokenizer.wordChars('"', '"');
+        tokenizer.wordChars('(', '(');
+        tokenizer.wordChars(')', ')');
+        tokenizer.wordChars(',', ',');
         return tokenizer;
     }
 
