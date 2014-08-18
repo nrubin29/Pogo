@@ -7,9 +7,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-import me.nrubin29.pogo.Utils.Writable;
+import me.nrubin29.pogo.lang2.IDEInstance;
 
-public class Console extends TextArea implements Writable {
+public class Console extends TextArea {
 
     private boolean waiting = false;
     private String result = null;
@@ -30,9 +30,9 @@ public class Console extends TextArea implements Writable {
     public void run(final Project project) {
         new Thread(() -> {
             try {
-                Instance.createInstance(project, Console.this);
+                IDEInstance.createInstance(project);
             } catch (Exception e) {
-                Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), e);
+                e.printStackTrace();
             }
         }).start();
     }

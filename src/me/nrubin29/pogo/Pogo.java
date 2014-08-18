@@ -6,10 +6,8 @@ import me.nrubin29.pogo.ide.IDE;
 
 public class Pogo extends Application {
 
-    private static IDE ide;
-
     public void start(Stage stage) {
-        (ide = new IDE()).start(stage);
+        new IDE().start(stage);
     }
 
 //    public Pogo() {
@@ -56,7 +54,7 @@ public class Pogo extends Application {
 //        }
 //    }
 
-    public static void main(String[] args) throws Utils.ConsoleException {
+    public static void main(String[] args) {
         launch(args);
     }
 }

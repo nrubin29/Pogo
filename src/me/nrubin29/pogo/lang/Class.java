@@ -1,9 +1,7 @@
 package me.nrubin29.pogo.lang;
 
-import me.nrubin29.pogo.Utils;
-import me.nrubin29.pogo.Utils.InvalidCodeException;
-import me.nrubin29.pogo.ide.Instance;
 import me.nrubin29.pogo.lang.Method.Visibility;
+import me.nrubin29.pogo.lang.Utils.InvalidCodeException;
 import me.nrubin29.pogo.lang.Variable.VariableType;
 import me.nrubin29.pogo.lang.systemmethod.MethodParser;
 
@@ -43,7 +41,7 @@ public class Class extends Block implements VariableType {
                 this.name = args[1];
                 if (args.length > 2) {
                     if (args[2].equals("is")) {
-                        setSuperBlock(Instance.CURRENT_INSTANCE.getPogoClass(args[3]));
+                        setSuperBlock(IDEInstance.CURRENT_INSTANCE.getPogoClass(args[3]));
                     }
                 }
             } else if (line.startsWith("method ")) {

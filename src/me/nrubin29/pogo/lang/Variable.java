@@ -1,8 +1,6 @@
 package me.nrubin29.pogo.lang;
 
-import me.nrubin29.pogo.Utils;
-import me.nrubin29.pogo.Utils.InvalidCodeException;
-import me.nrubin29.pogo.ide.Instance;
+import me.nrubin29.pogo.lang.Utils.InvalidCodeException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +21,7 @@ public class Variable {
             throw new Utils.InvalidCodeException("Attempted to initialize non-array with more than one value.");
         }
 
-        this.values = new ArrayList<>(Arrays.asList(Utils.replace(values.clone(), "new", Instance.CURRENT_INSTANCE.getPogoClass(type.name()))));
+        this.values = new ArrayList<>(Arrays.asList(Utils.replace(values.clone(), "new", IDEInstance.CURRENT_INSTANCE.getPogoClass(type.name()))));
     }
 
     public VariableType getType() {
@@ -123,8 +121,8 @@ public class Variable {
                 try {
                     return SystemVariableType.match(str);
                 } catch (InvalidCodeException e) {
-                    if (Instance.CURRENT_INSTANCE.getPogoClass(str) != null) {
-                        return Instance.CURRENT_INSTANCE.getPogoClass(str);
+                    if (IDEInstance.CURRENT_INSTANCE.getPogoClass(str) != null) {
+                        return IDEInstance.CURRENT_INSTANCE.getPogoClass(str);
                     } else {
                         throw new InvalidCodeException("No variable type for " + str + ".");
                     }

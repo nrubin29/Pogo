@@ -1,7 +1,5 @@
 package me.nrubin29.pogo.lang;
 
-import me.nrubin29.pogo.Utils;
-
 public class For extends Block {
 
     private final String lower, upper;

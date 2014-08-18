@@ -11,7 +11,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
-import me.nrubin29.pogo.Utils;
+import me.nrubin29.pogo.lang2.Utils;
 import org.controlsfx.dialog.Dialogs;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
@@ -76,6 +76,8 @@ public class IDE {
             currentFile = currentProject.getFile(selected);
 
             box.add(currentCode, 2, 0);
+
+            updateTitle();
         });
 
         box.add(list, 0, 0);
@@ -152,6 +154,10 @@ public class IDE {
         saveFile.setAccelerator(new KeyCharacterCombination("S", META_DOWN));
         saveFile.setOnAction(e -> {
             try {
+                if (currentFile == null) {
+                    return;
+                }
+
                 BufferedWriter writer = new BufferedWriter(new FileWriter(currentFile));
 
                 String[] lines = currentCode.getText().split("\n");
@@ -163,7 +169,7 @@ public class IDE {
 
                 writer.close();
             } catch (Exception ex) {
-                Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new Utils.IDEException("Could not save file."));
+                ex.printStackTrace();
             }
         });
 
@@ -223,7 +229,7 @@ public class IDE {
             try {
                 Desktop.getDesktop().browse(new URI("http://www.github.com/nrubin29/Pogo/wiki"));
             } catch (Exception ex) {
-                Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new Utils.IDEException("Could not open page."));
+                ex.printStackTrace();
             }
         });
 
@@ -234,9 +240,7 @@ public class IDE {
     private ScrollPane createCodeTab(File f) {
         CodeArea text = new CodeArea();
         text.setParagraphGraphicFactory(LineNumberFactory.get(text));
-        text.textProperty().addListener((obs, oldText, newText) -> {
-            text.setStyleSpans(0, computeHighlighting(newText));
-        });
+        text.textProperty().addListener((obs, oldText, newText) -> text.setStyleSpans(0, computeHighlighting(newText)));
         text.replaceText(0, 0, Utils.readFile(f, "\n"));
         text.getStylesheets().add(getClass().getResource("/res/keywords.css").toExternalForm());
 
@@ -292,7 +296,7 @@ public class IDE {
                 currentProject = new Project(toUse);
                 setup();
             } catch (Exception ex) {
-                Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new Utils.IDEException("Could not create new project."));
+                ex.printStackTrace();
             }
         }
     }

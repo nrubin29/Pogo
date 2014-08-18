@@ -1,13 +1,9 @@
 package me.nrubin29.pogo.lang.systemmethod;
 
-import me.nrubin29.pogo.Utils;
-import me.nrubin29.pogo.Utils.InvalidCodeException;
-import me.nrubin29.pogo.Utils.Invokable;
-import me.nrubin29.pogo.ide.Instance;
-import me.nrubin29.pogo.lang.Block;
+import me.nrubin29.pogo.lang.*;
 import me.nrubin29.pogo.lang.Class;
-import me.nrubin29.pogo.lang.Method;
-import me.nrubin29.pogo.lang.Variable;
+import me.nrubin29.pogo.lang.Utils.InvalidCodeException;
+import me.nrubin29.pogo.lang.Utils.Invokable;
 
 import java.util.ArrayList;
 
@@ -76,7 +72,7 @@ public class MethodParser {
                     toInvoke = ((Class) b.getBlockTree()[0]).getMethod(method);
                     success = true;
                 } else {
-                    Class c = Instance.CURRENT_INSTANCE.getPogoClass(invoked);
+                    Class c = IDEInstance.CURRENT_INSTANCE.getPogoClass(invoked);
                     if (c == null) throw new InvalidCodeException("Could not find class with name " + invoked + ".");
                     toInvoke = c.getMethod(method);
                 }

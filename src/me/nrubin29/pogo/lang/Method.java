@@ -1,7 +1,6 @@
 package me.nrubin29.pogo.lang;
 
-import me.nrubin29.pogo.Utils;
-import me.nrubin29.pogo.Utils.Invokable;
+import me.nrubin29.pogo.lang.Utils.Invokable;
 import me.nrubin29.pogo.lang.Variable.SystemVariableType;
 import me.nrubin29.pogo.lang.Variable.VariableType;
 

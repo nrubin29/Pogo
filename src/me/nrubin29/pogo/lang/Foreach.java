@@ -1,7 +1,5 @@
 package me.nrubin29.pogo.lang;
 
-import me.nrubin29.pogo.Utils;
-
 public class Foreach extends Block {
 
     private final String varName, arrayName;

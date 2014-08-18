@@ -1,10 +1,9 @@
 package me.nrubin29.pogo.ide;
 
-import me.nrubin29.pogo.Utils;
-
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Project {
 
@@ -18,24 +17,15 @@ public class Project {
         return pogoProj.getName();
     }
 
-    public File[] getFiles() {
-        ArrayList<File> files = new ArrayList<File>(Arrays.asList(pogoProj.listFiles())), removeFiles = new ArrayList<File>();
-
-        for (File file : files) {
-            if (!file.getName().endsWith(".pogo")) removeFiles.add(file);
-        }
-
-        files.removeAll(removeFiles);
-
-        return files.toArray(new File[files.size()]);
+    public List<File> getFiles() {
+        return Arrays.stream(pogoProj.listFiles()).filter(file -> file.getName().endsWith(".pogo")).collect(Collectors.toList());
     }
 
     public File getFile(String name) {
         File file = new File(pogoProj, name + ".pogo");
 
         if (!file.exists()) {
-            Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new Utils.IDEException("File does not exist."));
-            return null;
+            throw new IDEException("File does not exist.");
         }
 
         return file;
@@ -47,14 +37,13 @@ public class Project {
             f.createNewFile();
             return f;
         } catch (Exception e) {
-            Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new Utils.IDEException("Could not create file."));
-            return null;
+            throw new IDEException("Could not create file.");
         }
     }
 
     public void deleteFile(String name) {
         if (!new File(pogoProj, name + ".pogo").delete()) {
-            Thread.getDefaultUncaughtExceptionHandler().uncaughtException(Thread.currentThread(), new Utils.IDEException("Could not delete file."));
+            throw new IDEException("Could not delete file.");
         }
     }
 }

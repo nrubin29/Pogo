@@ -1,7 +1,5 @@
 package me.nrubin29.pogo.lang;
 
-import me.nrubin29.pogo.Utils;
-
 public abstract class ConditionalBlock extends Block {
 
     final String aVal;

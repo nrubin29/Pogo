@@ -1,7 +1,5 @@
 package me.nrubin29.pogo.lang;
 
-import me.nrubin29.pogo.Utils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;

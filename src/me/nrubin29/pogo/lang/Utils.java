@@ -1,9 +1,7 @@
-package me.nrubin29.pogo;
+package me.nrubin29.pogo.lang;
 
 import me.nrubin29.pogo.ide.Console;
-import me.nrubin29.pogo.lang.Block;
 import me.nrubin29.pogo.lang.Method.Visibility;
-import me.nrubin29.pogo.lang.Variable;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -137,18 +135,6 @@ public class Utils {
         public void invoke(Block b, String[] params, Variable receiver) throws Utils.InvalidCodeException;
 
         public Visibility getVisibility();
-    }
-
-    public static class ConsoleException extends Exception {
-        public ConsoleException(String msg) {
-            super(msg);
-        }
-    }
-
-    public static class IDEException extends Exception {
-        public IDEException(String msg) {
-            super(msg);
-        }
     }
 
     public static class InvalidCodeException extends Exception {

@@ -1,7 +1,7 @@
 package me.nrubin29.pogo.lang.systemmethod;
 
-import me.nrubin29.pogo.Utils;
 import me.nrubin29.pogo.lang.Block;
+import me.nrubin29.pogo.lang.Utils;
 import me.nrubin29.pogo.lang.Variable;
 import me.nrubin29.pogo.lang.Variable.SystemVariableType;
 import me.nrubin29.pogo.lang.Variable.VariableType;
