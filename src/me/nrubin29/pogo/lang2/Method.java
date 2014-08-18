@@ -1,5 +1,8 @@
 package me.nrubin29.pogo.lang2;
 
+import me.nrubin29.pogo.Pogo;
+import me.nrubin29.pogo.ide.Console;
+
 import java.util.Arrays;
 
 public class Method extends Block implements Nameable {
@@ -37,7 +40,7 @@ public class Method extends Block implements Nameable {
 
     @Override
     public void run() {
-        System.out.println("run() called on " + toString());
+        Pogo.getIDE().getConsole().write("run() called on " + toString(), Console.MessageType.OUTPUT);
 
         for (Block subBlock : getSubBlocks()) {
             subBlock.run();

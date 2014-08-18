@@ -15,12 +15,12 @@ public abstract class Block {
     private final ArrayList<String> lines;
 
     Block(Block superBlock) {
-        this.handlers = new ArrayList<CustomLineHandler>();
+        this.handlers = new ArrayList<>();
 
         this.superBlock = superBlock;
-        this.vars = new ArrayList<Variable>();
-        this.subBlocks = new ArrayList<Block>();
-        this.lines = new ArrayList<String>();
+        this.vars = new ArrayList<>();
+        this.subBlocks = new ArrayList<>();
+        this.lines = new ArrayList<>();
     }
 
     void registerCustomLineHandler(CustomLineHandler h) {
@@ -40,7 +40,7 @@ public abstract class Block {
     }
 
     public Block[] getBlockTree() {
-        ArrayList<Block> tree = new ArrayList<Block>();
+        ArrayList<Block> tree = new ArrayList<>();
 
         Block b = this;
 

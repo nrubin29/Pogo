@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class MethodParser {
 
-    private final ArrayList<SystemMethod> systemMethods = new ArrayList<SystemMethod>();
+    private final ArrayList<SystemMethod> systemMethods = new ArrayList<>();
 
     public MethodParser() {
         systemMethods.add(new Declare());

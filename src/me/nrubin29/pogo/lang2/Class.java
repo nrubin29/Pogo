@@ -1,5 +1,8 @@
 package me.nrubin29.pogo.lang2;
 
+import me.nrubin29.pogo.Pogo;
+import me.nrubin29.pogo.ide.Console;
+
 public class Class extends Block implements Type, Nameable, Cloneable {
 
     private String name;
@@ -17,7 +20,7 @@ public class Class extends Block implements Type, Nameable, Cloneable {
 
     @Override
     public void run() {
-        System.out.println("run() called on " + toString());
+        Pogo.getIDE().getConsole().write("run() called on " + toString(), Console.MessageType.OUTPUT);
 
         getSubBlock(Method.class, "main").get().run();
     }

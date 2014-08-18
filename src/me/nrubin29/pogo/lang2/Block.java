@@ -1,5 +1,8 @@
 package me.nrubin29.pogo.lang2;
 
+import me.nrubin29.pogo.Pogo;
+import me.nrubin29.pogo.ide.Console;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
@@ -63,7 +66,7 @@ public abstract class Block implements Cloneable {
     }
 
     public void addVariable(Variable variable) {
-        System.out.println("Adding variable " + variable + " to " + toString());
+        Pogo.getIDE().getConsole().write("Adding variable " + variable + " to " + toString(), Console.MessageType.OUTPUT);
         variables.add(variable);
     }
 

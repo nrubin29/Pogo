@@ -41,7 +41,6 @@ public class IDE {
     private HashMap<String, ScrollPane> files;
     private ListView<String> list;
     private Console console;
-    private ToolBar consolePane;
 
     private CodeArea currentCode;
     private Project currentProject;
@@ -83,27 +82,13 @@ public class IDE {
         box.add(list, 0, 0);
         box.add(JFXUtils.region(0, 0), 1, 0);
 
-//        box.getChildren().add(list);
-
         console = new Console();
-
-//        JScrollPane consoleScroll = new JScrollPane(console);
-//        consoleScroll.setBorder(null);
-//        consoleScroll.getVerticalScrollBar().setPreferredSize(new Dimension(0, 0));
-
-        consolePane = new ToolBar();
-        consolePane.setVisible(false);
-        consolePane.getItems().add(console);
-
-//        box.getChildren().add(consolePane);
 
         MenuBar menuBar = new MenuBar();
 
         final Menu
                 file = new Menu("File"),
                 project = new Menu("Project"),
-                settings = new Menu("Settings"),
-                orientation = new Menu("Console Orientation"),
                 help = new Menu("Help");
 
         final MenuItem
@@ -111,14 +96,10 @@ public class IDE {
                 removeFile = new MenuItem("Remove File"),
                 runProject = new MenuItem("Run Project"),
                 addFile = new MenuItem("Add File"),
-                closeConsole = new MenuItem("Close Console"),
-                horizontal = new MenuItem("Horizontal"), // Radio Button Menu Item
-                vertical = new MenuItem("Vertical"),
                 gitHub = new MenuItem("GitHub Wiki");
 
         menuBar.getMenus().add(file);
         menuBar.getMenus().add(project);
-        menuBar.getMenus().add(settings);
         menuBar.getMenus().add(help);
 
         file.getItems().add(saveFile);
@@ -135,21 +116,7 @@ public class IDE {
 
         updateTitle();
 
-        settings.getItems().add(closeConsole);
-        settings.getItems().add(orientation);
-
-//        ButtonGroup orientationGroup = new ButtonGroup();
-//        orientationGroup.add(horizontal);
-//        orientationGroup.add(vertical);
-//
-//        vertical.setSelected(true);
-
-        orientation.getItems().add(vertical);
-        orientation.getItems().add(horizontal);
-
         help.getItems().add(gitHub);
-
-        vBox.getChildren().addAll(menuBar);
 
         saveFile.setAccelerator(new KeyCharacterCombination("S", META_DOWN));
         saveFile.setOnAction(e -> {
@@ -202,26 +169,8 @@ public class IDE {
 
         runProject.setAccelerator(new KeyCharacterCombination("R", META_DOWN));
         runProject.setOnAction(e -> {
-            if (!consolePane.isVisible()) consolePane.setVisible(true);
             saveFile.getOnAction().handle(e);
             console.run(currentProject);
-        });
-
-        closeConsole.setAccelerator(new KeyCharacterCombination("X", META_DOWN, SHIFT_DOWN));
-        closeConsole.setOnAction(e -> consolePane.setVisible(false));
-
-        vertical.setOnAction(e -> {
-            boolean visible = consolePane.isVisible();
-            if (visible) consolePane.setVisible(false);
-//            setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-            if (visible) consolePane.setVisible(true);
-        });
-
-        horizontal.setOnAction(e -> {
-            boolean visible = consolePane.isVisible();
-            if (visible) consolePane.setVisible(false);
-//            setLayout(new BoxLayout(getContentPane(), BoxLayout.X_AXIS));
-            if (visible) consolePane.setVisible(true);
         });
 
         gitHub.setAccelerator(new KeyCharacterCombination("H", META_DOWN, SHIFT_DOWN));
@@ -233,7 +182,7 @@ public class IDE {
             }
         });
 
-        vBox.getChildren().add(box);
+        vBox.getChildren().addAll(menuBar, box, console);
         scene.setRoot(vBox);
     }
 

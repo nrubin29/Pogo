@@ -1,0 +1,9 @@
+.output {
+    -fx-fill: black;
+    -fx-font-size: 16px;
+}
+
+.error {
+    -fx-fill: red;
+    -fx-font-size: 16px;
+}

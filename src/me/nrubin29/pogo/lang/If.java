@@ -10,7 +10,7 @@ public class If extends ConditionalBlock {
     public If(Block superBlock, String aVal, String bVal, ConditionalBlock.CompareOperation compareOp) {
         super(superBlock, aVal, bVal, compareOp);
 
-        this.elzeIfs = new ArrayList<ElseIf>();
+        this.elzeIfs = new ArrayList<>();
     }
 
     public void addElseIf(ElseIf elzeIf) {

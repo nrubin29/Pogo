@@ -22,7 +22,7 @@ public class Class extends Block implements VariableType {
     }
 
     public void parseClass() throws Utils.InvalidCodeException {
-        this.methods = new ArrayList<Method>();
+        this.methods = new ArrayList<>();
         this.methodParser = new MethodParser();
 
         Method currentMethod = null;

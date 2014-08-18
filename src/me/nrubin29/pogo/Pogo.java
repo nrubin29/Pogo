@@ -6,8 +6,14 @@ import me.nrubin29.pogo.ide.IDE;
 
 public class Pogo extends Application {
 
+    private static IDE ide;
+
     public void start(Stage stage) {
-        new IDE().start(stage);
+        (ide = new IDE()).start(stage);
+    }
+
+    public static IDE getIDE() {
+        return ide;
     }
 
 //    public Pogo() {
