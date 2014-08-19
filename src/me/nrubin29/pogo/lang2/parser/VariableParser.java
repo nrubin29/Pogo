@@ -17,6 +17,7 @@ public class VariableParser extends Parser {
     public Block parse(Block superBlock, StreamTokenizer tokenizer) throws IOException, InvalidCodeException {
         // string name = "Noah"
 
+        tokenizer.nextToken(); // Skip the var token.
         tokenizer.nextToken();
 
         Type type = Type.match(tokenizer.sval);
@@ -29,7 +30,7 @@ public class VariableParser extends Parser {
 
         tokenizer.nextToken();
 
-        if (tokenizer.sval.equals("=")) {
+        if (tokenizer.ttype == '=') {
             tokenizer.nextToken();
 
             if (tokenizer.sval.equals("new")) {
@@ -40,7 +41,7 @@ public class VariableParser extends Parser {
                 }
             }
 
-            variable.setValue(Utils.handleVariables(tokenizer.sval, superBlock)); // The value cannot have any spaces in this case.
+            variable.setValue(Utils.handleVariables(tokenizer, superBlock)); // The value cannot have any spaces in this case.
         } else {
             tokenizer.pushBack(); // If they choose not in initialize it, we want to undo getting the next token since it will be used elsewhere.
         }

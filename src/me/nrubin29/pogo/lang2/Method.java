@@ -12,7 +12,7 @@ public class Method extends Block implements Nameable {
     private Type type;
     private Parameter[] parameters;
 
-    public Method(Block superBlock, String name, Visibility visibility, Type type, Parameter... parameters) {
+    public Method(Block superBlock, String name, Visibility visibility, Type type, Parameter[] parameters) {
         super(superBlock);
 
         this.name = name;

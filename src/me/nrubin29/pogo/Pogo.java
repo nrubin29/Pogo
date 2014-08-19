@@ -4,6 +4,8 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import me.nrubin29.pogo.ide.IDE;
 
+import java.io.IOException;
+
 public class Pogo extends Application {
 
     private static IDE ide;
@@ -60,7 +62,7 @@ public class Pogo extends Application {
 //        }
 //    }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         launch(args);
     }
 }

@@ -7,22 +7,17 @@ import java.util.stream.Collectors;
 
 public class Utils {
 
-    public static String handleVariables(String s, Block block) throws InvalidCodeException, IOException {
-        StreamTokenizer tokenizer = tokenize(s);
+    public static String handleVariables(StreamTokenizer tokenizer, Block block) throws InvalidCodeException, IOException {
         StringBuilder builder = new StringBuilder();
-        boolean inQuotes = false;
 
-        int code;
-        while ((code = tokenizer.nextToken()) == StreamTokenizer.TT_WORD || code == StreamTokenizer.TT_NUMBER) {
-            String str = tokenizer.sval;
+        tokenizer.pushBack();
 
-            if (str.startsWith("\"")) {
-                inQuotes = true;
-            }
-
-            if (inQuotes) {
-                builder.append(str.replaceAll("\"", ""));
+        while (tokenizer.nextToken() != StreamTokenizer.TT_EOF && tokenizer.ttype != StreamTokenizer.TT_EOL) {
+            if (tokenizer.ttype == '"') {
+                builder.append(tokenizer.sval);
             } else {
+                String str = tokenizer.sval;
+
                 if (block != null) {
                     if (block.hasVariable(str)) {
                         builder.append(block.getVariable(str).get().getValue());
@@ -30,12 +25,8 @@ public class Utils {
                         throw new InvalidCodeException("Expected variable, found " + str);
                     }
                 }
-            }
 
-            builder.append(" ");
-
-            if (str.endsWith("\"")) {
-                inQuotes = false;
+                builder.append(" ");
             }
         }
 
@@ -43,14 +34,12 @@ public class Utils {
     }
 
     public static StreamTokenizer tokenize(String str) {
-        StreamTokenizer tokenizer = new StreamTokenizer(new StringReader(str)); // I think this should be ok?
+        StreamTokenizer tokenizer = new StreamTokenizer(new StringReader(str));
         tokenizer.slashSlashComments(true);
         tokenizer.slashStarComments(true);
-        tokenizer.wordChars('=', '=');
-        tokenizer.wordChars('"', '"');
-        tokenizer.wordChars('(', '(');
-        tokenizer.wordChars(')', ')');
-        tokenizer.wordChars(',', ',');
+        tokenizer.ordinaryChar('=');
+        tokenizer.ordinaryChar('(');
+        tokenizer.ordinaryChar(')');
         return tokenizer;
     }
 
@@ -58,7 +47,7 @@ public class Utils {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));
 
-            List<String> contents = reader.lines().collect(Collectors.toList());
+            List<String> contents = reader.lines().filter(line -> !line.equals("")).collect(Collectors.toList());
 
             return contents.toArray(new String[contents.size()]);
         } catch (Exception e) {

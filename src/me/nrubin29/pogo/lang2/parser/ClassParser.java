@@ -15,6 +15,7 @@ public class ClassParser extends Parser {
 
     @Override
     public Block parse(Block superBlock, StreamTokenizer tokenizer) throws IOException {
+        tokenizer.nextToken(); // Skip the class token.
         tokenizer.nextToken();
         return new Class(superBlock, tokenizer.sval);
     }

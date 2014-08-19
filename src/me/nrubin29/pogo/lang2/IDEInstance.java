@@ -31,22 +31,33 @@ public class IDEInstance {
         Class mainClass = null;
 
         for (int i = 0; i < classes.length; i++) {
-            StreamTokenizer tokenizer = Utils.tokenize(Utils.readFile(project.getFiles().get(i), "\n"));
-
             Block block = null;
 
-            int code;
-            while ((code = tokenizer.nextToken()) == StreamTokenizer.TT_WORD || code == StreamTokenizer.TT_NUMBER) {
+            for (String line : Utils.readFile(project.getFiles().get(i))) {
+                StreamTokenizer tokenizer = Utils.tokenize(line.trim());
+
+                tokenizer.nextToken();
+                String firstToken = tokenizer.sval;
+                tokenizer.pushBack();
+
+                if (firstToken == null) {
+                    continue;
+                }
+
                 for (Parser parser : parsers) {
-                    if (parser.shouldParse(tokenizer.sval)) {
+                    if (parser.shouldParse(firstToken)) {
                         Block newBlock = parser.parse(block, tokenizer);
 
                         if (newBlock != null) {
                             if (block != null) {
-                                block.add(newBlock);
+                                if (block instanceof Method) { // If it is a method, we add the method to the class.
+                                    block.getBlockTree()[0].add(newBlock);
+                                } else {
+                                    block.add(newBlock);
+                                }
                             }
 
-                            block = newBlock; // This will cause an error with things like a line or else if.
+                            block = newBlock;
                         }
 
                         break;
