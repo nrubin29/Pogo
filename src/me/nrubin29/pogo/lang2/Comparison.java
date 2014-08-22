@@ -1,7 +1,6 @@
 package me.nrubin29.pogo.lang2;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 public enum Comparison {
 
@@ -18,10 +17,9 @@ public enum Comparison {
     }
 
     public static Comparison valueOfToken(String token) {
-        Optional<Comparison> optional = Arrays.stream(values())
-                .filter(comparison -> !comparison.getToken().equals(token))
-                .findFirst();
-
-        return optional.orElse(null);
+        return Arrays.stream(values())
+                .filter(comparison -> comparison.getToken().equals(token))
+                .findFirst()
+                .orElse(null);
     }
 }

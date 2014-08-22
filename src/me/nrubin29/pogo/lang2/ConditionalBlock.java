@@ -2,22 +2,16 @@ package me.nrubin29.pogo.lang2;
 
 public abstract class ConditionalBlock extends Block {
 
-    private ConditionalBlockType type;
     private Value a;
     private Value b;
     private Comparison comparison;
 
-    public ConditionalBlock(Block superBlock, ConditionalBlockType type, Value a, Value b, Comparison comparison) {
+    public ConditionalBlock(Block superBlock, Value a, Value b, Comparison comparison) {
         super(superBlock);
 
-        this.type = type;
         this.a = a;
         this.b = b;
         this.comparison = comparison;
-    }
-
-    public ConditionalBlockType getType() {
-        return type;
     }
 
     public Value getA() {
@@ -80,6 +74,6 @@ public abstract class ConditionalBlock extends Block {
 
     @Override
     public String toString() {
-        return getClass() + " type=" + type + " a=" + a + " b=" + b;
+        return getClass() + " a=" + a + " b=" + b;
     }
 }

@@ -5,22 +5,22 @@ import me.nrubin29.pogo.lang2.*;
 import java.io.IOException;
 import java.io.StreamTokenizer;
 
-public class IfParser extends Parser<If> {
+public class WhileParser extends Parser<While> {
 
     @Override
     public boolean shouldParse(String firstToken) {
-        return firstToken.equals("if");
+        return firstToken.equals("while");
     }
 
     @Override
-    public If parse(Block superBlock, StreamTokenizer tokenizer) throws IOException, InvalidCodeException {
+    public While parse(Block superBlock, StreamTokenizer tokenizer) throws IOException, InvalidCodeException {
         // (name == "Noah")
 
-        tokenizer.nextToken(); // Skip the if token.
+        tokenizer.nextToken(); // Skip the while token.
         tokenizer.nextToken();
 
         if (tokenizer.ttype != '(') {
-            throw new InvalidCodeException("If statement does not begin with opening parenthesis.");
+            throw new InvalidCodeException("While statement does not begin with opening parenthesis.");
         }
 
         tokenizer.nextToken();
@@ -44,9 +44,9 @@ public class IfParser extends Parser<If> {
         tokenizer.nextToken();
 
         if (tokenizer.ttype != ')') {
-            throw new InvalidCodeException("If statement does not end with closing parenthesis.");
+            throw new InvalidCodeException("While statement does not end with closing parenthesis.");
         }
 
-        return new If(superBlock, a, b, comparison);
+        return new While(superBlock, a, b, comparison);
     }
 }

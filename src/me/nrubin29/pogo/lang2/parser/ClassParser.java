@@ -6,7 +6,7 @@ import me.nrubin29.pogo.lang2.Class;
 import java.io.IOException;
 import java.io.StreamTokenizer;
 
-public class ClassParser extends Parser {
+public class ClassParser extends Parser<Class> {
 
     @Override
     public boolean shouldParse(String firstToken) {
@@ -14,7 +14,7 @@ public class ClassParser extends Parser {
     }
 
     @Override
-    public Block parse(Block superBlock, StreamTokenizer tokenizer) throws IOException {
+    public Class parse(Block superBlock, StreamTokenizer tokenizer) throws IOException {
         tokenizer.nextToken(); // Skip the class token.
         tokenizer.nextToken();
         return new Class(superBlock, tokenizer.sval);

@@ -24,7 +24,7 @@ public class IDEInstance {
     }
 
     private void run() throws InvalidCodeException, IOException {
-        Parser[] parsers = { new ClassParser(), new MethodParser(), new VariableParser(), new IfParser() };
+        Parser[] parsers = { new ClassParser(), new MethodParser(), new VariableParser(), new IfParser(), new WhileParser() };
         Class mainClass = null;
 
         for (int i = 0; i < classes.length; i++) {

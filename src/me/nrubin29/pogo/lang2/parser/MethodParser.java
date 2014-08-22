@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.util.ArrayList;
 
-public class MethodParser extends Parser {
+public class MethodParser extends Parser<Method> {
 
     @Override
     public boolean shouldParse(String firstToken) {
@@ -14,7 +14,7 @@ public class MethodParser extends Parser {
     }
 
     @Override
-    public Block parse(Block superBlock, StreamTokenizer tokenizer) throws IOException, InvalidCodeException {
+    public Method parse(Block superBlock, StreamTokenizer tokenizer) throws IOException, InvalidCodeException {
         // public void main
 
         tokenizer.nextToken(); // Skip the method token.
