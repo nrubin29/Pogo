@@ -19,7 +19,7 @@ public class Class extends Block implements Type, Nameable, Cloneable {
     }
 
     @Override
-    public void run() {
+    public void run() throws InvalidCodeException {
         Pogo.getIDE().getConsole().write("run() called on " + toString(), Console.MessageType.OUTPUT);
 
         getSubBlock(Method.class, "main").get().run();

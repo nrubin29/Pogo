@@ -190,7 +190,7 @@ public class IDE {
         CodeArea text = new CodeArea();
         text.setParagraphGraphicFactory(LineNumberFactory.get(text));
         text.textProperty().addListener((obs, oldText, newText) -> text.setStyleSpans(0, computeHighlighting(newText)));
-        text.replaceText(0, 0, Utils.readFile(f, "\n"));
+        text.replaceText(0, 0, Utils.readFile(f, true, "\n"));
         text.getStylesheets().add(getClass().getResource("/res/keywords.css").toExternalForm());
 
         ScrollPane scroll = new ScrollPane(text);

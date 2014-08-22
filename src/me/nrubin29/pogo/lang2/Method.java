@@ -39,7 +39,7 @@ public class Method extends Block implements Nameable {
     }
 
     @Override
-    public void run() {
+    public void run() throws InvalidCodeException {
         Pogo.getIDE().getConsole().write("run() called on " + toString(), Console.MessageType.OUTPUT);
 
         for (Block subBlock : getSubBlocks()) {

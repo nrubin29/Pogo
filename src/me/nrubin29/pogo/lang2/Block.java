@@ -70,7 +70,7 @@ public abstract class Block implements Cloneable {
         variables.add(variable);
     }
 
-    public abstract void run();
+    public abstract void run() throws InvalidCodeException;
 
     public abstract String toString();
 
@@ -78,7 +78,7 @@ public abstract class Block implements Cloneable {
     public Block clone() {
         Block block = new Block(superBlock) {
             @Override
-            public void run() {
+            public void run() throws InvalidCodeException {
                 Block.this.run();
             }
 

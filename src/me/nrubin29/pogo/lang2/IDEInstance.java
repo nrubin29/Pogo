@@ -1,10 +1,7 @@
 package me.nrubin29.pogo.lang2;
 
 import me.nrubin29.pogo.ide.Project;
-import me.nrubin29.pogo.lang2.parser.ClassParser;
-import me.nrubin29.pogo.lang2.parser.MethodParser;
-import me.nrubin29.pogo.lang2.parser.Parser;
-import me.nrubin29.pogo.lang2.parser.VariableParser;
+import me.nrubin29.pogo.lang2.parser.*;
 
 import java.io.IOException;
 import java.io.StreamTokenizer;
@@ -27,13 +24,13 @@ public class IDEInstance {
     }
 
     private void run() throws InvalidCodeException, IOException {
-        Parser[] parsers = {new ClassParser(), new MethodParser(), new VariableParser()};
+        Parser[] parsers = { new ClassParser(), new MethodParser(), new VariableParser(), new IfParser() };
         Class mainClass = null;
 
         for (int i = 0; i < classes.length; i++) {
             Block block = null;
 
-            for (String line : Utils.readFile(project.getFiles().get(i))) {
+            for (String line : Utils.readFile(project.getFiles().get(i), false)) {
                 StreamTokenizer tokenizer = Utils.tokenize(line.trim());
 
                 tokenizer.nextToken();
@@ -44,13 +41,25 @@ public class IDEInstance {
                     continue;
                 }
 
+                if (firstToken.equals("end")) { // This could be its own Parser, but it probably shouldn't be.
+                    if (block == null) {
+                        throw new InvalidCodeException("Attempted to end non-existent block.");
+                    }
+
+                    if (!(block instanceof ConditionalBlock)) {
+                        throw new InvalidCodeException("Attempted to end non-conditional block.");
+                    }
+
+                    block = block.getSuperBlock();
+                }
+
                 for (Parser parser : parsers) {
                     if (parser.shouldParse(firstToken)) {
                         Block newBlock = parser.parse(block, tokenizer);
 
                         if (newBlock != null) {
                             if (block != null) {
-                                if (block instanceof Method) { // If it is a method, we add the method to the class.
+                                if (newBlock instanceof Method) { // If it is a method, we add the method to the class.
                                     block.getBlockTree()[0].add(newBlock);
                                 } else {
                                     block.add(newBlock);
