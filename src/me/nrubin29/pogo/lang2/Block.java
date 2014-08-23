@@ -46,10 +46,11 @@ public abstract class Block implements Cloneable {
         subBlocks.add(subBlock);
     }
 
-    public <T extends Block & Nameable> Optional<Block> getSubBlock(java.lang.Class<T> clazz, String name) {
+    public <T extends Block & Nameable> Optional<T> getSubBlock(java.lang.Class<T> clazz, String name) {
         return subBlocks.stream()
-                .filter(block -> block.getClass().equals(clazz))
+                .filter(block -> clazz.isAssignableFrom(block.getClass()))
                 .filter(block -> ((Nameable) block).getName().equals(name))
+                .map(block -> (T) block)
                 .findFirst();
     }
 

@@ -41,8 +41,10 @@ public class VariableParser extends Parser {
                 }
             }
 
-            variable.setValue(Utils.handleVariables(tokenizer, superBlock)); // The value cannot have any spaces in this case.
-        } else {
+            variable.setValue(Utils.handleVariables(tokenizer, superBlock).getValue());
+        }
+
+        else {
             tokenizer.pushBack(); // If they choose not in initialize it, we want to undo getting the next token since it will be used elsewhere.
         }
 

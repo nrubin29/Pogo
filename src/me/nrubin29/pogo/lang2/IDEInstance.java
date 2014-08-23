@@ -24,7 +24,15 @@ public class IDEInstance {
     }
 
     private void run() throws InvalidCodeException, IOException {
-        Parser[] parsers = { new ClassParser(), new MethodParser(), new VariableParser(), new IfParser(), new WhileParser() };
+        Parser[] parsers = {
+                new ClassParser(),
+                new MethodParser(),
+                new VariableParser(),
+                new IfParser(),
+                new WhileParser(),
+                new MethodInvocationParser()
+        };
+
         Class mainClass = null;
 
         for (int i = 0; i < classes.length; i++) {
@@ -61,12 +69,16 @@ public class IDEInstance {
                             if (block != null) {
                                 if (newBlock instanceof Method) { // If it is a method, we add the method to the class.
                                     block.getBlockTree()[0].add(newBlock);
-                                } else {
+                                }
+
+                                else {
                                     block.add(newBlock);
                                 }
                             }
 
-                            block = newBlock;
+                            if (!(newBlock instanceof MethodInvocation)) { // if it is a method, we don't want that to be the new superblock.
+                                block = newBlock;
+                            }
                         }
 
                         break;

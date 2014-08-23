@@ -7,8 +7,8 @@ public class Class extends Block implements Type, Nameable, Cloneable {
 
     private String name;
 
-    public Class(Block superBlock, String name) {
-        super(superBlock);
+    public Class(String name) {
+        super(null);
 
         this.name = name;
     }
@@ -32,7 +32,7 @@ public class Class extends Block implements Type, Nameable, Cloneable {
 
     @Override
     public Class clone() {
-        Class clazz = new Class(getSuperBlock(), name);
+        Class clazz = new Class(name);
         cloneHelp(super.clone());
         return clazz;
     }

@@ -199,12 +199,12 @@ public class IDE {
         return scroll;
     }
 
-    private static final String[] KEYWORDS = new String[]{
+    private static final String[] KEYWORDS = {
             "boolean", "class", "double", "else",
             "end", "for", "foreach", "if",
-            "instance", "integer", "method", "new",
-            "private", "public", "return", "string",
-            "this", "var", "void", "while"
+            "instance", "integer", "invoke", "method",
+            "new", "private", "public", "return",
+            "string", "this", "var", "void", "while"
     };
 
     private static final Pattern KEYWORD_PATTERN = Pattern.compile("\\b(" + String.join("|", KEYWORDS) + ")\\b");

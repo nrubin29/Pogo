@@ -59,6 +59,7 @@ public class Utils {
         tokenizer.ordinaryChar('<');
         tokenizer.ordinaryChar('(');
         tokenizer.ordinaryChar(')');
+        tokenizer.ordinaryChar('.');
         return tokenizer;
     }
 
