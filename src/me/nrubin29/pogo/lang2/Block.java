@@ -5,6 +5,7 @@ import me.nrubin29.pogo.ide.Console;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -60,7 +61,18 @@ public abstract class Block implements Cloneable {
     }
 
     public Optional<Variable> getVariable(String name) {
-        return variables.stream().filter(variable -> variable.getName().equals(name)).findFirst();
+        Optional<Variable> superBlockVariable = Arrays.stream(getBlockTree(), 0, getBlockTree().length - 1)
+                .filter(b -> b.hasVariable(name))
+                .map(b -> b.getVariable(name).get())
+                .findFirst();
+
+        if (superBlockVariable.isPresent()) {
+            return superBlockVariable;
+        }
+
+        else {
+            return variables.stream().filter(variable -> variable.getName().equals(name)).findFirst();
+        }
     }
 
     public boolean hasVariable(String name) {
