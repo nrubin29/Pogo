@@ -7,7 +7,7 @@ public class ElseIf extends ConditionalBlock {
     }
 
     @Override
-    public void run() throws InvalidCodeException {
+    public void run() {
         // We don't want to do anything because the If will run this.
     }
 }

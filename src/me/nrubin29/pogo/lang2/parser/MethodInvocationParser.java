@@ -49,7 +49,7 @@ public class MethodInvocationParser extends Parser<MethodInvocation> {
                 /*
                 This only allows for single-word parameters. "Hello, world" would not work.
                  */
-                params.add(new Value(Utils.handleVariables(tokenizer.sval, tokenizer.ttype, superBlock).getValue()));
+                params.add(Utils.handleVariables(tokenizer.sval, tokenizer.ttype, superBlock));
             }
         }
 

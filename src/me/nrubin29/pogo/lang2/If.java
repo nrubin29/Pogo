@@ -3,6 +3,7 @@ package me.nrubin29.pogo.lang2;
 import me.nrubin29.pogo.Pogo;
 import me.nrubin29.pogo.ide.Console;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class If extends ConditionalBlock {
@@ -26,7 +27,7 @@ public class If extends ConditionalBlock {
     }
 
     @Override
-    public void run() throws InvalidCodeException {
+    public void run() throws InvalidCodeException, IOException {
         Pogo.getIDE().getConsole().write("run() called on " + toString(), Console.MessageType.OUTPUT);
         Pogo.getIDE().getConsole().write("doComparison() -> " + doComparison(), Console.MessageType.OUTPUT);
 
@@ -52,5 +53,10 @@ public class If extends ConditionalBlock {
                 }
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " elseIfsSize=" + elseIfs.size() + " hasElse=" + (elze != null);
     }
 }

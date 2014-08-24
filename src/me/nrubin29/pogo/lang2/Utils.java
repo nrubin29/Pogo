@@ -3,6 +3,7 @@ package me.nrubin29.pogo.lang2;
 import java.io.*;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -29,8 +30,22 @@ public class Utils {
                 String str = tokenizer.sval;
 
                 if (block != null) {
-                    if (block.hasVariable(str)) {
-                        builder.append(block.getVariable(str).get().getValue());
+                    Optional<VariableDeclaration> d = block.getSubBlock(VariableDeclaration.class, str);
+
+                    if (d.isPresent()) {
+                        VariableDeclaration dec = d.get();
+
+                        if (!dec.hasValue()) {
+                            throw new InvalidCodeException("Variable " + str + " is not initialized.");
+                        }
+
+                        if (dec.isValueNew()) {
+                            builder.append("{new ").append(dec.getType()).append("}");
+                        }
+
+                        else {
+                            builder.append(handleVariables(dec.getValue(), block));
+                        }
                     }
 
                     else {

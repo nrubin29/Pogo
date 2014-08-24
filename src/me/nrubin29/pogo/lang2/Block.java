@@ -67,9 +67,24 @@ public abstract class Block implements Cloneable {
         return getVariable(name).isPresent();
     }
 
-    public void addVariable(Variable variable) {
-        Pogo.getIDE().getConsole().write("Adding variable " + variable + " to " + toString(), Console.MessageType.OUTPUT);
-        variables.add(variable);
+    public void addVariable(Variable variable) throws InvalidCodeException {
+        Pogo.getIDE().getConsole().write("Going to add variable " + variable + " to " + toString(), Console.MessageType.OUTPUT);
+
+        Optional<Variable> v = getVariable(variable.getName());
+
+        if (v.isPresent()) {
+            Variable var = v.get();
+
+            if (!var.getType().equals(variable.getType())) {
+                throw new InvalidCodeException("Attempted to reassign variable using wrong type.");
+            }
+
+            var.setValue(variable.getValue());
+        }
+
+        else {
+            variables.add(variable);
+        }
     }
 
     public abstract void run() throws InvalidCodeException, IOException;
@@ -80,7 +95,7 @@ public abstract class Block implements Cloneable {
     public Block clone() {
         Block block = new Block(superBlock) {
             @Override
-            public void run() throws InvalidCodeException {
+            public void run() throws InvalidCodeException, IOException {
                 Block.this.run();
             }
 

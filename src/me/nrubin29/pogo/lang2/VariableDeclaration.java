@@ -3,7 +3,7 @@ package me.nrubin29.pogo.lang2;
 import java.io.IOException;
 import java.io.StreamTokenizer;
 
-public class VariableDeclaration extends ReadOnlyBlock {
+public class VariableDeclaration extends ReadOnlyBlock implements Nameable {
 
     private String typeName, nameName;
     private boolean init, newValue;
@@ -50,6 +50,27 @@ public class VariableDeclaration extends ReadOnlyBlock {
         }
 
         getSuperBlock().addVariable(variable);
+    }
+
+    @Override
+    public String getName() {
+        return nameName;
+    }
+
+    public String getType() {
+        return typeName;
+    }
+
+    public boolean hasValue() {
+        return init && (newValue || value != null);
+    }
+
+    public boolean isValueNew() {
+        return newValue;
+    }
+
+    public StreamTokenizer getValue() {
+        return value;
     }
 
     @Override

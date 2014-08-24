@@ -3,6 +3,8 @@ package me.nrubin29.pogo.lang2;
 import me.nrubin29.pogo.Pogo;
 import me.nrubin29.pogo.ide.Console;
 
+import java.io.IOException;
+
 public class While extends ConditionalBlock {
 
     public While(Block superBlock, Value a, Value b, Comparison comparison) {
@@ -10,7 +12,7 @@ public class While extends ConditionalBlock {
     }
 
     @Override
-    public void run() throws InvalidCodeException {
+    public void run() throws InvalidCodeException, IOException {
         Pogo.getIDE().getConsole().write("run() called on " + toString(), Console.MessageType.OUTPUT);
 
         while (doComparison()) {

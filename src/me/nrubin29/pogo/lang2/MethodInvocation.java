@@ -1,5 +1,6 @@
 package me.nrubin29.pogo.lang2;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -17,7 +18,7 @@ public class MethodInvocation extends ReadOnlyBlock {
     }
 
     @Override
-    public void run() throws InvalidCodeException {
+    public void run() throws InvalidCodeException, IOException {
         Class clazz;
 
         if (invokableName.equals("System")) {

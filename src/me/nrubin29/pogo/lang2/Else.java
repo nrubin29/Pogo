@@ -7,12 +7,12 @@ public class Else extends Block {
     }
 
     @Override
-    public void run() throws InvalidCodeException {
+    public void run() {
         // We don't want to do anything because the If will run this.
     }
 
     @Override
     public String toString() {
-        return getClass() + "";
+        return String.valueOf(getClass());
     }
 }

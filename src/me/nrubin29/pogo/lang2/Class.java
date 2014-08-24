@@ -3,6 +3,8 @@ package me.nrubin29.pogo.lang2;
 import me.nrubin29.pogo.Pogo;
 import me.nrubin29.pogo.ide.Console;
 
+import java.io.IOException;
+
 public class Class extends Block implements Type, Nameable, Cloneable {
 
     private String name;
@@ -19,7 +21,7 @@ public class Class extends Block implements Type, Nameable, Cloneable {
     }
 
     @Override
-    public void run() throws InvalidCodeException {
+    public void run() throws InvalidCodeException, IOException {
         Pogo.getIDE().getConsole().write("run() called on " + toString(), Console.MessageType.OUTPUT);
 
         getSubBlock(Method.class, "main").get().run();
