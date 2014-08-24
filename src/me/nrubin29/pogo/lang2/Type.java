@@ -14,10 +14,6 @@ public interface Type {
 
         }
 
-        if (type != null && type == PrimitiveType.VOID) {
-            throw new InvalidCodeException("Attempted to instantiate variable with type void.");
-        }
-
         if (type == null) {
             type = IDEInstance.CURRENT_INSTANCE.getPogoClass(str);
         }

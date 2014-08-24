@@ -1,16 +1,19 @@
 package me.nrubin29.pogo.lang2;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
-public class MethodInvocation extends Block {
+public class MethodInvocation extends ReadOnlyBlock {
 
     private String invokableName, methodName;
+    private ArrayList<Value> values;
 
-    public MethodInvocation(Block superBlock, String invokableName, String methodName) {
+    public MethodInvocation(Block superBlock, String invokableName, String methodName, ArrayList<Value> values) {
         super(superBlock);
 
         this.invokableName = invokableName;
         this.methodName = methodName;
+        this.values = values;
     }
 
     @Override
@@ -47,39 +50,11 @@ public class MethodInvocation extends Block {
             throw new InvalidCodeException("Expected method, found " + methodName + ".");
         }
 
-        m.get().run();
+        m.get().invoke(values);
     }
 
     @Override
     public String toString() {
         return getClass() + " invokableName=" + invokableName + " methodName=" + methodName;
-    }
-
-    @Override
-    public void add(Block subBlock) {
-        throw new UnsupportedOperationException("Method invocation cannot have subblocks.");
-    }
-
-    @Override
-    public <T extends Block & Nameable> Optional<T> getSubBlock(java.lang.Class<T> clazz, String name) {
-        throw new UnsupportedOperationException("Method invocation cannot have subblocks.");
-    }
-
-    @Override
-    public <T extends Block & Nameable> boolean hasSubBlock(java.lang.Class<T> clazz, String name) {
-        throw new UnsupportedOperationException("Method invocation cannot have subblocks.");
-    }
-
-    @Override
-    public Optional<Variable> getVariable(String name) {
-        throw new UnsupportedOperationException("Method invocation cannot have variables");
-    }
-
-    public boolean hasVariable(String name) {
-        throw new UnsupportedOperationException("Method invocation cannot have variables");
-    }
-
-    public void addVariable(Variable variable) {
-        throw new UnsupportedOperationException("Method invocation cannot have variables");
     }
 }

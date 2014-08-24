@@ -1,11 +1,10 @@
 package me.nrubin29.pogo.lang2.parser;
 
-import me.nrubin29.pogo.lang2.Block;
-import me.nrubin29.pogo.lang2.InvalidCodeException;
-import me.nrubin29.pogo.lang2.MethodInvocation;
+import me.nrubin29.pogo.lang2.*;
 
 import java.io.IOException;
 import java.io.StreamTokenizer;
+import java.util.ArrayList;
 
 public class MethodInvocationParser extends Parser<MethodInvocation> {
 
@@ -16,7 +15,7 @@ public class MethodInvocationParser extends Parser<MethodInvocation> {
 
     @Override
     public MethodInvocation parse(Block superBlock, StreamTokenizer tokenizer) throws IOException, InvalidCodeException {
-        // System.print()
+        // System.print("Hello there")
 
         tokenizer.nextToken(); // Skip the invoke token.
         tokenizer.nextToken();
@@ -33,6 +32,27 @@ public class MethodInvocationParser extends Parser<MethodInvocation> {
 
         String methodName = tokenizer.sval;
 
-        return new MethodInvocation(superBlock, invokableName, methodName);
+        tokenizer.nextToken();
+
+        if (tokenizer.ttype != '(') {
+            throw new InvalidCodeException("Method invocation does not contain opening parenthesis.");
+        }
+
+        ArrayList<Value> params = new ArrayList<>();
+
+        if (tokenizer.ttype != ')') {
+            while (tokenizer.nextToken() != StreamTokenizer.TT_EOF) {
+                if (tokenizer.ttype == ')') {
+                    break;
+                }
+
+                /*
+                This only allows for single-word parameters. "Hello, world" would not work.
+                 */
+                params.add(new Value(Utils.handleVariables(tokenizer.sval, tokenizer.ttype, superBlock).getValue()));
+            }
+        }
+
+        return new MethodInvocation(superBlock, invokableName, methodName, params);
     }
 }

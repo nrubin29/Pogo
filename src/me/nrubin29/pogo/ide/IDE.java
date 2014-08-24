@@ -201,7 +201,7 @@ public class IDE {
 
     private static final String[] KEYWORDS = {
             "boolean", "class", "double", "else",
-            "end", "for", "foreach", "if",
+            "elseif", "end", "for", "foreach", "if",
             "instance", "integer", "invoke", "method",
             "new", "private", "public", "return",
             "string", "this", "var", "void", "while"

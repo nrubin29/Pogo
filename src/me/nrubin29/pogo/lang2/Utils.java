@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 public class Utils {
 
     public static Value handleVariables(String sval, int ttype, Block block) throws InvalidCodeException, IOException {
-        StreamTokenizer tokenizer = new StreamTokenizer(new StringReader(sval));
+        StreamTokenizer tokenizer = new StreamTokenizer(new StringReader(sval != null ? sval : ""));
         tokenizer.nextToken();
         tokenizer.ttype = ttype;
         return handleVariables(tokenizer, block);

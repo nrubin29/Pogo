@@ -3,6 +3,7 @@ package me.nrubin29.pogo.lang2;
 import me.nrubin29.pogo.Pogo;
 import me.nrubin29.pogo.ide.Console;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
@@ -71,7 +72,7 @@ public abstract class Block implements Cloneable {
         variables.add(variable);
     }
 
-    public abstract void run() throws InvalidCodeException;
+    public abstract void run() throws InvalidCodeException, IOException;
 
     public abstract String toString();
 

@@ -1,8 +1,6 @@
 package me.nrubin29.pogo.lang2;
 
-import me.nrubin29.pogo.Pogo;
-import me.nrubin29.pogo.ide.Console;
-
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Method extends Block implements Nameable {
@@ -40,10 +38,14 @@ public class Method extends Block implements Nameable {
 
     @Override
     public void run() throws InvalidCodeException {
-        Pogo.getIDE().getConsole().write("run() called on " + toString(), Console.MessageType.OUTPUT);
+        if (!name.equals("main") && visibility != Visibility.PUBLIC && type != PrimitiveType.VOID && parameters.length > 0) {
+            throw new UnsupportedOperationException("Cannot use run() on non-main method. Use invoke()");
+        }
+    }
 
-        for (Block subBlock : getSubBlocks()) {
-            subBlock.run();
+    public void invoke(ArrayList<Value> values) throws InvalidCodeException {
+        for (Block block : getSubBlocks()) {
+            block.run();
         }
     }
 

@@ -49,12 +49,12 @@ public class IDEInstance {
                     continue;
                 }
 
-                if (firstToken.equals("end")) { // This could be its own Parser, but it probably shouldn't be.
+                if (firstToken.equals("end")) {
                     if (block == null) {
                         throw new InvalidCodeException("Attempted to end non-existent block.");
                     }
 
-                    if (!(block instanceof ConditionalBlock)) {
+                    if (!(block instanceof ConditionalBlock) && !block.getClass().equals(Else.class)) {
                         throw new InvalidCodeException("Attempted to end non-conditional block.");
                     }
 
@@ -76,7 +76,7 @@ public class IDEInstance {
                                 }
                             }
 
-                            if (!(newBlock instanceof MethodInvocation)) { // if it is a method, we don't want that to be the new superblock.
+                            if (!(newBlock instanceof ReadOnlyBlock)) { // If it is a read only block, we don't want that to be the new superblock.
                                 block = newBlock;
                             }
                         }

@@ -5,6 +5,10 @@ public class Value {
     private Type type;
     private Object value;
 
+    public Value(Object value) {
+        this(null, value);
+    }
+
     public Value(Type type, Object value) {
         this.type = type;
         this.value = value;
@@ -15,7 +19,9 @@ public class Value {
     }
 
     public Object getValue() {
-        System.out.println("Invoked getValue(). Raw value is " + value);
+        if (type == null) {
+            return value;
+        }
 
         if (type == PrimitiveType.BOOLEAN) {
             return Boolean.valueOf(value.toString());
@@ -39,6 +45,11 @@ public class Value {
     }
 
     public void setValue(Object value) {
+        if (type == null) {
+            this.value = value;
+            return;
+        }
+
         if (type == PrimitiveType.BOOLEAN) {
             this.value = Boolean.valueOf(value.toString());
         }
@@ -77,7 +88,7 @@ public class Value {
             return false;
         }
 
-        if (!((Value) other).getType().equals(getType())) {
+        if (((Value) other).getType() != null && getType() != null && !((Value) other).getType().equals(getType())) {
             System.out.println("other has different Type. This type is " + getType() + ". other type is " + ((Value) other).getType());
             return false;
         }

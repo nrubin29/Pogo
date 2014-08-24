@@ -5,18 +5,40 @@ import me.nrubin29.pogo.lang2.*;
 import java.io.IOException;
 import java.io.StreamTokenizer;
 
-public class IfParser extends Parser<If> {
+public class IfParser extends Parser<Block> {
+
+    private If lastIf;
 
     @Override
     public boolean shouldParse(String firstToken) {
-        return firstToken.equals("if");
+        return firstToken.equals("if") || firstToken.equals("elseif") || firstToken.equals("else");
     }
 
     @Override
-    public If parse(Block superBlock, StreamTokenizer tokenizer) throws IOException, InvalidCodeException {
-        // (name == "Noah")
+    public Block parse(Block superBlock, StreamTokenizer tokenizer) throws IOException, InvalidCodeException {
+        // if|elseif|else (name == "Noah")
 
-        tokenizer.nextToken(); // Skip the if token.
+        tokenizer.nextToken();
+
+        if (tokenizer.sval.equals("elseif") && lastIf == null) {
+            throw new InvalidCodeException("Attempted to write elseif statement without if statement.");
+        }
+
+        if (tokenizer.sval.equals("else")) {
+            if (lastIf == null) {
+                throw new InvalidCodeException("Attempted to write else statement without if statement.");
+            }
+
+            else {
+                Else elze = new Else(superBlock);
+                lastIf.setElse(elze);
+                lastIf = null;
+                return elze;
+            }
+        }
+
+        String type = tokenizer.sval; // Either if or elseif.
+
         tokenizer.nextToken();
 
         if (tokenizer.ttype != '(') {
@@ -47,6 +69,12 @@ public class IfParser extends Parser<If> {
             throw new InvalidCodeException("If statement does not end with closing parenthesis.");
         }
 
-        return new If(superBlock, a, b, comparison);
+        if (type.equals("if")) {
+            return lastIf = new If(superBlock, a, b, comparison);
+        }
+
+        else {
+            return lastIf.addElseIf(new ElseIf(superBlock, a, b, comparison));
+        }
     }
 }
