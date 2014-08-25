@@ -1,11 +1,16 @@
 package me.nrubin29.pogo;
 
-import javafx.application.Application;
 import javafx.stage.Stage;
 import me.nrubin29.pogo.ide.IDE;
+import me.nrubin29.pogo.ide.Project;
 import me.nrubin29.pogo.lang2.InvalidCodeException;
+import me.nrubin29.pogo.lang2.Runtime;
 
-public class Pogo extends Application {
+import javax.swing.filechooser.FileSystemView;
+import java.io.File;
+import java.io.IOException;
+
+public class Pogo {
 
     private static IDE ide;
 
@@ -46,7 +51,7 @@ public class Pogo extends Application {
 //            }
 //
 //            try {
-//                Instance.createInstance(new Project(projectPath), new Utils.Writable() {
+//                Instance.start(new Project(projectPath), new Utils.Writable() {
 //                    @Override
 //                    public void write(String text, Console.MessageType messageType) {
 //                        if (messageType == Console.MessageType.ERROR) System.err.println(text);
@@ -61,7 +66,9 @@ public class Pogo extends Application {
 //        }
 //    }
 
-    public static void main(String[] args) throws InvalidCodeException {
-        launch(args);
+    public static void main(String[] args) throws InvalidCodeException, IOException {
+//        launch(args);
+
+        Runtime.start(new Project(new File(FileSystemView.getFileSystemView().getHomeDirectory(), "/Desktop/Pogo")));
     }
 }

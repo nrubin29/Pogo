@@ -19,7 +19,7 @@ public class Value {
     }
 
     public Object getValue() {
-        if (type == null) {
+        if (type == null || value == null) {
             return value;
         }
 
@@ -45,7 +45,7 @@ public class Value {
     }
 
     public void setValue(Object value) {
-        if (type == null) {
+        if (type == null || value == null) {
             this.value = value;
             return;
         }

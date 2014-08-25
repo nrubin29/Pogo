@@ -3,18 +3,21 @@ package me.nrubin29.pogo.lang2;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class MethodInvocation extends ReadOnlyBlock {
 
     private String invokableName, methodName;
-    private ArrayList<Value> values;
+    private ArrayList<Token> values;
+    private Token capture;
 
-    public MethodInvocation(Block superBlock, String invokableName, String methodName, ArrayList<Value> values) {
+    public MethodInvocation(Block superBlock, String invokableName, String methodName, ArrayList<Token> values, Token capture) {
         super(superBlock);
 
         this.invokableName = invokableName;
         this.methodName = methodName;
         this.values = values;
+        this.capture = capture;
     }
 
     @Override
@@ -25,8 +28,12 @@ public class MethodInvocation extends ReadOnlyBlock {
             clazz = SystemClass.getInstance();
         }
 
+        else if (invokableName.equals("this")) {
+            clazz = (Class) getBlockTree()[0];
+        }
+
         else {
-            clazz = IDEInstance.CURRENT_INSTANCE.getPogoClass(invokableName);
+            clazz = Runtime.RUNTIME.getPogoClass(invokableName);
         }
 
         if (clazz == null) {
@@ -51,7 +58,18 @@ public class MethodInvocation extends ReadOnlyBlock {
             throw new InvalidCodeException("Expected method, found " + methodName + ".");
         }
 
-        m.get().invoke(values);
+        Object ret = m.get().invoke(values.stream().map(token -> {
+            try {
+                return Utils.handleVariables(token, getSuperBlock());
+            } catch (InvalidCodeException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }).filter(value -> value != null).collect(Collectors.toList()));
+
+        if (capture != null && capture.getType() != Token.TokenType.EMPTY) {
+            getSuperBlock().getVariable(capture.getToken()).get().setValue(ret);
+        }
     }
 
     @Override

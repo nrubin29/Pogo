@@ -1,6 +1,5 @@
 package me.nrubin29.pogo.lang2;
 
-import me.nrubin29.pogo.Pogo;
 import me.nrubin29.pogo.ide.Console;
 
 import java.io.IOException;
@@ -44,8 +43,9 @@ public abstract class Block implements Cloneable {
         return subBlocks;
     }
 
-    public void add(Block subBlock) {
+    public <T extends Block> T add(T subBlock) {
         subBlocks.add(subBlock);
+        return subBlock;
     }
 
     public <T extends Block & Nameable> Optional<T> getSubBlock(java.lang.Class<T> clazz, String name) {
@@ -79,8 +79,8 @@ public abstract class Block implements Cloneable {
         return getVariable(name).isPresent();
     }
 
-    public void addVariable(Variable variable) throws InvalidCodeException {
-        Pogo.getIDE().getConsole().write("Going to add variable " + variable + " to " + toString(), Console.MessageType.OUTPUT);
+    public Variable addVariable(Variable variable) throws InvalidCodeException {
+        Runtime.RUNTIME.print("Going to add variable " + variable + " to " + toString(), Console.MessageType.OUTPUT);
 
         Optional<Variable> v = getVariable(variable.getName());
 
@@ -97,6 +97,12 @@ public abstract class Block implements Cloneable {
         else {
             variables.add(variable);
         }
+
+        return variable;
+    }
+
+    public Variable[] getVariables() {
+        return variables.toArray(new Variable[variables.size()]);
     }
 
     public abstract void run() throws InvalidCodeException, IOException;

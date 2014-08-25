@@ -1,8 +1,11 @@
 package me.nrubin29.pogo.lang2;
 
+import me.nrubin29.pogo.ide.Console;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Method extends Block implements Nameable {
 
@@ -10,8 +13,9 @@ public class Method extends Block implements Nameable {
     private Visibility visibility;
     private Type type;
     private Parameter[] parameters;
+    private Value returnValue;
 
-    public Method(Block superBlock, String name, Visibility visibility, Type type, Parameter[] parameters) {
+    public Method(Block superBlock, String name, Visibility visibility, Type type, Parameter... parameters) {
         super(superBlock);
 
         this.name = name;
@@ -37,18 +41,18 @@ public class Method extends Block implements Nameable {
         return parameters;
     }
 
-    @Override
-    public void run() throws InvalidCodeException, IOException {
-        if (!name.equals("main") && visibility != Visibility.PUBLIC && type != PrimitiveType.VOID && parameters.length > 0) {
-            throw new UnsupportedOperationException("Cannot use run() on non-main method. Use invoke()");
-        }
-
-        for (Block subBlock : getSubBlocks()) {
-            subBlock.run();
-        }
+    public void setReturnValue(Value returnValue) {
+        this.returnValue = returnValue;
     }
 
-    public void invoke(ArrayList<Value> values) throws InvalidCodeException, IOException {
+    @Override
+    public void run() throws InvalidCodeException, IOException {
+        invoke(new ArrayList<>());
+    }
+
+    public Object invoke(List<Value> values) throws InvalidCodeException, IOException {
+        Runtime.RUNTIME.print("invoke() called on " + this + " with values " + values, Console.MessageType.OUTPUT);
+
         if (values.size() != parameters.length) {
             throw new InvalidCodeException("Invalid number of parameters specified.");
         }
@@ -58,7 +62,7 @@ public class Method extends Block implements Nameable {
             Value v = values.get(i);
 
             if (!p.getType().equals(v.getType())) {
-                throw new InvalidCodeException("Type mismatch for parameter " + p.getName());
+                throw new InvalidCodeException("Type mismatch for parameter " + p.getName() + ". Type is " + v.getType() + ". Should be " + p.getType() + ".");
             }
 
             addVariable(new Variable(this, p.getName(), p.getType(), v.getValue()));
@@ -66,7 +70,13 @@ public class Method extends Block implements Nameable {
 
         for (Block block : getSubBlocks()) {
             block.run();
+
+            if (block instanceof Return && returnValue != null) {
+                break;
+            }
         }
+
+        return returnValue;
     }
 
     @Override

@@ -1,9 +1,6 @@
 package me.nrubin29.pogo.lang2.parser;
 
-import me.nrubin29.pogo.lang2.Block;
-import me.nrubin29.pogo.lang2.InvalidCodeException;
-import me.nrubin29.pogo.lang2.PogoTokenizer;
-import me.nrubin29.pogo.lang2.VariableDeclaration;
+import me.nrubin29.pogo.lang2.*;
 
 import java.io.IOException;
 
@@ -26,7 +23,9 @@ public class VariableParser extends Parser<VariableDeclaration> {
 
         boolean init = false, newValue = false;
 
-        if (tokenizer.nextToken().getToken().equals("=")) {
+        Token possibleEquals = tokenizer.nextToken();
+
+        if (possibleEquals.getToken() != null && possibleEquals.getToken().equals("=")) {
             init = true;
 
             if (tokenizer.nextToken().getToken().equals("new")) {

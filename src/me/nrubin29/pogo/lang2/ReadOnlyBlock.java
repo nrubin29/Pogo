@@ -12,7 +12,7 @@ public abstract class ReadOnlyBlock extends Block {
     }
 
     @Override
-    public void add(Block subBlock) {
+    public <T extends Block> T add(T subBlock) {
         throw new UnsupportedOperationException("Method invocation cannot have subblocks.");
     }
 
@@ -35,7 +35,7 @@ public abstract class ReadOnlyBlock extends Block {
         throw new UnsupportedOperationException("Method invocation cannot have variables");
     }
 
-    public void addVariable(Variable variable) {
+    public Variable addVariable(Variable variable) {
         throw new UnsupportedOperationException("Method invocation cannot have variables");
     }
 }

@@ -2,7 +2,6 @@ package me.nrubin29.pogo.ide;
 
 import javafx.application.Platform;
 import javafx.scene.input.KeyCode;
-import me.nrubin29.pogo.lang2.IDEInstance;
 import org.fxmisc.richtext.StyleClassedTextArea;
 
 public class Console extends StyleClassedTextArea {
@@ -29,7 +28,7 @@ public class Console extends StyleClassedTextArea {
     public void run(final Project project) {
         new Thread(() -> {
             try {
-                IDEInstance.createInstance(project);
+                me.nrubin29.pogo.lang2.Runtime.start(project);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -58,6 +57,8 @@ public class Console extends StyleClassedTextArea {
     }
 
     public void write(final String txt, final MessageType messageType) {
+        System.out.println("write <- " + txt);
+
         Platform.runLater(() -> {
             appendText(txt + "\n");
             setStyleClass(getLength() - txt.length() - 1, getLength(), messageType.name().toLowerCase());

@@ -1,36 +1,40 @@
 package me.nrubin29.pogo.lang2;
 
+import me.nrubin29.pogo.Pogo;
+import me.nrubin29.pogo.ide.Console;
 import me.nrubin29.pogo.ide.Project;
 import me.nrubin29.pogo.lang2.parser.*;
 
 import java.io.IOException;
+import java.util.Scanner;
 
-public class IDEInstance {
+public class Runtime {
 
-    public static IDEInstance CURRENT_INSTANCE;
+    public static Runtime RUNTIME;
 
     private final Project project;
     private final Class[] classes;
 
-    private IDEInstance(Project project) {
+    private Runtime(Project project) {
         this.project = project;
         this.classes = new Class[project.getFiles().size()];
     }
 
-    public static void createInstance(Project project) throws InvalidCodeException, IOException {
-        CURRENT_INSTANCE = new IDEInstance(project);
-        CURRENT_INSTANCE.run();
+    public static void start(Project project) throws InvalidCodeException, IOException {
+        RUNTIME = new Runtime(project);
+        RUNTIME.run();
     }
 
     private void run() throws InvalidCodeException, IOException {
         Parser[] parsers = {
                 new ClassParser(),
-                new MethodParser(),
-                new VariableParser(),
-                new IfParser(),
-                new WhileParser(),
                 new ForParser(),
-                new MethodInvocationParser()
+                new IfParser(),
+                new MethodInvocationParser(),
+                new MethodParser(),
+                new ReturnParser(),
+                new VariableParser(),
+                new WhileParser()
         };
 
         Class mainClass = null;
@@ -117,5 +121,31 @@ public class IDEInstance {
         }
 
         return null;
+    }
+
+    public void print(String msg, Console.MessageType type) {
+        if (Pogo.getIDE() != null) {
+            Pogo.getIDE().getConsole().write(msg, type);
+        }
+
+        else {
+            if (type == Console.MessageType.ERROR) {
+                System.err.println(msg);
+            }
+
+            else {
+                System.out.println(msg);
+            }
+        }
+    }
+
+    public String prompt() {
+        if (Pogo.getIDE() != null) {
+            return Pogo.getIDE().getConsole().prompt();
+        }
+
+        else {
+            return new Scanner(System.in).nextLine();
+        }
     }
 }

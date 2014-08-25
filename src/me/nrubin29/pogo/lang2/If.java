@@ -1,6 +1,5 @@
 package me.nrubin29.pogo.lang2;
 
-import me.nrubin29.pogo.Pogo;
 import me.nrubin29.pogo.ide.Console;
 
 import java.io.IOException;
@@ -28,8 +27,8 @@ public class If extends ConditionalBlock {
 
     @Override
     public void run() throws InvalidCodeException, IOException {
-        Pogo.getIDE().getConsole().write("run() called on " + toString(), Console.MessageType.OUTPUT);
-        Pogo.getIDE().getConsole().write("doComparison() -> " + doComparison(), Console.MessageType.OUTPUT);
+        Runtime.RUNTIME.print("run() called on " + toString(), Console.MessageType.OUTPUT);
+        Runtime.RUNTIME.print("doComparison() -> " + doComparison(), Console.MessageType.OUTPUT);
 
         if (doComparison()) {
             for (Block subBlock : getSubBlocks()) {

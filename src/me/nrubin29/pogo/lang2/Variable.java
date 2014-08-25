@@ -5,6 +5,10 @@ public class Variable extends Value implements Nameable {
     private Block block;
     private String name;
 
+    public Variable(Block block, String name) {
+        this(block, name, null, null);
+    }
+
     public Variable(Block block, String name, Type type) {
         this(block, name, type, null);
     }

@@ -21,7 +21,7 @@ public class MethodInvocationParser extends Parser<MethodInvocation> {
         String invokableName = tokenizer.nextToken().getToken();
 
         if (!tokenizer.nextToken().getToken().equals(".")) {
-            throw new InvalidCodeException("Not a statement.");
+            throw new InvalidCodeException("Not a method invocation.");
         }
 
         String methodName = tokenizer.nextToken().getToken();
@@ -30,7 +30,7 @@ public class MethodInvocationParser extends Parser<MethodInvocation> {
             throw new InvalidCodeException("Method invocation does not contain opening parenthesis.");
         }
 
-        ArrayList<Value> params = new ArrayList<>();
+        ArrayList<Token> params = new ArrayList<>();
 
         while (tokenizer.hasNextToken()) {
             Token nextToken = tokenizer.nextToken();
@@ -39,12 +39,17 @@ public class MethodInvocationParser extends Parser<MethodInvocation> {
                 break;
             }
 
-                /*
-                This only allows for single-word parameters. "Hello, world" would not work.
-                 */
-            params.add(Utils.handleVariables(nextToken, superBlock));
+            params.add(nextToken);
         }
 
-        return new MethodInvocation(superBlock, invokableName, methodName, params);
+        Token optionalVariable = tokenizer.nextToken();
+
+        if (optionalVariable.getType() != Token.TokenType.EMPTY) {
+            if (optionalVariable.getType() != Token.TokenType.TOKEN) {
+                throw new InvalidCodeException("Capture must be a variable.");
+            }
+        }
+
+        return new MethodInvocation(superBlock, invokableName, methodName, params, optionalVariable);
     }
 }

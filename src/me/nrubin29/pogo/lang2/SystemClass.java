@@ -1,10 +1,9 @@
 package me.nrubin29.pogo.lang2;
 
-import me.nrubin29.pogo.Pogo;
 import me.nrubin29.pogo.ide.Console;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This is similar to the MethodParser class in lang except that this extends Class and contains subclasses which extend Method.
@@ -16,6 +15,7 @@ public class SystemClass extends Class {
         super("System");
 
         add(new PrintMethod());
+        add(new GetInput());
     }
 
     private static SystemClass instance = new SystemClass();
@@ -26,28 +26,41 @@ public class SystemClass extends Class {
 
     private abstract class SystemMethod extends Method {
 
-        public SystemMethod(String name, Type type, Parameter[] parameters) {
+        public SystemMethod(String name, Type type, Parameter... parameters) {
             super(SystemClass.this, name, Visibility.PUBLIC, type, parameters);
         }
 
         @Override
-        public void invoke(ArrayList<Value> values) throws IOException, InvalidCodeException {
+        public Object invoke(List<Value> values) throws IOException, InvalidCodeException {
             super.invoke(values);
-            invoke();
+            return invoke();
         }
 
-        protected abstract void invoke();
+        protected abstract Object invoke();
     }
 
     private class PrintMethod extends SystemMethod {
 
         private PrintMethod() {
-            super("print", PrimitiveType.VOID, new Parameter[] { new Parameter(PrimitiveType.STRING, "str") });
+            super("print", PrimitiveType.VOID, new Parameter(PrimitiveType.STRING, "str"));
         }
 
         @Override
-        public void invoke() {
-            Pogo.getIDE().getConsole().write(String.valueOf(getVariable("str").get().getValue()), Console.MessageType.OUTPUT);
+        public Object invoke() {
+            Runtime.RUNTIME.print(String.valueOf(getVariable("str").get().getValue()), Console.MessageType.OUTPUT);
+            return null;
+        }
+    }
+
+    private class GetInput extends SystemMethod {
+
+        private GetInput() {
+            super("getInput", PrimitiveType.STRING);
+        }
+
+        @Override
+        protected Object invoke() {
+            return Runtime.RUNTIME.prompt();
         }
     }
 }

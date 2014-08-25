@@ -65,7 +65,7 @@ public class Method extends Block implements Invokable {
         super.run();
 
         if (getReturnType() != SystemVariableType.VOID && retValue == null) {
-            throw new Utils.InvalidCodeException("No return for systemmethod " + getName());
+            throw new Utils.InvalidCodeException("No return for method " + getName());
         }
 
         Object localRetValue = retValue;

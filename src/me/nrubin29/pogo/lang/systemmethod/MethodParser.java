@@ -57,7 +57,7 @@ public class MethodParser {
             }
 
             if (toInvoke == null) {
-                throw new Utils.InvalidCodeException("System systemmethod " + method + " does not exist.");
+                throw new Utils.InvalidCodeException("System method " + method + " does not exist.");
             }
         } else {
             if (b.hasVariable(invoked)) {
@@ -66,7 +66,7 @@ public class MethodParser {
                     Class c = (Class) invokedVar.getType();
                     toInvoke = c.getMethod(method);
                     isVar = true;
-                } else throw new InvalidCodeException("Attempted to invoke systemmethod on primitive data type.");
+                } else throw new InvalidCodeException("Attempted to invoke method on primitive data type.");
             } else {
                 if (invoked.equals("this")) {
                     toInvoke = ((Class) b.getBlockTree()[0]).getMethod(method);

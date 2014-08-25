@@ -1,6 +1,5 @@
 package me.nrubin29.pogo.lang2;
 
-import me.nrubin29.pogo.Pogo;
 import me.nrubin29.pogo.ide.Console;
 
 import java.io.IOException;
@@ -13,16 +12,16 @@ public class While extends ConditionalBlock {
 
     @Override
     public void run() throws InvalidCodeException, IOException {
-        Pogo.getIDE().getConsole().write("run() called on " + toString(), Console.MessageType.OUTPUT);
+        Runtime.RUNTIME.print("run() called on " + toString(), Console.MessageType.OUTPUT);
 
         while (doComparison()) {
-            Pogo.getIDE().getConsole().write("While loop about to go around once.", Console.MessageType.OUTPUT);
+            Runtime.RUNTIME.print("While loop about to go around once.", Console.MessageType.OUTPUT);
 
             for (Block subBlock : getSubBlocks()) {
                 subBlock.run();
             }
         }
 
-        Pogo.getIDE().getConsole().write("While loop finished.", Console.MessageType.OUTPUT);
+        Runtime.RUNTIME.print("While loop finished.", Console.MessageType.OUTPUT);
     }
 }

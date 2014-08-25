@@ -15,7 +15,7 @@ public interface Type {
         }
 
         if (type == null) {
-            type = IDEInstance.CURRENT_INSTANCE.getPogoClass(str);
+            type = Runtime.RUNTIME.getPogoClass(str);
         }
 
         if (type == null) {

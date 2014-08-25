@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,22 +29,8 @@ public class Utils {
 
         else {
             if (block != null) {
-                Optional<VariableDeclaration> d = block.getSubBlock(VariableDeclaration.class, token.getToken());
-
-                if (d.isPresent()) {
-                    VariableDeclaration dec = d.get();
-
-                    if (!dec.hasValue()) {
-                        throw new InvalidCodeException("Variable " + token.getToken() + " is not initialized.");
-                    }
-
-                    if (dec.isValueNew()) {
-                        return new Value("{new " + dec.getType() + "}");
-                    }
-
-                    else {
-                        return handleVariables(dec.getValue(), block);
-                    }
+                if (block.hasVariable(token.getToken())) {
+                    return block.getVariable(token.getToken()).get();
                 }
 
                 else {
