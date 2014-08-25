@@ -1,6 +1,6 @@
 package me.nrubin29.pogo.lang2;
 
-public abstract class ConditionalBlock extends Block {
+public abstract class ConditionalBlock extends Block implements Endable {
 
     private Value a;
     private Value b;

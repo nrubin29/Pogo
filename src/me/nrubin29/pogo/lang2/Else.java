@@ -1,6 +1,6 @@
 package me.nrubin29.pogo.lang2;
 
-public class Else extends Block {
+public class Else extends Block implements Endable {
 
     public Else(Block superBlock) {
         super(superBlock);

@@ -3,7 +3,7 @@ package me.nrubin29.pogo.lang2;
 public class Token {
 
     public enum TokenType {
-        EMPTY, TOKEN, STRING_LITERAL
+        EMPTY, TOKEN, BOOLEAN_LITERAL, DOUBLE_LITERAL, INTEGER_LITERAL, STRING_LITERAL
     }
 
     private TokenType type;

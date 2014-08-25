@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 public class PogoTokenizer {
 
-    private ArrayList<Pattern> patterns;
+    private ArrayList<TokenData> patterns;
     private String str;
     private Token lastToken;
     private boolean pushBack;
@@ -16,16 +16,21 @@ public class PogoTokenizer {
         this.str = str;
 
         for (Comparison comp : Comparison.values()) {
-            patterns.add(Pattern.compile("^(" + comp.getToken() + ")"));
+            patterns.add(new TokenData(Pattern.compile("^(" + comp.getToken() + ")"), Token.TokenType.TOKEN));
         }
 
-        String[] tokens = { "\"", "=", "\\(", "\\)", "\\.", "\\,", "//" };
+        String[] tokens = { "=", "\\(", "\\)", "\\.", "\\,", };
 
         for (String token : tokens) {
-            patterns.add(Pattern.compile("^(" + token + ")"));
+            patterns.add(new TokenData(Pattern.compile("^(" + token + ")"), Token.TokenType.TOKEN));
         }
 
-        patterns.add(Pattern.compile("^([a-zA-Z][^\n| |" + String.join("|", tokens) + "]*)"));
+        patterns.add(new TokenData(Pattern.compile("^(//)"), Token.TokenType.EMPTY));
+        patterns.add(new TokenData(Pattern.compile("^(\")"), Token.TokenType.STRING_LITERAL));
+        patterns.add(new TokenData(Pattern.compile("^(true|false)"), Token.TokenType.BOOLEAN_LITERAL));
+        patterns.add(new TokenData(Pattern.compile("^([a-zA-Z][^\n| |" + String.join("|", tokens) + "]*)"), Token.TokenType.TOKEN));
+        patterns.add(new TokenData(Pattern.compile("^((-)?[0-9][0-9]*)"), Token.TokenType.INTEGER_LITERAL));
+        patterns.add(new TokenData(Pattern.compile("^((-)?[0-9][0-9.]*)"), Token.TokenType.DOUBLE_LITERAL));
     }
 
     public Token nextToken() throws InvalidCodeException {
@@ -40,13 +45,34 @@ public class PogoTokenizer {
             return lastToken = new Token(Token.TokenType.EMPTY);
         }
 
-        for (Pattern pattern : patterns) {
-            Matcher matcher = pattern.matcher(str);
+        for (TokenData data : patterns) {
+            Matcher matcher = data.getPattern().matcher(str);
 
             if (matcher.find()) {
                 String token = matcher.group().trim();
 
-                if (token.equals("\"")) {
+                if (data.getTokenType() == Token.TokenType.BOOLEAN_LITERAL) {
+                    str = matcher.replaceFirst("");
+                    return lastToken = new Token(Token.TokenType.BOOLEAN_LITERAL, token);
+                }
+
+                else if (data.getTokenType() == Token.TokenType.INTEGER_LITERAL) {
+                    str = matcher.replaceFirst("");
+                    return lastToken = new Token(Token.TokenType.INTEGER_LITERAL, token);
+                }
+
+                else if (data.getTokenType() == Token.TokenType.DOUBLE_LITERAL) {
+                    str = matcher.replaceFirst("");
+                    return lastToken = new Token(Token.TokenType.DOUBLE_LITERAL, token);
+                }
+
+                else if (data.getTokenType() == Token.TokenType.EMPTY) {
+                    str = str.substring(str.indexOf('\n') != -1 ? str.indexOf('\n') : str.length());
+
+                    return lastToken = new Token(Token.TokenType.EMPTY);
+                }
+
+                else if (data.getTokenType() == Token.TokenType.STRING_LITERAL) {
                     StringBuilder builder = new StringBuilder();
 
                     for (int i = 1; i < str.length(); i++) {
@@ -60,19 +86,13 @@ public class PogoTokenizer {
                     }
 
                     str = str.substring(builder.length() + 2);
-
                     return lastToken = new Token(Token.TokenType.STRING_LITERAL, builder.toString());
                 }
 
-                else if (token.startsWith("//")) {
-                    str = str.substring(str.indexOf('\n') != -1 ? str.indexOf('\n') : str.length());
-
-                    return lastToken = new Token(Token.TokenType.EMPTY);
+                else {
+                    str = matcher.replaceFirst("");
+                    return lastToken = new Token(Token.TokenType.TOKEN, token);
                 }
-
-                str = matcher.replaceFirst("");
-
-                return lastToken = new Token(Token.TokenType.TOKEN, token);
             }
         }
 
@@ -86,6 +106,25 @@ public class PogoTokenizer {
     public void pushBack() {
         if (lastToken != null) {
             this.pushBack = true;
+        }
+    }
+
+    private class TokenData {
+
+        private Pattern pattern;
+        private Token.TokenType tokenType;
+
+        private TokenData(Pattern pattern, Token.TokenType tokenType) {
+            this.pattern = pattern;
+            this.tokenType = tokenType;
+        }
+
+        public Pattern getPattern() {
+            return pattern;
+        }
+
+        public Token.TokenType getTokenType() {
+            return tokenType;
         }
     }
 }

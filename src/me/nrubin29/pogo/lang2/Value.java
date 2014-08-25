@@ -78,26 +78,11 @@ public class Value {
 
     @Override
     public boolean equals(Object other) {
-        if (other == null) {
-            System.out.println("other is null.");
-            return false;
-        }
-
-        if (!(other instanceof Value)) {
-            System.out.println("other is not a Value.");
-            return false;
-        }
-
-        if (((Value) other).getType() != null && getType() != null && !((Value) other).getType().equals(getType())) {
-            System.out.println("other has different Type. This type is " + getType() + ". other type is " + ((Value) other).getType());
-            return false;
-        }
-
-        if (!((Value) other).getValue().equals(getValue())) {
-            System.out.println("other has different value. This value is " + getValue() + ". other value is " + ((Value) other).getValue());
-            return false;
-        }
-
-        return true;
+        return
+                other != null &&
+                other instanceof Value &&
+                !(((Value) other).getType() != null && getType() != null &&
+                !((Value) other).getType().equals(getType())) &&
+                ((Value) other).getValue().equals(getValue());
     }
 }

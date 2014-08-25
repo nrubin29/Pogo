@@ -12,7 +12,19 @@ import java.util.stream.Stream;
 public class Utils {
 
     public static Value handleVariables(Token token, Block block) throws InvalidCodeException {
-        if (token.getType() == Token.TokenType.STRING_LITERAL) {
+        if (token.getType() == Token.TokenType.BOOLEAN_LITERAL) {
+            return new Value(PrimitiveType.BOOLEAN, token.getToken());
+        }
+
+        else if (token.getType() == Token.TokenType.DOUBLE_LITERAL) {
+            return new Value(PrimitiveType.DOUBLE, token.getToken());
+        }
+
+        else if (token.getType() == Token.TokenType.INTEGER_LITERAL) {
+            return new Value(PrimitiveType.INTEGER, token.getToken());
+        }
+
+        else if (token.getType() == Token.TokenType.STRING_LITERAL) {
             return new Value(PrimitiveType.STRING, token.getToken());
         }
 

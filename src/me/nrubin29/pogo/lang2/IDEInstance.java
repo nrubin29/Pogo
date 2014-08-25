@@ -29,6 +29,7 @@ public class IDEInstance {
                 new VariableParser(),
                 new IfParser(),
                 new WhileParser(),
+                new ForParser(),
                 new MethodInvocationParser()
         };
 
@@ -52,8 +53,8 @@ public class IDEInstance {
                         throw new InvalidCodeException("Attempted to end non-existent block.");
                     }
 
-                    if (!(block instanceof ConditionalBlock) && !block.getClass().equals(Else.class)) {
-                        throw new InvalidCodeException("Attempted to end non-conditional block.");
+                    if (!(block instanceof Endable)) {
+                        throw new InvalidCodeException("Attempted to end non-endable block.");
                     }
 
                     block = block.getSuperBlock();
