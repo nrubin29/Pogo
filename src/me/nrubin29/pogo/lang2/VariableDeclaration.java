@@ -1,15 +1,14 @@
 package me.nrubin29.pogo.lang2;
 
 import java.io.IOException;
-import java.io.StreamTokenizer;
 
 public class VariableDeclaration extends ReadOnlyBlock implements Nameable {
 
     private String typeName, nameName;
     private boolean init, newValue;
-    private StreamTokenizer value;
+    private Token value;
 
-    public VariableDeclaration(Block superBlock, String typeName, String nameName, boolean init, boolean newValue, StreamTokenizer value) {
+    public VariableDeclaration(Block superBlock, String typeName, String nameName, boolean init, boolean newValue, Token value) {
         super(superBlock);
 
         this.typeName = typeName;
@@ -69,7 +68,7 @@ public class VariableDeclaration extends ReadOnlyBlock implements Nameable {
         return newValue;
     }
 
-    public StreamTokenizer getValue() {
+    public Token getValue() {
         return value;
     }
 

@@ -3,7 +3,6 @@ package me.nrubin29.pogo.lang2.parser;
 import me.nrubin29.pogo.lang2.*;
 
 import java.io.IOException;
-import java.io.StreamTokenizer;
 import java.util.ArrayList;
 
 public class MethodParser extends Parser<Method> {
@@ -14,66 +13,42 @@ public class MethodParser extends Parser<Method> {
     }
 
     @Override
-    public Method parse(Block superBlock, StreamTokenizer tokenizer) throws IOException, InvalidCodeException {
+    public Method parse(Block superBlock, PogoTokenizer tokenizer) throws IOException, InvalidCodeException {
         // public void main
 
         tokenizer.nextToken(); // Skip the method token.
-        tokenizer.nextToken();
 
+        Token visToken = tokenizer.nextToken();
         Visibility visibility;
 
         try {
-            visibility = Visibility.valueOf(tokenizer.sval.toUpperCase());
+            visibility = Visibility.valueOf(visToken.getToken().toUpperCase());
         } catch (Exception e) {
-            throw new InvalidCodeException("Expected visibility, got " + tokenizer.sval, e);
+            throw new InvalidCodeException("Expected visibility, got " + visToken, e);
         }
 
-        tokenizer.nextToken();
+        Type returnType = Type.match(tokenizer.nextToken().getToken());
 
-        Type returnType = null;
+        String methodName = tokenizer.nextToken().getToken();
 
-        try {
-            returnType = PrimitiveType.valueOf(tokenizer.sval.toUpperCase());
-        } catch (Exception ignored) {
-
-        }
-
-        if (returnType == null) {
-            returnType = IDEInstance.CURRENT_INSTANCE.getPogoClass(tokenizer.sval);
-        }
-
-        if (returnType == null) {
-            throw new InvalidCodeException("Expected return type, got " + tokenizer.sval, new NullPointerException());
-        }
-
-        tokenizer.nextToken();
-
-        String methodName = tokenizer.sval;
-
-        tokenizer.nextToken();
-
-        /*
-        When such a character is encountered by the parser, the parser treats it as a single-character token and sets ttype field to the character value.
-         */
-
-        if (tokenizer.ttype != '(') {
+        if (!tokenizer.nextToken().getToken().equals("(")) {
             throw new InvalidCodeException("Method declaration missing parentheses.");
         }
 
-        tokenizer.nextToken();
-
-        String beginningParams = tokenizer.sval;
+        Token beginningParams = tokenizer.nextToken();
 
         ArrayList<Parameter> params = new ArrayList<>();
 
-        if (tokenizer.ttype != ')') {
-            String[] paramData = new String[]{beginningParams, null};
+        if (!beginningParams.getToken().equals(")")) {
+            String[] paramData = new String[] { beginningParams.getToken(), null };
 
-            while (tokenizer.nextToken() != StreamTokenizer.TT_EOF) {
+            while (tokenizer.hasNextToken()) {
+                Token token = tokenizer.nextToken();
+
                 if (paramData[0] == null) { // In this case, we expect this token to be the type.
-                    paramData[0] = tokenizer.sval;
+                    paramData[0] = token.getToken();
                 } else { // In this case, we expect this token to be the name.
-                    paramData[1] = tokenizer.sval;
+                    paramData[1] = token.getToken();
 
                     params.add(new Parameter(Type.match(paramData[0]), paramData[1]));
 
@@ -81,7 +56,7 @@ public class MethodParser extends Parser<Method> {
                     paramData[1] = null;
                 }
 
-                if (tokenizer.ttype == ')') {
+                if (token.getToken().equals(")")) {
                     break;
                 }
             }

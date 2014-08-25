@@ -3,7 +3,6 @@ package me.nrubin29.pogo.lang2.parser;
 import me.nrubin29.pogo.lang2.*;
 
 import java.io.IOException;
-import java.io.StreamTokenizer;
 
 public class IfParser extends Parser<Block> {
 
@@ -15,16 +14,16 @@ public class IfParser extends Parser<Block> {
     }
 
     @Override
-    public Block parse(Block superBlock, StreamTokenizer tokenizer) throws IOException, InvalidCodeException {
+    public Block parse(Block superBlock, PogoTokenizer tokenizer) throws IOException, InvalidCodeException {
         // if|elseif|else (name == "Noah")
 
-        tokenizer.nextToken();
+        String type = tokenizer.nextToken().getToken();
 
-        if (tokenizer.sval.equals("elseif") && lastIf == null) {
+        if (type.equals("elseif") && lastIf == null) {
             throw new InvalidCodeException("Attempted to write elseif statement without if statement.");
         }
 
-        if (tokenizer.sval.equals("else")) {
+        if (type.equals("else")) {
             if (lastIf == null) {
                 throw new InvalidCodeException("Attempted to write else statement without if statement.");
             }
@@ -37,35 +36,17 @@ public class IfParser extends Parser<Block> {
             }
         }
 
-        String type = tokenizer.sval; // Either if or elseif.
-
-        tokenizer.nextToken();
-
-        if (tokenizer.ttype != '(') {
+        if (!tokenizer.nextToken().getToken().equals("(")) {
             throw new InvalidCodeException("If statement does not begin with opening parenthesis.");
         }
 
-        tokenizer.nextToken();
+        Value a = Utils.handleVariables(tokenizer.nextToken(), superBlock);
 
-        Value a = Utils.handleVariables(tokenizer.sval, tokenizer.ttype, superBlock);
+        Comparison comparison = Comparison.valueOfToken(tokenizer.nextToken().getToken());
 
-        tokenizer.nextToken();
+        Value b = Utils.handleVariables(tokenizer.nextToken(), superBlock);
 
-        char firstComparisonToken = (char) tokenizer.ttype;
-
-        tokenizer.nextToken();
-
-        char secondComparisonToken = (char) tokenizer.ttype;
-
-        Comparison comparison = Comparison.valueOfToken(firstComparisonToken + "" + secondComparisonToken);
-
-        tokenizer.nextToken();
-
-        Value b = Utils.handleVariables(tokenizer.sval, tokenizer.ttype, superBlock);
-
-        tokenizer.nextToken();
-
-        if (tokenizer.ttype != ')') {
+        if (!tokenizer.nextToken().getToken().equals(")")) {
             throw new InvalidCodeException("If statement does not end with closing parenthesis.");
         }
 

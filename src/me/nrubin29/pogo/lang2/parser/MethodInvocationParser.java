@@ -3,7 +3,6 @@ package me.nrubin29.pogo.lang2.parser;
 import me.nrubin29.pogo.lang2.*;
 
 import java.io.IOException;
-import java.io.StreamTokenizer;
 import java.util.ArrayList;
 
 public class MethodInvocationParser extends Parser<MethodInvocation> {
@@ -14,43 +13,36 @@ public class MethodInvocationParser extends Parser<MethodInvocation> {
     }
 
     @Override
-    public MethodInvocation parse(Block superBlock, StreamTokenizer tokenizer) throws IOException, InvalidCodeException {
+    public MethodInvocation parse(Block superBlock, PogoTokenizer tokenizer) throws IOException, InvalidCodeException {
         // System.print("Hello there")
 
         tokenizer.nextToken(); // Skip the invoke token.
-        tokenizer.nextToken();
 
-        String invokableName = tokenizer.sval;
+        String invokableName = tokenizer.nextToken().getToken();
 
-        tokenizer.nextToken();
-
-        if (tokenizer.ttype != '.') {
+        if (!tokenizer.nextToken().getToken().equals(".")) {
             throw new InvalidCodeException("Not a statement.");
         }
 
-        tokenizer.nextToken();
+        String methodName = tokenizer.nextToken().getToken();
 
-        String methodName = tokenizer.sval;
-
-        tokenizer.nextToken();
-
-        if (tokenizer.ttype != '(') {
+        if (!tokenizer.nextToken().getToken().equals("(")) {
             throw new InvalidCodeException("Method invocation does not contain opening parenthesis.");
         }
 
         ArrayList<Value> params = new ArrayList<>();
 
-        if (tokenizer.ttype != ')') {
-            while (tokenizer.nextToken() != StreamTokenizer.TT_EOF) {
-                if (tokenizer.ttype == ')') {
-                    break;
-                }
+        while (tokenizer.hasNextToken()) {
+            Token nextToken = tokenizer.nextToken();
+
+            if (nextToken.getToken().equals(")")) {
+                break;
+            }
 
                 /*
                 This only allows for single-word parameters. "Hello, world" would not work.
                  */
-                params.add(Utils.handleVariables(tokenizer.sval, tokenizer.ttype, superBlock));
-            }
+            params.add(Utils.handleVariables(nextToken, superBlock));
         }
 
         return new MethodInvocation(superBlock, invokableName, methodName, params);

@@ -4,7 +4,6 @@ import me.nrubin29.pogo.ide.Project;
 import me.nrubin29.pogo.lang2.parser.*;
 
 import java.io.IOException;
-import java.io.StreamTokenizer;
 
 public class IDEInstance {
 
@@ -39,10 +38,9 @@ public class IDEInstance {
             Block block = null;
 
             for (String line : Utils.readFile(project.getFiles().get(i), false)) {
-                StreamTokenizer tokenizer = Utils.tokenize(line.trim());
+                PogoTokenizer tokenizer = new PogoTokenizer(line.trim());
 
-                tokenizer.nextToken();
-                String firstToken = tokenizer.sval;
+                String firstToken = tokenizer.nextToken().getToken();
                 tokenizer.pushBack();
 
                 if (firstToken == null) {
@@ -65,20 +63,24 @@ public class IDEInstance {
                     if (parser.shouldParse(firstToken)) {
                         Block newBlock = parser.parse(block, tokenizer);
 
-                        if (newBlock != null) {
-                            if (block != null) {
-                                if (newBlock instanceof Method) { // If it is a method, we add the method to the class.
-                                    block.getBlockTree()[0].add(newBlock);
-                                }
+                        if (block == null) {
+                            if (!(newBlock instanceof Class)) {
+                                throw new InvalidCodeException("File does not begin with class declaration.");
+                            }
+                        }
 
-                                else {
-                                    block.add(newBlock);
-                                }
+                        else {
+                            if (newBlock instanceof Method) { // If it is a method, we add the method to the class.
+                                block.getBlockTree()[0].add(newBlock);
                             }
 
-                            if (!(newBlock instanceof ReadOnlyBlock)) { // If it is a read only block, we don't want that to be the new superblock.
-                                block = newBlock;
+                            else {
+                                block.add(newBlock);
                             }
+                        }
+
+                        if (!(newBlock instanceof ReadOnlyBlock)) { // If it is a read only block, we don't want that to be the new superblock.
+                            block = newBlock;
                         }
 
                         break;
@@ -88,6 +90,10 @@ public class IDEInstance {
 
             if (block != null) {
                 classes[i] = (Class) block.getBlockTree()[0];
+            }
+
+            else {
+                throw new InvalidCodeException("Empty file.");
             }
 
             if (classes[i].hasSubBlock(Method.class, "main")) {

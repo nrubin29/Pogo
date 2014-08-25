@@ -41,7 +41,7 @@ public abstract class Block implements Cloneable {
     }
 
     public ArrayList<Block> getSubBlocks() {
-        return (ArrayList<Block>) subBlocks.clone();
+        return subBlocks;
     }
 
     public void add(Block subBlock) {

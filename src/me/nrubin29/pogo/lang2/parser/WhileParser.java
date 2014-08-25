@@ -3,7 +3,6 @@ package me.nrubin29.pogo.lang2.parser;
 import me.nrubin29.pogo.lang2.*;
 
 import java.io.IOException;
-import java.io.StreamTokenizer;
 
 public class WhileParser extends Parser<While> {
 
@@ -13,37 +12,22 @@ public class WhileParser extends Parser<While> {
     }
 
     @Override
-    public While parse(Block superBlock, StreamTokenizer tokenizer) throws IOException, InvalidCodeException {
+    public While parse(Block superBlock, PogoTokenizer tokenizer) throws IOException, InvalidCodeException {
         // (name == "Noah")
 
         tokenizer.nextToken(); // Skip the while token.
-        tokenizer.nextToken();
 
-        if (tokenizer.ttype != '(') {
+        if (!tokenizer.nextToken().getToken().equals("(")) {
             throw new InvalidCodeException("While statement does not begin with opening parenthesis.");
         }
 
-        tokenizer.nextToken();
+        Value a = Utils.handleVariables(tokenizer.nextToken(), superBlock);
 
-        Value a = Utils.handleVariables(tokenizer.sval, tokenizer.ttype, superBlock);
+        Comparison comparison = Comparison.valueOfToken(tokenizer.nextToken().getToken());
 
-        tokenizer.nextToken();
+        Value b = Utils.handleVariables(tokenizer.nextToken(), superBlock);
 
-        char firstComparisonToken = (char) tokenizer.ttype;
-
-        tokenizer.nextToken();
-
-        char secondComparisonToken = (char) tokenizer.ttype;
-
-        Comparison comparison = Comparison.valueOfToken(firstComparisonToken + "" + secondComparisonToken);
-
-        tokenizer.nextToken();
-
-        Value b = Utils.handleVariables(tokenizer.sval, tokenizer.ttype, superBlock);
-
-        tokenizer.nextToken();
-
-        if (tokenizer.ttype != ')') {
+        if (!tokenizer.nextToken().getToken().equals(")")) {
             throw new InvalidCodeException("While statement does not end with closing parenthesis.");
         }
 
