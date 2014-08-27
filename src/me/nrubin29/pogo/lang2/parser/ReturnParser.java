@@ -10,8 +10,8 @@ import java.io.IOException;
 public class ReturnParser extends Parser<Return> {
 
     @Override
-    public boolean shouldParse(String firstToken) {
-        return firstToken.equals("return");
+    public boolean shouldParseLine(String line) {
+        return line.matches("return .*");
     }
 
     @Override

@@ -27,7 +27,7 @@ public class SystemClass extends Class {
     private abstract class SystemMethod extends Method {
 
         public SystemMethod(String name, Type type, Parameter... parameters) {
-            super(SystemClass.this, name, Visibility.PUBLIC, type, parameters);
+            super(SystemClass.this, name, Visibility.PUBLIC, new Token(Token.TokenType.TOKEN, type.toString()), parameters);
         }
 
         @Override

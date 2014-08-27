@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public abstract class Parser<T extends Block> {
 
-    public abstract boolean shouldParse(String firstToken);
+    public abstract boolean shouldParseLine(String line);
 
     public abstract T parse(Block superBlock, PogoTokenizer tokenizer) throws IOException, InvalidCodeException;
 }

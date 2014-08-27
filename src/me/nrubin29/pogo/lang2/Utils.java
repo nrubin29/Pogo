@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 public class Utils {
 
-    public static Value handleVariables(Token token, Block block) throws InvalidCodeException {
+    public static Value parseToken(Token token, Block block) throws InvalidCodeException {
         if (token.getType() == Token.TokenType.BOOLEAN_LITERAL) {
             return new Value(PrimitiveType.BOOLEAN, token.getToken());
         }
@@ -41,75 +41,6 @@ public class Utils {
 
         return new Value(null);
     }
-
-//    public static Value handleVariables(String sval, int ttype, Block block) throws InvalidCodeException, IOException {
-//        StreamTokenizer tokenizer = new StreamTokenizer(new StringReader(sval != null ? sval : ""));
-//        tokenizer.nextToken();
-//        tokenizer.ttype = ttype;
-//        return handleVariables(tokenizer, block);
-//    }
-//
-//    public static Value handleVariables(StreamTokenizer tokenizer, Block block) throws InvalidCodeException, IOException {
-//        StringBuilder builder = new StringBuilder();
-//
-//        tokenizer.pushBack();
-//
-//        while (tokenizer.nextToken() != StreamTokenizer.TT_EOF && tokenizer.ttype != StreamTokenizer.TT_EOL) {
-//            if (tokenizer.ttype == '"') {
-//                builder.append(tokenizer.sval);
-//            }
-//
-//            else {
-//                String str = tokenizer.sval;
-//
-//                if (block != null) {
-//                    Optional<VariableDeclaration> d = block.getSubBlock(VariableDeclaration.class, str);
-//
-//                    if (d.isPresent()) {
-//                        VariableDeclaration dec = d.get();
-//
-//                        if (!dec.hasValue()) {
-//                            throw new InvalidCodeException("Variable " + str + " is not initialized.");
-//                        }
-//
-//                        if (dec.isValueNew()) {
-//                            builder.append("{new ").append(dec.getType()).append("}");
-//                        }
-//
-//                        else {
-//                            builder.append(handleVariables(dec.getValue(), block));
-//                        }
-//                    }
-//
-//                    else {
-//                        throw new InvalidCodeException("Expected variable, found " + str);
-//                    }
-//                }
-//
-//                else {
-//                    throw new InvalidCodeException("Expected variable, found " + str); // Should probably reword this.
-//                }
-//
-//                builder.append(" ");
-//            }
-//        }
-//
-//        return new Value(PrimitiveType.STRING, builder.toString().trim()); // Will this always be a string? Maybe not with boolean
-//    }
-
-//    public static StreamTokenizer tokenize(String str) {
-//        StreamTokenizer tokenizer = new StreamTokenizer(new StringReader(str));
-//        tokenizer.slashSlashComments(true);
-//        tokenizer.slashStarComments(true);
-//        tokenizer.ordinaryChar('!');
-//        tokenizer.ordinaryChar('=');
-//        tokenizer.ordinaryChar('>');
-//        tokenizer.ordinaryChar('<');
-//        tokenizer.ordinaryChar('(');
-//        tokenizer.ordinaryChar(')');
-//        tokenizer.ordinaryChar('.');
-//        return tokenizer;
-//    }
 
     public static String[] readFile(File file, boolean keepEmptyLines) {
         try {

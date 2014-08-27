@@ -28,12 +28,13 @@ public class Runtime {
     private void run() throws InvalidCodeException, IOException {
         Parser[] parsers = {
                 new ClassParser(),
+                new ConstructorParser(),
                 new ForParser(),
                 new IfParser(),
                 new MethodInvocationParser(),
                 new MethodParser(),
                 new ReturnParser(),
-                new VariableParser(),
+                new VariableDeclarationParser(),
                 new WhileParser()
         };
 
@@ -43,7 +44,8 @@ public class Runtime {
             Block block = null;
 
             for (String line : Utils.readFile(project.getFiles().get(i), false)) {
-                PogoTokenizer tokenizer = new PogoTokenizer(line.trim());
+                line = line.trim();
+                PogoTokenizer tokenizer = new PogoTokenizer(line);
 
                 String firstToken = tokenizer.nextToken().getToken();
                 tokenizer.pushBack();
@@ -62,10 +64,14 @@ public class Runtime {
                     }
 
                     block = block.getSuperBlock();
+
+                    continue;
                 }
 
+                boolean success = false;
+
                 for (Parser parser : parsers) {
-                    if (parser.shouldParse(firstToken)) {
+                    if (parser.shouldParseLine(line)) {
                         Block newBlock = parser.parse(block, tokenizer);
 
                         if (block == null) {
@@ -75,7 +81,7 @@ public class Runtime {
                         }
 
                         else {
-                            if (newBlock instanceof Method) { // If it is a method, we add the method to the class.
+                            if (newBlock instanceof Method || newBlock instanceof Constructor) { // If it is a method or constructor, we add the method to the class.
                                 block.getBlockTree()[0].add(newBlock);
                             }
 
@@ -88,8 +94,13 @@ public class Runtime {
                             block = newBlock;
                         }
 
+                        success = true;
                         break;
                     }
+                }
+
+                if (!success) {
+                    throw new InvalidCodeException("Could not parse line " + line);
                 }
             }
 

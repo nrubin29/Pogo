@@ -19,7 +19,7 @@ public class Return extends ReadOnlyBlock {
     @Override
     public void run() throws InvalidCodeException, IOException {
         Method method = (Method) getBlockTree()[1]; // [0] is the class, [1] is the method.
-        method.setReturnValue(Utils.handleVariables(value, getSuperBlock()));
+        method.setReturnValue(Utils.parseToken(value, getSuperBlock()));
     }
 
     @Override

@@ -1,50 +1,82 @@
 package me.nrubin29.pogo.lang2;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Optional;
 
 public class VariableDeclaration extends ReadOnlyBlock implements Nameable {
 
-    private String typeName, nameName;
-    private boolean init, newValue;
-    private Token value;
+    private Token typeToken, nameToken;
+    private boolean init;
+    private PogoTokenizer tokenizer;
 
-    public VariableDeclaration(Block superBlock, String typeName, String nameName, boolean init, boolean newValue, Token value) {
+    public VariableDeclaration(Block superBlock, Token typeToken, Token nameToken, boolean init, PogoTokenizer tokenizer) {
         super(superBlock);
 
-        this.typeName = typeName;
-        this.nameName = nameName;
+        this.typeToken = typeToken;
+        this.nameToken = nameToken;
         this.init = init;
-        this.newValue = newValue;
-        this.value = value;
+        this.tokenizer = tokenizer;
     }
 
     @Override
     public void run() throws InvalidCodeException, IOException {
-        Type type = Type.match(typeName);
+        Type type = Type.match(typeToken.getToken());
 
         if (type == null) {
-            throw new InvalidCodeException("Expected type, got " + typeName + ".");
+            throw new InvalidCodeException("Expected type, got " + typeToken + ".");
         }
 
         if (type == PrimitiveType.VOID) {
             throw new InvalidCodeException("Attempted to instantiate variable with type void.");
         }
 
-        Variable variable = new Variable(getSuperBlock(), nameName, type);
+        Variable variable = new Variable(getSuperBlock(), nameToken.getToken(), type);
 
         if (init) {
-            if (newValue) {
+            Token firstToken = tokenizer.nextToken();
+
+            if (firstToken.getToken().equals("new")) {
+                if (!tokenizer.nextToken().getToken().equals("(")) {
+                    throw new InvalidCodeException("Variable declaration does not contain opening parenthesis.");
+                }
+
                 if (type instanceof PrimitiveType) {
                     throw new InvalidCodeException("Attempted to instantiate primitive type with new.");
                 }
 
                 else {
-                    variable.setValue(((Class) type).clone());
+                    Class clazz = ((Class) type).clone();
+                    Optional<Constructor> c = clazz.getConstructor(tokenizer.clone(), getSuperBlock());
+
+                    if (c.isPresent()) {
+                        ArrayList<Value> values = new ArrayList<>();
+
+                        while (tokenizer.hasNextToken()) {
+                            Token token = tokenizer.nextToken();
+
+                            if (token.getToken().equals(")")) {
+                                break;
+                            }
+
+                            else {
+                                values.add(Utils.parseToken(token, getSuperBlock()));
+                            }
+                        }
+
+                        c.get().invoke(values);
+                    }
+
+                    else {
+                        throw new InvalidCodeException("Could not find constructor for given parameters.");
+                    }
+
+                    variable.setValue(clazz);
                 }
             }
 
             else {
-                variable.setValue(Utils.handleVariables(value, getSuperBlock()).getValue());
+                variable.setValue(Utils.parseToken(firstToken, getSuperBlock()).getValue());
             }
         }
 
@@ -53,27 +85,15 @@ public class VariableDeclaration extends ReadOnlyBlock implements Nameable {
 
     @Override
     public String getName() {
-        return nameName;
+        return nameToken.getToken();
     }
 
     public String getType() {
-        return typeName;
-    }
-
-    public boolean hasValue() {
-        return init && (newValue || value != null);
-    }
-
-    public boolean isValueNew() {
-        return newValue;
-    }
-
-    public Token getValue() {
-        return value;
+        return typeToken.getToken();
     }
 
     @Override
     public String toString() {
-        return getClass() + " typeName=" + typeName + " nameName=" + nameName + " init=" + init + " newValue=" + newValue + " value=" + value;
+        return getClass() + " typeToken=" + typeToken + " nameToken=" + nameToken + " init=" + init;
     }
 }

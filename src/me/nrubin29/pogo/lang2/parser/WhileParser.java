@@ -4,33 +4,42 @@ import me.nrubin29.pogo.lang2.*;
 
 import java.io.IOException;
 
-public class WhileParser extends Parser<While> {
+import static me.nrubin29.pogo.lang2.Regex.COMPARISON;
+import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER_OR_LITERAL;
+
+public class WhileParser extends Parser<ConditionalBlock> {
 
     @Override
-    public boolean shouldParse(String firstToken) {
-        return firstToken.equals("while");
+    public boolean shouldParseLine(String line) {
+        return line.matches("(while|dowhile) \\(" + IDENTIFIER_OR_LITERAL + " " + COMPARISON + " " + IDENTIFIER_OR_LITERAL + "\\)");
     }
 
     @Override
-    public While parse(Block superBlock, PogoTokenizer tokenizer) throws IOException, InvalidCodeException {
-        // (name == "Noah")
+    public ConditionalBlock parse(Block superBlock, PogoTokenizer tokenizer) throws IOException, InvalidCodeException {
+        // while|dowhile (name == "Noah")
 
-        tokenizer.nextToken(); // Skip the while token.
+        Token type = tokenizer.nextToken();
 
         if (!tokenizer.nextToken().getToken().equals("(")) {
             throw new InvalidCodeException("While statement does not begin with opening parenthesis.");
         }
 
-        Value a = Utils.handleVariables(tokenizer.nextToken(), superBlock);
+        Value a = Utils.parseToken(tokenizer.nextToken(), superBlock);
 
         Comparison comparison = Comparison.valueOfToken(tokenizer.nextToken().getToken());
 
-        Value b = Utils.handleVariables(tokenizer.nextToken(), superBlock);
+        Value b = Utils.parseToken(tokenizer.nextToken(), superBlock);
 
         if (!tokenizer.nextToken().getToken().equals(")")) {
             throw new InvalidCodeException("While statement does not end with closing parenthesis.");
         }
 
-        return new While(superBlock, a, b, comparison);
+        if (type.getToken().equals("while")) {
+            return new While(superBlock, a, b, comparison);
+        }
+
+        else {
+            return new DoWhile(superBlock, a, b, comparison);
+        }
     }
 }

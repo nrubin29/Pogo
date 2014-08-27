@@ -2,11 +2,17 @@ package me.nrubin29.pogo.lang2;
 
 public class Parameter implements Nameable {
 
-    private Type type;
     private String name;
+    private Token tokenType;
+    private Type matchedType;
 
-    public Parameter(Type type, String name) {
-        this.type = type;
+    public Parameter(Type matchedType, String name) {
+        this.matchedType = matchedType;
+        this.name = name;
+    }
+
+    public Parameter(Token tokenType, String name) {
+        this.tokenType = tokenType;
         this.name = name;
     }
 
@@ -15,11 +21,21 @@ public class Parameter implements Nameable {
         return name;
     }
 
-    public Type getType() {
-        return type;
+    public String getUnmatchedType() {
+        return tokenType.getToken();
+    }
+
+    public Type getMatchedType() throws InvalidCodeException {
+        if (matchedType != null) {
+            return matchedType;
+        }
+
+        else {
+            return matchedType = Type.match(tokenType.getToken());
+        }
     }
 
     public String toString() {
-        return getClass() + " name=" + name + " type=" + type;
+        return getClass() + " name=" + name + " tokenType=" + tokenType;
     }
 }

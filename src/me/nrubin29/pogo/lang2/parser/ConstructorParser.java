@@ -8,18 +8,18 @@ import java.util.ArrayList;
 import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER;
 import static me.nrubin29.pogo.lang2.Regex.VISIBILITY;
 
-public class MethodParser extends Parser<Method> {
+public class ConstructorParser extends Parser<Constructor> {
 
     @Override
     public boolean shouldParseLine(String line) {
-        return line.matches("method " + VISIBILITY + " " + IDENTIFIER + " " + IDENTIFIER + "( )?\\((" + IDENTIFIER + " " + IDENTIFIER + ",( )?)*\\)?");
+        return line.matches("constructor " + VISIBILITY + "( )?\\((" + IDENTIFIER + " " + IDENTIFIER + ",( )?)*\\)?");
     }
 
     @Override
-    public Method parse(Block superBlock, PogoTokenizer tokenizer) throws IOException, InvalidCodeException {
-        // public void main
+    public Constructor parse(Block superBlock, PogoTokenizer tokenizer) throws IOException, InvalidCodeException {
+        // public (string name)
 
-        tokenizer.nextToken(); // Skip the method token.
+        tokenizer.nextToken(); // Skip the constructor token.
 
         Token visToken = tokenizer.nextToken();
         Visibility visibility;
@@ -29,10 +29,6 @@ public class MethodParser extends Parser<Method> {
         } catch (Exception e) {
             throw new InvalidCodeException("Expected visibility, got " + visToken, e);
         }
-
-        Token returnToken = tokenizer.nextToken();
-
-        String methodName = tokenizer.nextToken().getToken();
 
         if (!tokenizer.nextToken().getToken().equals("(")) {
             throw new InvalidCodeException("Method declaration missing parentheses.");
@@ -48,6 +44,14 @@ public class MethodParser extends Parser<Method> {
             while (tokenizer.hasNextToken()) {
                 Token token = tokenizer.nextToken();
 
+                if (token.getToken().equals(",")) {
+                    continue;
+                }
+
+                else if (token.getToken().equals(")")) {
+                    break;
+                }
+
                 if (paramData[0] == null) { // In this case, we expect this token to be the type.
                     paramData[0] = token;
                 }
@@ -60,13 +64,9 @@ public class MethodParser extends Parser<Method> {
                     paramData[0] = null;
                     paramData[1] = null;
                 }
-
-                if (token.getToken().equals(")")) {
-                    break;
-                }
             }
         }
 
-        return new Method(superBlock, methodName, visibility, returnToken, params.toArray(new Parameter[params.size()]));
+        return new Constructor(superBlock, visibility, params.toArray(new Parameter[params.size()]));
     }
 }

@@ -58,7 +58,7 @@ public class For extends Block implements Endable {
         }
 
         else if (bound.getType() == Token.TokenType.STRING_LITERAL) {
-            Value value = Utils.handleVariables(bound, this);
+            Value value = Utils.parseToken(bound, this);
 
             if (value.getType() == PrimitiveType.DOUBLE || value.getType() == PrimitiveType.INTEGER) {
                 return value;

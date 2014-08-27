@@ -10,8 +10,8 @@ import java.io.IOException;
 public class ClassParser extends Parser<Class> {
 
     @Override
-    public boolean shouldParse(String firstToken) {
-        return firstToken.equals("class");
+    public boolean shouldParseLine(String line) {
+        return line.matches("^(class [a-zA-Z]([a-zA-Z0-9]*)?)");
     }
 
     @Override

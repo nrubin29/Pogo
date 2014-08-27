@@ -1,5 +1,5 @@
 class VariableDeclaration
 
     method public void main()
-        var string name = "Noah"
-        invoke System.print(name)
+        string name = "Noah"
+        System.print(name,)

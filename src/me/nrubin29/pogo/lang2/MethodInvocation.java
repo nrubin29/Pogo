@@ -7,40 +7,39 @@ import java.util.stream.Collectors;
 
 public class MethodInvocation extends ReadOnlyBlock {
 
-    private String invokableName, methodName;
+    private Token invokableToken, methodToken, captureToken;
     private ArrayList<Token> values;
-    private Token capture;
 
-    public MethodInvocation(Block superBlock, String invokableName, String methodName, ArrayList<Token> values, Token capture) {
+    public MethodInvocation(Block superBlock, Token invokableToken, Token methodToken, ArrayList<Token> values, Token captureToken) {
         super(superBlock);
 
-        this.invokableName = invokableName;
-        this.methodName = methodName;
+        this.invokableToken = invokableToken;
+        this.methodToken = methodToken;
         this.values = values;
-        this.capture = capture;
+        this.captureToken = captureToken;
     }
 
     @Override
     public void run() throws InvalidCodeException, IOException {
         Class clazz;
 
-        if (invokableName.equals("System")) {
+        if (invokableToken.getToken().equals("System")) {
             clazz = SystemClass.getInstance();
         }
 
-        else if (invokableName.equals("this")) {
+        else if (invokableToken.getToken().equals("this")) {
             clazz = (Class) getBlockTree()[0];
         }
 
         else {
-            clazz = Runtime.RUNTIME.getPogoClass(invokableName);
+            clazz = Runtime.RUNTIME.getPogoClass(invokableToken.getToken());
         }
 
         if (clazz == null) {
-            Optional<Variable> v = getSuperBlock().getVariable(invokableName);
+            Optional<Variable> v = getSuperBlock().getVariable(invokableToken.getToken());
 
             if (!v.isPresent()) {
-                throw new InvalidCodeException("Expected class or variable, found " + invokableName + ".");
+                throw new InvalidCodeException("Expected class or variable, found " + invokableToken + ".");
             }
 
             Variable var = v.get();
@@ -52,28 +51,28 @@ public class MethodInvocation extends ReadOnlyBlock {
             clazz = (Class) var.getType();
         }
 
-        Optional<Method> m = clazz.getSubBlock(Method.class, methodName);
+        Optional<Method> m = clazz.getSubBlock(Method.class, methodToken.getToken());
 
         if (!m.isPresent()) {
-            throw new InvalidCodeException("Expected method, found " + methodName + ".");
+            throw new InvalidCodeException("Expected method, found " + methodToken + ".");
         }
 
         Object ret = m.get().invoke(values.stream().map(token -> {
             try {
-                return Utils.handleVariables(token, getSuperBlock());
+                return Utils.parseToken(token, getSuperBlock());
             } catch (InvalidCodeException e) {
                 e.printStackTrace();
                 return null;
             }
         }).filter(value -> value != null).collect(Collectors.toList()));
 
-        if (capture != null && capture.getType() != Token.TokenType.EMPTY) {
-            getSuperBlock().getVariable(capture.getToken()).get().setValue(ret);
+        if (captureToken != null && captureToken.getType() != Token.TokenType.EMPTY) {
+            getSuperBlock().getVariable(captureToken.getToken()).get().setValue(ret);
         }
     }
 
     @Override
     public String toString() {
-        return getClass() + " invokableName=" + invokableName + " methodName=" + methodName;
+        return getClass() + " invokableToken=" + invokableToken + " methodToken=" + methodToken + " captureToken=" + captureToken;
     }
 }

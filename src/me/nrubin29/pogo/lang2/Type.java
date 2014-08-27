@@ -24,4 +24,10 @@ public interface Type {
 
         return type;
     }
+
+    public boolean isTokenType(String type);
+
+    public default boolean isTokenType(Token.TokenType type) {
+        return isTokenType(type.getPrimitiveType().name());
+    }
 }

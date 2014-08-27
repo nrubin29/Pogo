@@ -12,14 +12,15 @@ public enum Comparison {
         this.token = token;
     }
 
-    public String getToken() {
-        return token;
-    }
-
     public static Comparison valueOfToken(String token) {
         return Arrays.stream(values())
-                .filter(comparison -> comparison.getToken().equals(token))
+                .filter(comparison -> comparison.toString().equals(token))
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Override
+    public String toString() {
+        return token;
     }
 }

@@ -4,18 +4,21 @@ import me.nrubin29.pogo.lang2.*;
 
 import java.io.IOException;
 
+import static me.nrubin29.pogo.lang2.Regex.COMPARISON;
+import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER_OR_LITERAL;
+
 public class IfParser extends Parser<Block> {
 
     private If lastIf;
 
     @Override
-    public boolean shouldParse(String firstToken) {
-        return firstToken.equals("if") || firstToken.equals("elseif") || firstToken.equals("else");
+    public boolean shouldParseLine(String line) {
+        return line.equals("else") || line.matches("(if|elseif) \\(" + IDENTIFIER_OR_LITERAL + " " + COMPARISON + " " + IDENTIFIER_OR_LITERAL + "\\)");
     }
 
     @Override
     public Block parse(Block superBlock, PogoTokenizer tokenizer) throws IOException, InvalidCodeException {
-        // if|elseif|else (name == "Noah")
+        // if|elseif|else ((name == "Noah"))?
 
         String type = tokenizer.nextToken().getToken();
 
@@ -40,11 +43,11 @@ public class IfParser extends Parser<Block> {
             throw new InvalidCodeException("If statement does not begin with opening parenthesis.");
         }
 
-        Value a = Utils.handleVariables(tokenizer.nextToken(), superBlock);
+        Value a = Utils.parseToken(tokenizer.nextToken(), superBlock);
 
         Comparison comparison = Comparison.valueOfToken(tokenizer.nextToken().getToken());
 
-        Value b = Utils.handleVariables(tokenizer.nextToken(), superBlock);
+        Value b = Utils.parseToken(tokenizer.nextToken(), superBlock);
 
         if (!tokenizer.nextToken().getToken().equals(")")) {
             throw new InvalidCodeException("If statement does not end with closing parenthesis.");

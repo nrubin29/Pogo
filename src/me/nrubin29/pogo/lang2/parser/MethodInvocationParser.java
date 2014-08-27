@@ -5,26 +5,26 @@ import me.nrubin29.pogo.lang2.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER;
+
 public class MethodInvocationParser extends Parser<MethodInvocation> {
 
     @Override
-    public boolean shouldParse(String firstToken) {
-        return firstToken.equals("invoke");
+    public boolean shouldParseLine(String line) {
+        return line.matches(IDENTIFIER + "[.]" + IDENTIFIER + "\\((.*,)*?\\)( " + IDENTIFIER + ")?");
     }
 
     @Override
     public MethodInvocation parse(Block superBlock, PogoTokenizer tokenizer) throws IOException, InvalidCodeException {
         // System.print("Hello there")
 
-        tokenizer.nextToken(); // Skip the invoke token.
-
-        String invokableName = tokenizer.nextToken().getToken();
+        Token invokableToken = tokenizer.nextToken();
 
         if (!tokenizer.nextToken().getToken().equals(".")) {
             throw new InvalidCodeException("Not a method invocation.");
         }
 
-        String methodName = tokenizer.nextToken().getToken();
+        Token methodToken = tokenizer.nextToken();
 
         if (!tokenizer.nextToken().getToken().equals("(")) {
             throw new InvalidCodeException("Method invocation does not contain opening parenthesis.");
@@ -33,13 +33,17 @@ public class MethodInvocationParser extends Parser<MethodInvocation> {
         ArrayList<Token> params = new ArrayList<>();
 
         while (tokenizer.hasNextToken()) {
-            Token nextToken = tokenizer.nextToken();
+            Token token = tokenizer.nextToken();
 
-            if (nextToken.getToken().equals(")")) {
+            if (token.getToken().equals(",")) {
+                continue;
+            }
+
+            else if (token.getToken().equals(")")) {
                 break;
             }
 
-            params.add(nextToken);
+            params.add(token);
         }
 
         Token optionalVariable = tokenizer.nextToken();
@@ -50,6 +54,6 @@ public class MethodInvocationParser extends Parser<MethodInvocation> {
             }
         }
 
-        return new MethodInvocation(superBlock, invokableName, methodName, params, optionalVariable);
+        return new MethodInvocation(superBlock, invokableToken, methodToken, params, optionalVariable);
     }
 }

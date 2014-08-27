@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PogoTokenizer {
+public class PogoTokenizer implements Cloneable {
 
     private ArrayList<TokenData> patterns;
     private String str;
@@ -16,7 +16,7 @@ public class PogoTokenizer {
         this.str = str;
 
         for (Comparison comp : Comparison.values()) {
-            patterns.add(new TokenData(Pattern.compile("^(" + comp.getToken() + ")"), Token.TokenType.TOKEN));
+            patterns.add(new TokenData(Pattern.compile("^(" + comp.toString() + ")"), Token.TokenType.TOKEN));
         }
 
         String[] tokens = { "=", "\\(", "\\)", "\\.", "\\,", };
@@ -94,6 +94,11 @@ public class PogoTokenizer {
         if (lastToken != null) {
             this.pushBack = true;
         }
+    }
+
+    @Override
+    public PogoTokenizer clone() {
+        return new PogoTokenizer(str);
     }
 
     private class TokenData {

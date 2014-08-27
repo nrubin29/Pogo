@@ -3,10 +3,8 @@ package me.nrubin29.pogo.lang2;
 import me.nrubin29.pogo.ide.Console;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public abstract class Block implements Cloneable {
 
@@ -43,21 +41,24 @@ public abstract class Block implements Cloneable {
         return subBlocks;
     }
 
+    public <T extends Block> List<T> getSubBlocks(java.lang.Class<T> clazz) {
+        return getSubBlocks().stream()
+                .filter(block -> clazz.isAssignableFrom(block.getClass()))
+                .map(block -> (T) block)
+                .collect(Collectors.toList());
+    }
+
     public <T extends Block> T add(T subBlock) {
         subBlocks.add(subBlock);
         return subBlock;
     }
 
     public <T extends Block & Nameable> Optional<T> getSubBlock(java.lang.Class<T> clazz, String name) {
-        return subBlocks.stream()
-                .filter(block -> clazz.isAssignableFrom(block.getClass()))
-                .filter(block -> ((Nameable) block).getName().equals(name))
-                .map(block -> (T) block)
-                .findFirst();
+        return getSubBlocks(clazz).stream().filter(block -> block.getName().equals(name)).findFirst();
     }
 
     public <T extends Block & Nameable> boolean hasSubBlock(java.lang.Class<T> clazz, String name) {
-        return getSubBlock(clazz, name) != null;
+        return getSubBlock(clazz, name).isPresent();
     }
 
     public Optional<Variable> getVariable(String name) {
@@ -99,10 +100,6 @@ public abstract class Block implements Cloneable {
         }
 
         return variable;
-    }
-
-    public Variable[] getVariables() {
-        return variables.toArray(new Variable[variables.size()]);
     }
 
     public abstract void run() throws InvalidCodeException, IOException;

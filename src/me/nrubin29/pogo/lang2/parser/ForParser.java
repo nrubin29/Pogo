@@ -4,11 +4,13 @@ import me.nrubin29.pogo.lang2.*;
 
 import java.io.IOException;
 
+import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER_OR_LITERAL;
+
 public class ForParser extends Parser<For> {
 
     @Override
-    public boolean shouldParse(String firstToken) {
-        return firstToken.equals("for");
+    public boolean shouldParseLine(String line) {
+        return line.matches("for \\(" + IDENTIFIER_OR_LITERAL + " " + IDENTIFIER_OR_LITERAL + "\\)");
     }
 
     @Override
