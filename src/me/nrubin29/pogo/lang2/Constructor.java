@@ -33,7 +33,7 @@ public class Constructor extends Block {
     }
 
     public void invoke(List<Value> values) throws InvalidCodeException, IOException {
-        Runtime.RUNTIME.print("invoke() called on " + this + " with values " + values, Console.MessageType.OUTPUT);
+        Runtime.RUNTIME.print("invoke() called on constructor.", Console.MessageType.OUTPUT);
 
         if (values.size() != parameters.length) {
             throw new InvalidCodeException("Invalid number of parameters specified.");

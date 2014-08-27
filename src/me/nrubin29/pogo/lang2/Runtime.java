@@ -112,7 +112,7 @@ public class Runtime {
                 throw new InvalidCodeException("Empty file.");
             }
 
-            if (classes[i].hasSubBlock(Method.class, "main")) {
+            if (classes[i].hasMethod("main")) {
                 mainClass = classes[i];
             }
         }

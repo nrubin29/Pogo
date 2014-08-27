@@ -55,7 +55,11 @@ public class VariableDeclaration extends ReadOnlyBlock implements Nameable {
                         while (tokenizer.hasNextToken()) {
                             Token token = tokenizer.nextToken();
 
-                            if (token.getToken().equals(")")) {
+                            if (token.getToken().equals(",")) {
+                                continue;
+                            }
+
+                            else if (token.getToken().equals(")")) {
                                 break;
                             }
 

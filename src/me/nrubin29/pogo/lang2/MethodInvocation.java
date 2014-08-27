@@ -2,6 +2,7 @@ package me.nrubin29.pogo.lang2;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -51,20 +52,31 @@ public class MethodInvocation extends ReadOnlyBlock {
             clazz = (Class) var.getType();
         }
 
-        Optional<Method> m = clazz.getSubBlock(Method.class, methodToken.getToken());
+        List<Value> values = this.values.stream()
+                .map(token -> {
+                    try {
+                        return Utils.parseToken(token, getSuperBlock());
+                    }
+
+                    catch (InvalidCodeException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                })
+                .filter(value -> value != null)
+                .collect(Collectors.toList());
+
+        List<Type> types = values.stream()
+                .map(Value::getType)
+                .collect(Collectors.toList());
+
+        Optional<Method> m = clazz.getMethod(methodToken.getToken(), types.toArray(new Type[types.size()]));
 
         if (!m.isPresent()) {
             throw new InvalidCodeException("Expected method, found " + methodToken + ".");
         }
 
-        Object ret = m.get().invoke(values.stream().map(token -> {
-            try {
-                return Utils.parseToken(token, getSuperBlock());
-            } catch (InvalidCodeException e) {
-                e.printStackTrace();
-                return null;
-            }
-        }).filter(value -> value != null).collect(Collectors.toList()));
+        Object ret = m.get().invoke(values);
 
         if (captureToken != null && captureToken.getType() != Token.TokenType.EMPTY) {
             getSuperBlock().getVariable(captureToken.getToken()).get().setValue(ret);

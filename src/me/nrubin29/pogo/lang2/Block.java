@@ -53,14 +53,6 @@ public abstract class Block implements Cloneable {
         subBlocks.add(subBlock);
     }
 
-    public <T extends Block & Nameable> Optional<T> getSubBlock(java.lang.Class<T> clazz, String name) {
-        return getSubBlocks(clazz).stream().filter(block -> block.getName().equals(name)).findFirst();
-    }
-
-    public <T extends Block & Nameable> boolean hasSubBlock(java.lang.Class<T> clazz, String name) {
-        return getSubBlock(clazz, name).isPresent();
-    }
-
     public Optional<Variable> getVariable(String name) {
         Optional<Variable> superBlockVariable = Arrays.stream(getBlockTree(), 0, getBlockTree().length - 1)
                 .filter(b -> b.hasVariable(name))
@@ -81,7 +73,7 @@ public abstract class Block implements Cloneable {
     }
 
     public void addVariable(Variable variable) throws InvalidCodeException {
-        Runtime.RUNTIME.print("Going to add variable " + variable + " to " + toString(), Console.MessageType.OUTPUT);
+        Runtime.RUNTIME.print("Going to add variable " + variable.getName() + ".", Console.MessageType.OUTPUT);
 
         Optional<Variable> v = getVariable(variable.getName());
 

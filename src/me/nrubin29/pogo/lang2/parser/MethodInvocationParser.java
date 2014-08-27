@@ -48,7 +48,7 @@ public class MethodInvocationParser extends Parser<MethodInvocation> {
         Token optionalVariable = tokenizer.nextToken();
 
         if (optionalVariable.getType() != Token.TokenType.EMPTY) {
-            if (optionalVariable.getType() != Token.TokenType.TOKEN) {
+            if (optionalVariable.getType() != Token.TokenType.IDENTIFIER) {
                 throw new InvalidCodeException("Capture must be a variable.");
             }
         }

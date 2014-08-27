@@ -12,7 +12,7 @@ public class Regex {
     public static final String INTEGER_LITERAL = "(-)?[0-9]*";
     public static final String BOOLEAN_LITERAL = "(true|false)";
     public static final String COMPARISON = "(" + join(Comparison.values(), "|") + ")";
-    public static final String IDENTIFIER_OR_LITERAL = "(" + IDENTIFIER + "|" + DOUBLE_LITERAL + ")";
+    public static final String IDENTIFIER_OR_LITERAL = "(" + IDENTIFIER + "|" + DOUBLE_LITERAL + "|" + BOOLEAN_LITERAL + ")";
 
     private static <T> String join(T[] elements, String delimiter) {
         StringJoiner joiner = new StringJoiner(delimiter);

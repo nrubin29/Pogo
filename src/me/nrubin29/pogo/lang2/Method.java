@@ -52,7 +52,7 @@ public class Method extends Block implements Nameable {
     }
 
     public Object invoke(List<Value> values) throws InvalidCodeException, IOException {
-        Runtime.RUNTIME.print("invoke() called on " + this + " with values " + values, Console.MessageType.OUTPUT);
+        Runtime.RUNTIME.print("invoke() called on method " + name + ".", Console.MessageType.OUTPUT);
 
         this.type = Type.match(typeToken.getToken());
 

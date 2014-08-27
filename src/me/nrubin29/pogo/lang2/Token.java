@@ -5,10 +5,13 @@ public class Token {
     public enum TokenType {
         EMPTY(PrimitiveType.VOID),
         TOKEN(null),
+        IDENTIFIER(null),
         BOOLEAN_LITERAL(PrimitiveType.BOOLEAN),
         DOUBLE_LITERAL(PrimitiveType.DOUBLE),
         INTEGER_LITERAL(PrimitiveType.INTEGER),
         STRING_LITERAL(PrimitiveType.STRING);
+
+        public static final TokenType[] NOT_TOKEN = { BOOLEAN_LITERAL, DOUBLE_LITERAL, INTEGER_LITERAL, STRING_LITERAL, IDENTIFIER };
 
         private PrimitiveType primitiveType;
 

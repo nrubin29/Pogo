@@ -17,16 +17,14 @@ public class PogoTokenizer implements Cloneable {
 
         patterns.add(new TokenData(Pattern.compile("^(" + Regex.COMPARISON + ")"), Token.TokenType.TOKEN));
 
-        String[] tokens = { "=", "\\(", "\\)", "\\.", "\\,", };
-
-        for (String token : tokens) {
+        for (String token : new String[] { "=", "\\(", "\\)", "\\.", "\\,", }) {
             patterns.add(new TokenData(Pattern.compile("^(" + token + ")"), Token.TokenType.TOKEN));
         }
 
-        patterns.add(new TokenData(Pattern.compile("^(//)"), Token.TokenType.EMPTY));
+        patterns.add(new TokenData(Pattern.compile("^(" + Regex.IDENTIFIER + ")"), Token.TokenType.IDENTIFIER));
+        patterns.add(new TokenData(Pattern.compile("^(//.*)"), Token.TokenType.EMPTY));
         patterns.add(new TokenData(Pattern.compile("^(" + Regex.STRING_LITERAL + ")"), Token.TokenType.STRING_LITERAL));
         patterns.add(new TokenData(Pattern.compile("^(" + Regex.BOOLEAN_LITERAL + ")"), Token.TokenType.BOOLEAN_LITERAL));
-        patterns.add(new TokenData(Pattern.compile("^([a-zA-Z][^\n| |" + String.join("|", tokens) + "]*)"), Token.TokenType.TOKEN));
         patterns.add(new TokenData(Pattern.compile("^(" + Regex.INTEGER_LITERAL + ")"), Token.TokenType.INTEGER_LITERAL));
         patterns.add(new TokenData(Pattern.compile("^(" + Regex.DOUBLE_LITERAL + ")"), Token.TokenType.DOUBLE_LITERAL));
     }
@@ -49,7 +47,12 @@ public class PogoTokenizer implements Cloneable {
             if (matcher.find()) {
                 String token = matcher.group().trim();
 
-                if (data.getTokenType() == Token.TokenType.BOOLEAN_LITERAL) {
+                if (data.getTokenType() == Token.TokenType.IDENTIFIER) {
+                    str = matcher.replaceAll("");
+                    return lastToken = new Token(Token.TokenType.IDENTIFIER, token);
+                }
+
+                else if (data.getTokenType() == Token.TokenType.BOOLEAN_LITERAL) {
                     str = matcher.replaceFirst("");
                     return lastToken = new Token(Token.TokenType.BOOLEAN_LITERAL, token);
                 }
@@ -65,7 +68,7 @@ public class PogoTokenizer implements Cloneable {
                 }
 
                 else if (data.getTokenType() == Token.TokenType.EMPTY) {
-                    str = str.substring(str.indexOf('\n') != -1 ? str.indexOf('\n') : str.length());
+                    str = "";
                     return lastToken = new Token(Token.TokenType.EMPTY);
                 }
 
@@ -94,6 +97,25 @@ public class PogoTokenizer implements Cloneable {
         }
     }
 
+    public int getNumberOfTokens(Token.TokenType... types) throws InvalidCodeException {
+        String localStr = str;
+        int count = 0;
+
+        while (hasNextToken()) {
+            Token token = nextToken();
+
+            for (Token.TokenType type : types) {
+                if (token.getType().equals(type)) {
+                    count++;
+                    break;
+                }
+            }
+        }
+
+        this.str = localStr;
+        return count;
+    }
+
     @Override
     public PogoTokenizer clone() {
         return new PogoTokenizer(str);
@@ -115,6 +137,11 @@ public class PogoTokenizer implements Cloneable {
 
         public Token.TokenType getTokenType() {
             return tokenType;
+        }
+
+        @Override
+        public String toString() {
+            return getClass() + " pattern=" + pattern + " tokenType=" + tokenType;
         }
     }
 }

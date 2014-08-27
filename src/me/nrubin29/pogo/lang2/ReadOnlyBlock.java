@@ -16,15 +16,15 @@ public abstract class ReadOnlyBlock extends Block {
         throw new UnsupportedOperationException("Read-only block cannot have subblocks.");
     }
 
-    @Override
-    public <T extends Block & Nameable> Optional<T> getSubBlock(java.lang.Class<T> clazz, String name) {
-        throw new UnsupportedOperationException("Read-only block cannot have subblocks.");
-    }
-
-    @Override
-    public <T extends Block & Nameable> boolean hasSubBlock(java.lang.Class<T> clazz, String name) {
-        throw new UnsupportedOperationException("Read-only block cannot have subblocks.");
-    }
+//    @Override
+//    public <T extends Block & Nameable> Optional<T> getSubBlock(java.lang.Class<T> clazz, String name) {
+//        throw new UnsupportedOperationException("Read-only block cannot have subblocks.");
+//    }
+//
+//    @Override
+//    public <T extends Block & Nameable> boolean hasSubBlock(java.lang.Class<T> clazz, String name) {
+//        throw new UnsupportedOperationException("Read-only block cannot have subblocks.");
+//    }
 
     @Override
     public Optional<Variable> getVariable(String name) {
