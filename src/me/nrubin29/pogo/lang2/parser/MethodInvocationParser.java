@@ -2,7 +2,6 @@ package me.nrubin29.pogo.lang2.parser;
 
 import me.nrubin29.pogo.lang2.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER;
@@ -15,7 +14,7 @@ public class MethodInvocationParser extends Parser<MethodInvocation> {
     }
 
     @Override
-    public MethodInvocation parse(Block superBlock, PogoTokenizer tokenizer) throws IOException, InvalidCodeException {
+    public MethodInvocation parse(Block superBlock, PogoTokenizer tokenizer) throws InvalidCodeException {
         // System.print("Hello there")
 
         Token invokableToken = tokenizer.nextToken();

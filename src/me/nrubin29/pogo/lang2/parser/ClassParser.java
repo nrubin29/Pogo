@@ -5,8 +5,6 @@ import me.nrubin29.pogo.lang2.Class;
 import me.nrubin29.pogo.lang2.InvalidCodeException;
 import me.nrubin29.pogo.lang2.PogoTokenizer;
 
-import java.io.IOException;
-
 public class ClassParser extends Parser<Class> {
 
     @Override
@@ -15,7 +13,7 @@ public class ClassParser extends Parser<Class> {
     }
 
     @Override
-    public Class parse(Block superBlock, PogoTokenizer tokenizer) throws InvalidCodeException, IOException {
+    public Class parse(Block superBlock, PogoTokenizer tokenizer) throws InvalidCodeException {
         tokenizer.nextToken(); // Skip the class token.
         return new Class(tokenizer.nextToken().getToken());
     }

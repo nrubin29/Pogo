@@ -2,8 +2,6 @@ package me.nrubin29.pogo.lang2.parser;
 
 import me.nrubin29.pogo.lang2.*;
 
-import java.io.IOException;
-
 import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER_OR_LITERAL;
 
 public class ForParser extends Parser<For> {
@@ -14,7 +12,7 @@ public class ForParser extends Parser<For> {
     }
 
     @Override
-    public For parse(Block superBlock, PogoTokenizer tokenizer) throws IOException, InvalidCodeException {
+    public For parse(Block superBlock, PogoTokenizer tokenizer) throws InvalidCodeException {
         // (1 10)
 
         tokenizer.nextToken(); // Skip the for token.

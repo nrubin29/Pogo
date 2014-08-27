@@ -2,8 +2,6 @@ package me.nrubin29.pogo.lang2.parser;
 
 import me.nrubin29.pogo.lang2.*;
 
-import java.io.IOException;
-
 import static me.nrubin29.pogo.lang2.Regex.COMPARISON;
 import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER_OR_LITERAL;
 
@@ -17,7 +15,7 @@ public class IfParser extends Parser<Block> {
     }
 
     @Override
-    public Block parse(Block superBlock, PogoTokenizer tokenizer) throws IOException, InvalidCodeException {
+    public Block parse(Block superBlock, PogoTokenizer tokenizer) throws InvalidCodeException {
         // if|elseif|else ((name == "Noah"))?
 
         String type = tokenizer.nextToken().getToken();

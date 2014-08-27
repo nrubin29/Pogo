@@ -41,6 +41,7 @@ public abstract class Block implements Cloneable {
         return subBlocks;
     }
 
+    @SuppressWarnings("unchecked")
     public <T extends Block> List<T> getSubBlocks(java.lang.Class<T> clazz) {
         return getSubBlocks().stream()
                 .filter(block -> clazz.isAssignableFrom(block.getClass()))
@@ -48,9 +49,8 @@ public abstract class Block implements Cloneable {
                 .collect(Collectors.toList());
     }
 
-    public <T extends Block> T add(T subBlock) {
+    public <T extends Block> void add(T subBlock) {
         subBlocks.add(subBlock);
-        return subBlock;
     }
 
     public <T extends Block & Nameable> Optional<T> getSubBlock(java.lang.Class<T> clazz, String name) {
@@ -80,7 +80,7 @@ public abstract class Block implements Cloneable {
         return getVariable(name).isPresent();
     }
 
-    public Variable addVariable(Variable variable) throws InvalidCodeException {
+    public void addVariable(Variable variable) throws InvalidCodeException {
         Runtime.RUNTIME.print("Going to add variable " + variable + " to " + toString(), Console.MessageType.OUTPUT);
 
         Optional<Variable> v = getVariable(variable.getName());
@@ -98,8 +98,6 @@ public abstract class Block implements Cloneable {
         else {
             variables.add(variable);
         }
-
-        return variable;
     }
 
     public abstract void run() throws InvalidCodeException, IOException;
@@ -107,27 +105,8 @@ public abstract class Block implements Cloneable {
     public abstract String toString();
 
     @Override
+    @SuppressWarnings({"CloneDoesntCallSuperClone", "CloneDoesntDeclareCloneNotSupportedException"})
     public Block clone() {
-        Block block = new Block(superBlock) {
-            @Override
-            public void run() throws InvalidCodeException, IOException {
-                Block.this.run();
-            }
-
-            @Override
-            public String toString() {
-                return Block.this.toString();
-            }
-        };
-
-        block.subBlocks = subBlocks;
-        block.variables = variables;
-
-        return block;
-    }
-
-    protected void cloneHelp(Block clonedBlock) {
-        this.subBlocks = clonedBlock.subBlocks;
-        this.variables = clonedBlock.variables;
+        return this;
     }
 }

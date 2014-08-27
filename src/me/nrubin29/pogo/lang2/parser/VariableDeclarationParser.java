@@ -2,8 +2,6 @@ package me.nrubin29.pogo.lang2.parser;
 
 import me.nrubin29.pogo.lang2.*;
 
-import java.io.IOException;
-
 import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER;
 
 public class VariableDeclarationParser extends Parser<VariableDeclaration> {
@@ -14,7 +12,7 @@ public class VariableDeclarationParser extends Parser<VariableDeclaration> {
     }
 
     @Override
-    public VariableDeclaration parse(Block superBlock, PogoTokenizer tokenizer) throws IOException, InvalidCodeException {
+    public VariableDeclaration parse(Block superBlock, PogoTokenizer tokenizer) throws InvalidCodeException {
         // string name = "Noah"
         // Person person = new("Noah")
 

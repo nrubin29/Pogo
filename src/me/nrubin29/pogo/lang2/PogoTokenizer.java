@@ -15,9 +15,7 @@ public class PogoTokenizer implements Cloneable {
         this.patterns = new ArrayList<>();
         this.str = str;
 
-        for (Comparison comp : Comparison.values()) {
-            patterns.add(new TokenData(Pattern.compile("^(" + comp.toString() + ")"), Token.TokenType.TOKEN));
-        }
+        patterns.add(new TokenData(Pattern.compile("^(" + Regex.COMPARISON + ")"), Token.TokenType.TOKEN));
 
         String[] tokens = { "=", "\\(", "\\)", "\\.", "\\,", };
 
@@ -26,11 +24,11 @@ public class PogoTokenizer implements Cloneable {
         }
 
         patterns.add(new TokenData(Pattern.compile("^(//)"), Token.TokenType.EMPTY));
-        patterns.add(new TokenData(Pattern.compile("^(\".*\")"), Token.TokenType.STRING_LITERAL));
-        patterns.add(new TokenData(Pattern.compile("^(true|false)"), Token.TokenType.BOOLEAN_LITERAL));
+        patterns.add(new TokenData(Pattern.compile("^(" + Regex.STRING_LITERAL + ")"), Token.TokenType.STRING_LITERAL));
+        patterns.add(new TokenData(Pattern.compile("^(" + Regex.BOOLEAN_LITERAL + ")"), Token.TokenType.BOOLEAN_LITERAL));
         patterns.add(new TokenData(Pattern.compile("^([a-zA-Z][^\n| |" + String.join("|", tokens) + "]*)"), Token.TokenType.TOKEN));
-        patterns.add(new TokenData(Pattern.compile("^((-)?[0-9][0-9]*)"), Token.TokenType.INTEGER_LITERAL));
-        patterns.add(new TokenData(Pattern.compile("^((-)?[0-9][0-9.]*)"), Token.TokenType.DOUBLE_LITERAL));
+        patterns.add(new TokenData(Pattern.compile("^(" + Regex.INTEGER_LITERAL + ")"), Token.TokenType.INTEGER_LITERAL));
+        patterns.add(new TokenData(Pattern.compile("^(" + Regex.DOUBLE_LITERAL + ")"), Token.TokenType.DOUBLE_LITERAL));
     }
 
     public Token nextToken() throws InvalidCodeException {

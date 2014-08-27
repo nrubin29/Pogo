@@ -5,8 +5,6 @@ import me.nrubin29.pogo.lang2.InvalidCodeException;
 import me.nrubin29.pogo.lang2.PogoTokenizer;
 import me.nrubin29.pogo.lang2.Return;
 
-import java.io.IOException;
-
 public class ReturnParser extends Parser<Return> {
 
     @Override
@@ -15,7 +13,7 @@ public class ReturnParser extends Parser<Return> {
     }
 
     @Override
-    public Return parse(Block superBlock, PogoTokenizer tokenizer) throws IOException, InvalidCodeException {
+    public Return parse(Block superBlock, PogoTokenizer tokenizer) throws InvalidCodeException {
         // "Noah"
 
         tokenizer.nextToken(); // Skip the return token.

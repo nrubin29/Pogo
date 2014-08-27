@@ -24,8 +24,6 @@ public class Class extends Block implements Type, Nameable, Cloneable {
         Constructor constructor = null;
 
         for (Constructor c : getSubBlocks(Constructor.class)) {
-            boolean success = true;
-
             for (int i = 0; i < c.getParameters().length && tokens.hasNextToken(); i++) {
                 Parameter p = c.getParameters()[i];
                 Token t = tokens.nextToken();
@@ -34,28 +32,23 @@ public class Class extends Block implements Type, Nameable, Cloneable {
                     break;
                 }
 
-                if (t.getType() == Token.TokenType.TOKEN) {
-                    Value value = Utils.parseToken(t, block);
+                Value v;
 
-                    if (!value.getType().isTokenType(t.getType())) {
-                        success = false;
-                        break;
-                    }
+                if (t.getType() == Token.TokenType.TOKEN) {
+                    v = Utils.parseToken(t, block);
                 }
 
                 else {
-                    if (!p.getMatchedType().isTokenType(t.getType())) {
-                        System.err.println("Type mismatch for parameter " + p.getName() + ". Type is " + t.getType() + ". Should be " + p.getMatchedType() + ".");
-                        success = false;
-                        break;
-                    }
+                    v = new Value(t.getType().getPrimitiveType(), t.getToken());
+                }
+
+                if (!p.getMatchedType().equals(v.getType())) {
+                    throw new InvalidCodeException("Type mismatch for parameter " + p.getName() + ". Type is " + t.getType() + ". Should be " + p.getMatchedType() + ".");
                 }
             }
 
-            if (success) {
-                constructor = c;
-                break;
-            }
+            constructor = c;
+            break;
         }
 
         return Optional.ofNullable(constructor);
@@ -68,21 +61,14 @@ public class Class extends Block implements Type, Nameable, Cloneable {
         getSubBlock(Method.class, "main").get().run();
     }
 
-    public boolean isTokenType(String type) {
-        return false;
-    }
-
     @Override
     public String toString() {
         return getClass() + " name=" + name;
     }
 
     @Override
+    @SuppressWarnings({"CloneDoesntCallSuperClone", "CloneDoesntDeclareCloneNotSupportedException"})
     public Class clone() {
-//        Class clazz = new Class(name);
-//        cloneHelp(super.clone());
-//        return clazz;
-
         return this;
     }
 }

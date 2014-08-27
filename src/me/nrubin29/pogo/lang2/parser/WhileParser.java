@@ -2,8 +2,6 @@ package me.nrubin29.pogo.lang2.parser;
 
 import me.nrubin29.pogo.lang2.*;
 
-import java.io.IOException;
-
 import static me.nrubin29.pogo.lang2.Regex.COMPARISON;
 import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER_OR_LITERAL;
 
@@ -15,7 +13,7 @@ public class WhileParser extends Parser<ConditionalBlock> {
     }
 
     @Override
-    public ConditionalBlock parse(Block superBlock, PogoTokenizer tokenizer) throws IOException, InvalidCodeException {
+    public ConditionalBlock parse(Block superBlock, PogoTokenizer tokenizer) throws InvalidCodeException {
         // while|dowhile (name == "Noah")
 
         Token type = tokenizer.nextToken();

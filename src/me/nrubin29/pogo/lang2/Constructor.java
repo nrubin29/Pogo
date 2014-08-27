@@ -43,7 +43,7 @@ public class Constructor extends Block {
             Parameter p = parameters[i];
             Value v = values.get(i);
 
-            if (!v.getType().isTokenType(p.getUnmatchedType())) {
+            if (!v.getType().equals(p.getMatchedType())) {
                 throw new InvalidCodeException("Type mismatch for parameter " + p.getName() + ". Type is " + v.getType() + ". Should be " + p.getUnmatchedType() + ".");
             }
 
