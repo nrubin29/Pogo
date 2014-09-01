@@ -7,6 +7,10 @@ import me.nrubin29.pogo.lang2.Return;
 
 public class ReturnParser extends Parser<Return> {
 
+    public ReturnParser() {
+        super(Return.class);
+    }
+
     @Override
     public boolean shouldParseLine(String line) {
         return line.matches("return .*");

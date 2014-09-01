@@ -9,9 +9,13 @@ import static me.nrubin29.pogo.lang2.Regex.VISIBILITY;
 
 public class ConstructorParser extends Parser<Constructor> {
 
+    public ConstructorParser() {
+        super(Constructor.class);
+    }
+
     @Override
     public boolean shouldParseLine(String line) {
-        return line.matches("constructor " + VISIBILITY + "( )?\\((" + IDENTIFIER + " " + IDENTIFIER + ",( )?)*\\)?");
+        return line.matches("constructor " + VISIBILITY + "( )?\\((" + IDENTIFIER + " " + IDENTIFIER + ")?((,( )?" + IDENTIFIER + " " + IDENTIFIER + ")?)*\\)?");
     }
 
     @Override

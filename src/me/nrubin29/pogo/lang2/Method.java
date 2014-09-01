@@ -64,7 +64,7 @@ public class Method extends Block implements Nameable {
             Parameter p = parameters[i];
             Value v = values.get(i);
 
-            if (!p.getMatchedType().equals(v.getType())) {
+            if (!v.getType().equalsType(p.getMatchedType())) {
                 throw new InvalidCodeException("Type mismatch for parameter " + p.getName() + ". Type is " + v.getType() + ". Should be " + p.getMatchedType() + ".");
             }
 

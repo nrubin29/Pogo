@@ -7,6 +7,10 @@ import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER_OR_LITERAL;
 
 public class WhileParser extends Parser<ConditionalBlock> {
 
+    public WhileParser() {
+        super(ConditionalBlock.class);
+    }
+
     @Override
     public boolean shouldParseLine(String line) {
         return line.matches("(while|dowhile) \\(" + IDENTIFIER_OR_LITERAL + " " + COMPARISON + " " + IDENTIFIER_OR_LITERAL + "\\)");

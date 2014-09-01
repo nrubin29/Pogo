@@ -14,8 +14,7 @@ public class SystemClass extends Class {
     private SystemClass() {
         super("System");
 
-        add(new PrintString());
-        add(new PrintInteger());
+        add(new Print());
         add(new GetInput());
     }
 
@@ -37,31 +36,19 @@ public class SystemClass extends Class {
             return invoke();
         }
 
-        protected abstract Object invoke();
+        protected abstract Object invoke() throws InvalidCodeException;
     }
 
-    private class PrintString extends SystemMethod {
+    private class Print extends SystemMethod {
 
-        private PrintString() {
-            super("print", PrimitiveType.VOID, new Parameter(PrimitiveType.STRING, "msg"));
+        private Print() {
+            super("print", PrimitiveType.VOID, new Parameter(PrimitiveType.OBJECT, "msg"));
         }
 
         @Override
-        public Object invoke() {
+        public Object invoke() throws InvalidCodeException {
             Runtime.RUNTIME.print(String.valueOf(getVariable("msg").get().getValue()), Console.MessageType.OUTPUT);
-            return null;
-        }
-    }
-
-    private class PrintInteger extends SystemMethod {
-
-        private PrintInteger() {
-            super("print", PrimitiveType.VOID, new Parameter(PrimitiveType.INTEGER, "msg"));
-        }
-
-        @Override
-        public Object invoke() {
-            Runtime.RUNTIME.print(String.valueOf(getVariable("msg").get().getValue()), Console.MessageType.OUTPUT);
+            removeVariable(getVariable("msg").get());
             return null;
         }
     }

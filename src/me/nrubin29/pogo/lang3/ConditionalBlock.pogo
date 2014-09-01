@@ -1,26 +1,26 @@
 // This class represents a block. All other blocks inherit from it (once I add inheritance... lol)
 class ConditionalBlock abstract is Block
 
-    var Value aValue
-    var Value bValue
-    var Comparison comparison
+    Value aValue
+    Value bValue
+    Comparison comparison
 
     constructor public (Block sB, Value a, Value b, Comparison c)
         super(sB)
 
-        set aValue = a
-        set bValue = b
-        set comparison = c
+        aValue = a
+        bValue = b
+        comparison = c
 
     method instance boolean doComparison()
-        var boolean success;
+        boolean success
 
         if (comparison == Comparison.equals)
-            set success = a == b
+            success = a == b
         end
 
         elseif (comparison == Comparison.notequals)
-            set success = a != b
+            success = a != b
         end
 
         else
@@ -32,26 +32,26 @@ class ConditionalBlock abstract is Block
                 exception InvalidCode
             end
 
-            var double aDouble
-            var double bDouble
+            double aDouble
+            double bDouble
 
-            invoke System.cast(a.value, PrimitiveType.double) aDouble
-            invoke System.cast(b.value, PrimitiveType.double) bDouble
+            System.cast(a.value, PrimitiveType.double) aDouble
+            System.cast(b.value, PrimitiveType.double) bDouble
 
             if (comparison == Comparison.greaterthan)
-                set success = aDouble > bDouble;
+                success = aDouble > bDouble
             end
 
             elseif (comparison == Comparison.lessthan)
-                set success = aDouble < bDouble;
+                success = aDouble < bDouble
             end
 
             elseif (comparison == Comparison.greaterthanequalto)
-                set success = aDouble >= bDouble;
+                success = aDouble >= bDouble
             end
 
             elseif (comparison == Comparison.lessthanequalto)
-                set success = aDouble <= bDouble;
+                success = aDouble <= bDouble
             end
 
             else
@@ -59,7 +59,7 @@ class ConditionalBlock abstract is Block
             end
         end
 
-        return success;
+        return success
 
     method public string asString()
         return "ConditionalBlock"

@@ -9,9 +9,14 @@ import static me.nrubin29.pogo.lang2.Regex.VISIBILITY;
 
 public class MethodParser extends Parser<Method> {
 
+    public MethodParser() {
+        super(Method.class);
+    }
+
     @Override
     public boolean shouldParseLine(String line) {
-        return line.matches("method " + VISIBILITY + " " + IDENTIFIER + " " + IDENTIFIER + "( )?\\((" + IDENTIFIER + " " + IDENTIFIER + ",( )?)*\\)?");
+        // TODO: method public void stuff(,string str) is valid. Need to fix validity of leading comma.
+        return line.matches("method " + VISIBILITY + " " + IDENTIFIER + " " + IDENTIFIER + "( )?\\((" + IDENTIFIER + " " + IDENTIFIER + ")?((,( )?" + IDENTIFIER + " " + IDENTIFIER + ")?)*\\)?");
     }
 
     @Override

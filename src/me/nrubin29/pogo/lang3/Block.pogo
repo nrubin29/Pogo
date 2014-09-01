@@ -1,25 +1,25 @@
 // This class represents a block. All other blocks inherit from it (once I add inheritance... lol)
 class Block abstract
 
-    var Block superBlock
-    var List(Block) subBlocks
-    var List(Variable) variables
+    Block superBlock
+    List(Block) subBlocks
+    List(Variable) variables
 
     constructor public (Block sB)
-        set superBlock = sB
-        set subBlocks = new
-        set variables = new
+        superBlock = sB
+        subBlocks = new
+        variables = new
 
     method public List(Block) getBlockTree()
-        var List(Block) tree = new
-        var Block b = this;
+        List(Block) tree = new
+        Block b = this
 
         while (b != null)
-            invoke tree.add(b);
-            invoke b.getSuperBlock() b
+            tree.add(b)
+            b.getSuperBlock() b
         end
 
-        invoke tree.reverse()
+        tree.reverse()
         return tree
 
     abstractmethod public void run()

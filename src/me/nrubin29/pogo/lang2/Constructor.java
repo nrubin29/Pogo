@@ -34,6 +34,7 @@ public class Constructor extends Block {
 
     public void invoke(List<Value> values) throws InvalidCodeException, IOException {
         Runtime.RUNTIME.print("invoke() called on constructor.", Console.MessageType.OUTPUT);
+        Runtime.RUNTIME.print("Constructor superblock is " + getSuperBlock(), Console.MessageType.OUTPUT);
 
         if (values.size() != parameters.length) {
             throw new InvalidCodeException("Invalid number of parameters specified.");

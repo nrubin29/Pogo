@@ -9,6 +9,10 @@ public class IfParser extends Parser<Block> {
 
     private If lastIf;
 
+    public IfParser() {
+        super(Block.class);
+    }
+
     @Override
     public boolean shouldParseLine(String line) {
         return line.equals("else") || line.matches("(if|elseif) \\(" + IDENTIFIER_OR_LITERAL + " " + COMPARISON + " " + IDENTIFIER_OR_LITERAL + "\\)");

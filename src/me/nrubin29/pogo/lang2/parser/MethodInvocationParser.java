@@ -8,9 +8,14 @@ import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER;
 
 public class MethodInvocationParser extends Parser<MethodInvocation> {
 
+    public MethodInvocationParser() {
+        super(MethodInvocation.class);
+    }
+
     @Override
     public boolean shouldParseLine(String line) {
-        return line.matches(IDENTIFIER + "[.]" + IDENTIFIER + "\\((.*,)*?\\)( " + IDENTIFIER + ")?");
+        // TODO: Using .* is probably not the best approach.
+        return line.matches(IDENTIFIER + "[.]" + IDENTIFIER + "\\((.*((,.*)?)*)*?\\)( " + IDENTIFIER + ")?");
     }
 
     @Override

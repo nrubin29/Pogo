@@ -1,17 +1,17 @@
 // Represents a Class block, the top-level block.
 class Comparison
 
-    var string token
+    string token
 
-    var Comparison equals = new("==")
-    var Comparison notEquals = new("!=")
-    var Comparison greaterThan = new(">")
-    var Comparison lessThan = new("<")
-    var Comparison greaterThanEqualTo = new(">=")
-    var Comparison lessThanEqualTo = new("<=")
+    Comparison equals = new("==")
+    Comparison notEquals = new("!=")
+    Comparison greaterThan = new(">")
+    Comparison lessThan = new("<")
+    Comparison greaterThanEqualTo = new(">=")
+    Comparison lessThanEqualTo = new("<=")
 
     constructor private (string t)
-        set token = t
+        token = t
 
     method public Comparison valueOf(string t)
         if (t == "==")

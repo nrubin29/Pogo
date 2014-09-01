@@ -37,8 +37,8 @@ public class Class extends Block implements Type, Nameable, Cloneable {
                         }
 
                         for (int i = 0; i < method.getParameters().length && i < paramTypes.length; i++) {
-                            if (!method.getParameters()[i].getMatchedType().equals(paramTypes[i])) {
-                                return false;
+                            if (!paramTypes[i].equalsType(method.getParameters()[i].getMatchedType())) {
+                                throw new InvalidCodeException("Type mismatch for parameter " + method.getParameters()[i].getName() + ". Type is " + paramTypes[i] + ". Should be " + method.getParameters()[i].getMatchedType() + ".");
                             }
                         }
 
@@ -84,7 +84,7 @@ public class Class extends Block implements Type, Nameable, Cloneable {
                         v = new Value(t.getType().getPrimitiveType(), t.getToken());
                     }
 
-                    if (!p.getMatchedType().equals(v.getType())) {
+                    if (!v.getType().equalsType(p.getMatchedType())) {
                         throw new InvalidCodeException("Type mismatch for parameter " + p.getName() + ". Type is " + t.getType() + ". Should be " + p.getMatchedType() + ".");
                     }
                 }
@@ -95,6 +95,16 @@ public class Class extends Block implements Type, Nameable, Cloneable {
         }
 
         return Optional.ofNullable(constructor);
+    }
+
+    @Override
+    public boolean equalsType(Type other) {
+        return other instanceof Class && (((Class) other).getName().equals(name) || other == PrimitiveType.OBJECT);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        throw new RuntimeException("Use equalsType.");
     }
 
     @Override

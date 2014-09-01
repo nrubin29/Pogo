@@ -5,7 +5,7 @@ import java.util.StringJoiner;
 
 public class Regex {
 
-    public static final String VISIBILITY = "(" + join(Visibility.values(), "|") + ")";
+    public static final String VISIBILITY = "(public|private|instance)"; // "(" + join(Visibility.values(), "|") + ")";
     public static final String IDENTIFIER = "[a-zA-Z]([a-zA-Z0-9]*)?";
     public static final String STRING_LITERAL = "\"(.*)?\"";
     public static final String DOUBLE_LITERAL = "(-)?([.])?[0-9][0-9.]*";

@@ -28,7 +28,7 @@ public class Console extends StyleClassedTextArea {
     public void run(final Project project) {
         new Thread(() -> {
             try {
-                me.nrubin29.pogo.lang2.Runtime.start(project);
+                me.nrubin29.pogo.lang2.Runtime.run(project);
             } catch (Exception e) {
                 e.printStackTrace();
             }

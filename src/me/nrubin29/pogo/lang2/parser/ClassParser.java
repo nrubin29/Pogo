@@ -7,6 +7,10 @@ import me.nrubin29.pogo.lang2.PogoTokenizer;
 
 public class ClassParser extends Parser<Class> {
 
+    public ClassParser() {
+        super(Class.class);
+    }
+
     @Override
     public boolean shouldParseLine(String line) {
         return line.matches("^(class [a-zA-Z]([a-zA-Z0-9]*)?)");

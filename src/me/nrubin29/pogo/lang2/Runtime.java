@@ -20,7 +20,7 @@ public class Runtime {
         this.classes = new Class[project.getFiles().size()];
     }
 
-    public static void start(Project project) throws InvalidCodeException, IOException {
+    public static void run(Project project) throws InvalidCodeException, IOException {
         RUNTIME = new Runtime(project);
         RUNTIME.run();
     }
@@ -35,6 +35,7 @@ public class Runtime {
                 new MethodParser(),
                 new ReturnParser(),
                 new VariableDeclarationParser(),
+                new VariableReassignmentParser(),
                 new WhileParser()
         };
 
@@ -72,6 +73,10 @@ public class Runtime {
 
                 for (Parser parser : parsers) {
                     if (parser.shouldParseLine(line)) {
+                        if (parser.getType() == Constructor.class || parser.getType() == Method.class && block != null) {
+                            block = block.getBlockTree()[0];
+                        }
+
                         Block newBlock = parser.parse(block, tokenizer);
 
                         if (block == null) {

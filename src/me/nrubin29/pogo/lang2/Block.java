@@ -78,17 +78,21 @@ public abstract class Block implements Cloneable {
         Optional<Variable> v = getVariable(variable.getName());
 
         if (v.isPresent()) {
-            Variable var = v.get();
-
-            if (!var.getType().equals(variable.getType())) {
-                throw new InvalidCodeException("Attempted to reassign variable using wrong type.");
-            }
-
-            var.setValue(variable.getValue());
+            throw new InvalidCodeException("Variable " + variable.getName() + " is already defined in this scope. " + Arrays.toString(getBlockTree()));
         }
 
         else {
             variables.add(variable);
+        }
+    }
+
+    public void removeVariable(Variable variable) throws InvalidCodeException {
+        if (hasVariable(variable.getName())) {
+            variables.remove(variable); // TODO: Removes from this list, should remove from applicable list.
+        }
+
+        else {
+            throw new InvalidCodeException("Variable " + variable.getName() + " cannot be removed because it is not defined in this scope.");
         }
     }
 

@@ -6,6 +6,10 @@ import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER;
 
 public class VariableDeclarationParser extends Parser<VariableDeclaration> {
 
+    public VariableDeclarationParser() {
+        super(VariableDeclaration.class);
+    }
+
     @Override
     public boolean shouldParseLine(String line) {
         return line.matches(IDENTIFIER + " " + IDENTIFIER + "( = .*)?");

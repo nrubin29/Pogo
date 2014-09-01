@@ -51,7 +51,7 @@ public class Pogo {
 //            }
 //
 //            try {
-//                Instance.start(new Project(projectPath), new Utils.Writable() {
+//                Instance.run(new Project(projectPath), new Utils.Writable() {
 //                    @Override
 //                    public void write(String text, Console.MessageType messageType) {
 //                        if (messageType == Console.MessageType.ERROR) System.err.println(text);
@@ -69,6 +69,6 @@ public class Pogo {
     public static void main(String[] args) throws InvalidCodeException, IOException {
 //        launch(args);
 
-        Runtime.start(new Project(new File(FileSystemView.getFileSystemView().getHomeDirectory(), "/Desktop/Pogo")));
+        Runtime.run(new Project(new File(FileSystemView.getFileSystemView().getHomeDirectory(), "/Desktop/Pogo")));
     }
 }

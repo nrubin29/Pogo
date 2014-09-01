@@ -24,4 +24,6 @@ public interface Type {
 
         return type;
     }
+
+    public boolean equalsType(Type other);
 }
