@@ -5,7 +5,7 @@ import me.nrubin29.pogo.lang2.*;
 import java.util.ArrayList;
 
 import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER;
-import static me.nrubin29.pogo.lang2.Regex.VISIBILITY;
+import static me.nrubin29.pogo.lang2.Regex.PROPERTY;
 
 public class ConstructorParser extends Parser<Constructor> {
 
@@ -15,23 +15,16 @@ public class ConstructorParser extends Parser<Constructor> {
 
     @Override
     public boolean shouldParseLine(String line) {
-        return line.matches("constructor " + VISIBILITY + "( )?\\((" + IDENTIFIER + " " + IDENTIFIER + ")?((,( )?" + IDENTIFIER + " " + IDENTIFIER + ")?)*\\)?");
+        return line.matches("((" + PROPERTY + " )*)?" + " constructor( )?\\((" + IDENTIFIER + " " + IDENTIFIER + ")?((,( )?" + IDENTIFIER + " " + IDENTIFIER + ")?)*\\)?");
     }
 
     @Override
     public Constructor parse(Block superBlock, PogoTokenizer tokenizer) throws InvalidCodeException {
         // public (string name)
 
+        // TODO: Parser properties.
+
         tokenizer.nextToken(); // Skip the constructor token.
-
-        Token visToken = tokenizer.nextToken();
-        Visibility visibility;
-
-        try {
-            visibility = Visibility.valueOf(visToken.getToken().toUpperCase());
-        } catch (Exception e) {
-            throw new InvalidCodeException("Expected visibility, got " + visToken, e);
-        }
 
         if (!tokenizer.nextToken().getToken().equals("(")) {
             throw new InvalidCodeException("Method declaration missing parentheses.");
@@ -70,6 +63,6 @@ public class ConstructorParser extends Parser<Constructor> {
             }
         }
 
-        return new Constructor(superBlock, visibility, params.toArray(new Parameter[params.size()]));
+        return new Constructor(superBlock, params.toArray(new Parameter[params.size()]));
     }
 }

@@ -9,18 +9,12 @@ import java.util.List;
 
 public class Constructor extends Block {
 
-    private Visibility visibility;
     private Parameter[] parameters;
 
-    public Constructor(Block superBlock, Visibility visibility, Parameter... parameters) {
+    public Constructor(Block superBlock, Parameter... parameters) {
         super(superBlock);
 
-        this.visibility = visibility;
         this.parameters = parameters;
-    }
-
-    public Visibility getVisibility() {
-        return visibility;
     }
 
     public Parameter[] getParameters() {
@@ -58,6 +52,6 @@ public class Constructor extends Block {
 
     @Override
     public String toString() {
-        return getClass() + " visibility=" + visibility + " parameters=" + Arrays.toString(parameters);
+        return getClass() + " parameters=" + Arrays.toString(parameters);
     }
 }

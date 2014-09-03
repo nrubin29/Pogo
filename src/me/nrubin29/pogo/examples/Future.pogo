@@ -1,17 +1,17 @@
 // This code represents my dream of how Pogo would be. This will probably never happen.
 class HelloWorld
 
-    Method main = () -> void
+    @public method main = () -> void
         @final string name = "Noah"
         name = "haoN" // This causes a FinalVariableChange exception.
 
 // Here's an example of a property.
 property final
 
-    Method applyToVariable = (Variable v) -> void
+    @public method applyToVariable = (Variable v) -> void
         v.meta.setOnValueChange(onValueChange)
 
-    @private Method onValueChange = (Variable variable, Value oldValue, Value newValue) -> void
+    @private method onValueChange = (Variable variable, Value oldValue, Value newValue) -> void
         exception FinalVariableChange
 
 // Let's break down a few important differences. First, methods are now objects. Instead of a method trigger word,

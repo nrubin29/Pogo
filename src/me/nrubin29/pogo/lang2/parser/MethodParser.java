@@ -5,7 +5,7 @@ import me.nrubin29.pogo.lang2.*;
 import java.util.ArrayList;
 
 import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER;
-import static me.nrubin29.pogo.lang2.Regex.VISIBILITY;
+import static me.nrubin29.pogo.lang2.Regex.PROPERTY;
 
 public class MethodParser extends Parser<Method> {
 
@@ -15,28 +15,21 @@ public class MethodParser extends Parser<Method> {
 
     @Override
     public boolean shouldParseLine(String line) {
-        // TODO: method public void stuff(,string str) is valid. Need to fix validity of leading comma.
-        return line.matches("method " + VISIBILITY + " " + IDENTIFIER + " " + IDENTIFIER + "( )?\\((" + IDENTIFIER + " " + IDENTIFIER + ")?((,( )?" + IDENTIFIER + " " + IDENTIFIER + ")?)*\\)?");
+        // TODO: Fix validity of leading comma in parameter list.
+        return line.matches("((" + PROPERTY + " )*)?" + " method " + IDENTIFIER + "( )?=( )?\\((" + IDENTIFIER + " " + IDENTIFIER + ")?((,( )?" + IDENTIFIER + " " + IDENTIFIER + ")?)*\\)( )?->( )?" + IDENTIFIER);
     }
 
     @Override
     public Method parse(Block superBlock, PogoTokenizer tokenizer) throws InvalidCodeException {
-        // public void main
+        // public method main = () -> void
 
-        tokenizer.nextToken(); // Skip the method token.
+        // TODO: Parser properties.
 
-        Token visToken = tokenizer.nextToken();
-        Visibility visibility;
-
-        try {
-            visibility = Visibility.valueOf(visToken.getToken().toUpperCase());
-        } catch (Exception e) {
-            throw new InvalidCodeException("Expected visibility, got " + visToken, e);
-        }
-
-        Token returnToken = tokenizer.nextToken();
+        tokenizer.nextToken(); // Skip the Method token.
 
         String methodName = tokenizer.nextToken().getToken();
+
+        tokenizer.nextToken(); // Skip the = token.
 
         if (!tokenizer.nextToken().getToken().equals("(")) {
             throw new InvalidCodeException("Method declaration missing parentheses.");
@@ -71,6 +64,10 @@ public class MethodParser extends Parser<Method> {
             }
         }
 
-        return new Method(superBlock, methodName, visibility, returnToken, params.toArray(new Parameter[params.size()]));
+        tokenizer.nextToken(); // Skip the -> token.
+
+        Token returnToken = tokenizer.nextToken();
+
+        return new Method(superBlock, methodName, returnToken, params.toArray(new Parameter[params.size()]));
     }
 }

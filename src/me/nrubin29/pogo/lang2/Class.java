@@ -5,7 +5,7 @@ import me.nrubin29.pogo.ide.Console;
 import java.io.IOException;
 import java.util.Optional;
 
-public class Class extends Block implements Type, Nameable, Cloneable {
+public class Class extends RootBlock implements Type, Cloneable {
 
     private String name;
 
@@ -25,36 +25,6 @@ public class Class extends Block implements Type, Nameable, Cloneable {
         Runtime.RUNTIME.print("run() called on class " + name + ".", Console.MessageType.OUTPUT);
 
         getMethod("main").get().run();
-    }
-
-    public Optional<Method> getMethod(String name, Type... paramTypes) {
-        return getSubBlocks(Method.class).stream()
-                .filter(method -> method.getName().equals(name))
-                .filter(method -> {
-                    try {
-                        if (method.getParameters().length != paramTypes.length) {
-                            return false;
-                        }
-
-                        for (int i = 0; i < method.getParameters().length && i < paramTypes.length; i++) {
-                            if (!paramTypes[i].equalsType(method.getParameters()[i].getMatchedType())) {
-                                throw new InvalidCodeException("Type mismatch for parameter " + method.getParameters()[i].getName() + ". Type is " + paramTypes[i] + ". Should be " + method.getParameters()[i].getMatchedType() + ".");
-                            }
-                        }
-
-                        return true;
-                    }
-
-                    catch (InvalidCodeException e) {
-                        e.printStackTrace();
-                        return false;
-                    }
-                })
-                .findFirst();
-    }
-
-    public boolean hasMethod(String name, Type... paramTypes) {
-        return getMethod(name, paramTypes).isPresent();
     }
 
     public Optional<Constructor> getConstructor(PogoTokenizer tokenizer, Block block) throws InvalidCodeException {

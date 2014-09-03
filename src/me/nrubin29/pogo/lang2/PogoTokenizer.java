@@ -17,7 +17,7 @@ public class PogoTokenizer implements Cloneable {
 
         patterns.add(new TokenData(Pattern.compile("^(" + Regex.COMPARISON + ")"), Token.TokenType.TOKEN));
 
-        for (String token : new String[] { "=", "\\(", "\\)", "\\.", "\\,", }) {
+        for (String token : new String[] { "=", "\\(", "\\)", "\\.", "\\,", "->" }) {
             patterns.add(new TokenData(Pattern.compile("^(" + token + ")"), Token.TokenType.TOKEN));
         }
 
@@ -27,6 +27,7 @@ public class PogoTokenizer implements Cloneable {
         patterns.add(new TokenData(Pattern.compile("^(" + Regex.BOOLEAN_LITERAL + ")"), Token.TokenType.BOOLEAN_LITERAL));
         patterns.add(new TokenData(Pattern.compile("^(" + Regex.INTEGER_LITERAL + ")"), Token.TokenType.INTEGER_LITERAL));
         patterns.add(new TokenData(Pattern.compile("^(" + Regex.DOUBLE_LITERAL + ")"), Token.TokenType.DOUBLE_LITERAL));
+        patterns.add(new TokenData(Pattern.compile("^(" + Regex.PROPERTY + ")"), Token.TokenType.PROPERTY));
     }
 
     public Token nextToken() throws InvalidCodeException {

@@ -13,11 +13,11 @@ public class Runtime {
     public static Runtime RUNTIME;
 
     private final Project project;
-    private final Class[] classes;
+    private final RootBlock[] classes;
 
     private Runtime(Project project) {
         this.project = project;
-        this.classes = new Class[project.getFiles().size()];
+        this.classes = new RootBlock[project.getFiles().size()];
     }
 
     public static void run(Project project) throws InvalidCodeException, IOException {
@@ -33,6 +33,7 @@ public class Runtime {
                 new IfParser(),
                 new MethodInvocationParser(),
                 new MethodParser(),
+                new PropertyParser(),
                 new ReturnParser(),
                 new VariableDeclarationParser(),
                 new VariableReassignmentParser(),
@@ -80,8 +81,8 @@ public class Runtime {
                         Block newBlock = parser.parse(block, tokenizer);
 
                         if (block == null) {
-                            if (!(newBlock instanceof Class)) {
-                                throw new InvalidCodeException("File does not begin with class declaration.");
+                            if (!(newBlock instanceof RootBlock)) {
+                                throw new InvalidCodeException("File does not begin with root block declaration.");
                             }
                         }
 
@@ -117,8 +118,8 @@ public class Runtime {
                 throw new InvalidCodeException("Empty file.");
             }
 
-            if (classes[i].hasMethod("main")) {
-                mainClass = classes[i];
+            if (classes[i] instanceof Class && classes[i].hasMethod("main")) {
+                mainClass = (Class) classes[i];
             }
         }
 
@@ -129,10 +130,10 @@ public class Runtime {
         mainClass.run();
     }
 
-    public Class getPogoClass(String name) {
-        for (Class c : classes) {
+    public <T extends Block> T getPogoClass(String name) {
+        for (RootBlock c : classes) {
             if (c.getName().equals(name)) {
-                return c;
+                return (T) c;
             }
         }
 

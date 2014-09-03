@@ -10,12 +10,18 @@ public abstract class Block implements Cloneable {
 
     private Block superBlock;
     private ArrayList<Block> subBlocks;
+    private ArrayList<Property> properties;
     private ArrayList<Variable> variables;
 
-    public Block(Block superBlock) {
+    private ArrayList<Token> propertyTokens;
+
+    public Block(Block superBlock, Token... propertyTokens) {
         this.superBlock = superBlock;
         this.subBlocks = new ArrayList<>();
+        this.properties = new ArrayList<>();
         this.variables = new ArrayList<>();
+
+        this.propertyTokens = new ArrayList<>(Arrays.asList(propertyTokens));
     }
 
     public Block getSuperBlock() {
@@ -94,6 +100,14 @@ public abstract class Block implements Cloneable {
         else {
             throw new InvalidCodeException("Variable " + variable.getName() + " cannot be removed because it is not defined in this scope.");
         }
+    }
+
+    public void addProperty(Property property) {
+        properties.add(property);
+    }
+
+    public Token[] getPropertyTokens() {
+        return propertyTokens.toArray(new Token[propertyTokens.size()]);
     }
 
     public abstract void run() throws InvalidCodeException, IOException;

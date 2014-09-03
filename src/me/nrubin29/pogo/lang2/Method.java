@@ -3,24 +3,22 @@ package me.nrubin29.pogo.lang2;
 import me.nrubin29.pogo.ide.Console;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Method extends Block implements Nameable {
 
     private String name;
-    private Visibility visibility;
     private Token typeToken;
     private Type type;
     private Parameter[] parameters;
     private Value returnValue;
 
-    public Method(Block superBlock, String name, Visibility visibility, Token typeToken, Parameter... parameters) {
-        super(superBlock);
+    public Method(Block superBlock, String name, Token typeToken, Parameter[] parameters, Token... propertyTokens) {
+        super(superBlock, propertyTokens);
 
         this.name = name;
-        this.visibility = visibility;
         this.typeToken = typeToken;
         this.parameters = parameters;
     }
@@ -28,10 +26,6 @@ public class Method extends Block implements Nameable {
     @Override
     public String getName() {
         return name;
-    }
-
-    public Visibility getVisibility() {
-        return visibility;
     }
 
     public Type getType() {
@@ -48,11 +42,13 @@ public class Method extends Block implements Nameable {
 
     @Override
     public void run() throws InvalidCodeException, IOException {
-        invoke(new ArrayList<>());
+        invoke(Collections.emptyList());
     }
 
     public Object invoke(List<Value> values) throws InvalidCodeException, IOException {
         Runtime.RUNTIME.print("invoke() called on method " + name + ".", Console.MessageType.OUTPUT);
+
+        // TODO: Parse properties and call applyToMethod method on them if that method is defined.
 
         this.type = Type.match(typeToken.getToken());
 
@@ -84,6 +80,6 @@ public class Method extends Block implements Nameable {
 
     @Override
     public String toString() {
-        return getClass() + " name=" + name + " visibility=" + visibility + " typeToken=" + typeToken + " parameters=" + Arrays.toString(parameters);
+        return getClass() + " name=" + name + " typeToken=" + typeToken + " parameters=" + Arrays.toString(parameters);
     }
 }

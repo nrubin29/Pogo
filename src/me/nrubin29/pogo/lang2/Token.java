@@ -9,9 +9,10 @@ public class Token {
         BOOLEAN_LITERAL(PrimitiveType.BOOLEAN),
         DOUBLE_LITERAL(PrimitiveType.DOUBLE),
         INTEGER_LITERAL(PrimitiveType.INTEGER),
-        STRING_LITERAL(PrimitiveType.STRING);
+        STRING_LITERAL(PrimitiveType.STRING),
+        PROPERTY(null);
 
-        public static final TokenType[] NOT_TOKEN = { BOOLEAN_LITERAL, DOUBLE_LITERAL, INTEGER_LITERAL, STRING_LITERAL, IDENTIFIER };
+        public static final TokenType[] NOT_TOKEN = { BOOLEAN_LITERAL, DOUBLE_LITERAL, INTEGER_LITERAL, STRING_LITERAL, IDENTIFIER, PROPERTY };
 
         private PrimitiveType primitiveType;
 
