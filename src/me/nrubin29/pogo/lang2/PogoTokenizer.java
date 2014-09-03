@@ -23,11 +23,11 @@ public class PogoTokenizer implements Cloneable {
 
         patterns.add(new TokenData(Pattern.compile("^(" + Regex.IDENTIFIER + ")"), Token.TokenType.IDENTIFIER));
         patterns.add(new TokenData(Pattern.compile("^(//.*)"), Token.TokenType.EMPTY));
+        patterns.add(new TokenData(Pattern.compile("^(" + Regex.PROPERTY + ")"), Token.TokenType.PROPERTY));
         patterns.add(new TokenData(Pattern.compile("^(" + Regex.STRING_LITERAL + ")"), Token.TokenType.STRING_LITERAL));
         patterns.add(new TokenData(Pattern.compile("^(" + Regex.BOOLEAN_LITERAL + ")"), Token.TokenType.BOOLEAN_LITERAL));
         patterns.add(new TokenData(Pattern.compile("^(" + Regex.INTEGER_LITERAL + ")"), Token.TokenType.INTEGER_LITERAL));
         patterns.add(new TokenData(Pattern.compile("^(" + Regex.DOUBLE_LITERAL + ")"), Token.TokenType.DOUBLE_LITERAL));
-        patterns.add(new TokenData(Pattern.compile("^(" + Regex.PROPERTY + ")"), Token.TokenType.PROPERTY));
     }
 
     public Token nextToken() throws InvalidCodeException {
@@ -51,6 +51,11 @@ public class PogoTokenizer implements Cloneable {
                 if (data.getTokenType() == Token.TokenType.IDENTIFIER) {
                     str = matcher.replaceAll("");
                     return lastToken = new Token(Token.TokenType.IDENTIFIER, token);
+                }
+
+                else if (data.getTokenType() == Token.TokenType.PROPERTY) {
+                    str = matcher.replaceAll("");
+                    return lastToken = new Token(Token.TokenType.PROPERTY, token);
                 }
 
                 else if (data.getTokenType() == Token.TokenType.BOOLEAN_LITERAL) {

@@ -93,12 +93,22 @@ public abstract class Block implements Cloneable {
     }
 
     public void removeVariable(Variable variable) throws InvalidCodeException {
-        if (hasVariable(variable.getName())) {
-            variables.remove(variable); // TODO: Removes from this list, should remove from applicable list.
+        Optional<Block> superBlock = Arrays.stream(getBlockTree(), 0, getBlockTree().length - 1)
+                .filter(b -> b.hasVariable(variable.getName()))
+                .findFirst();
+
+        if (superBlock.isPresent()) {
+            superBlock.ifPresent(block -> block.variables.remove(variable));
         }
 
         else {
-            throw new InvalidCodeException("Variable " + variable.getName() + " cannot be removed because it is not defined in this scope.");
+            if (hasVariable(variable.getName())) {
+                variables.remove(variable);
+            }
+
+            else {
+                throw new InvalidCodeException("Variable " + variable.getName() + " cannot be removed because it is not defined in this scope.");
+            }
         }
     }
 

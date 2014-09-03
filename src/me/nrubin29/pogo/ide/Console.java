@@ -57,8 +57,6 @@ public class Console extends StyleClassedTextArea {
     }
 
     public void write(final String txt, final MessageType messageType) {
-        System.out.println("write <- " + txt);
-
         Platform.runLater(() -> {
             appendText(txt + "\n");
             setStyleClass(getLength() - txt.length() - 1, getLength(), messageType.name().toLowerCase());

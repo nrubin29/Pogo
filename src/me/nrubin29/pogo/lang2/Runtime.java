@@ -111,7 +111,7 @@ public class Runtime {
             }
 
             if (block != null) {
-                classes[i] = (Class) block.getBlockTree()[0];
+                classes[i] = (RootBlock) block.getBlockTree()[0];
             }
 
             else {

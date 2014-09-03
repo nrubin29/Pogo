@@ -16,16 +16,29 @@ public class MethodParser extends Parser<Method> {
     @Override
     public boolean shouldParseLine(String line) {
         // TODO: Fix validity of leading comma in parameter list.
-        return line.matches("((" + PROPERTY + " )*)?" + " method " + IDENTIFIER + "( )?=( )?\\((" + IDENTIFIER + " " + IDENTIFIER + ")?((,( )?" + IDENTIFIER + " " + IDENTIFIER + ")?)*\\)( )?->( )?" + IDENTIFIER);
+        return line.matches("((" + PROPERTY + " )*)?" + "method " + IDENTIFIER + "( )?=( )?\\((" + IDENTIFIER + " " + IDENTIFIER + ")?((,( )?" + IDENTIFIER + " " + IDENTIFIER + ")?)*\\)( )?->( )?" + IDENTIFIER);
     }
 
     @Override
     public Method parse(Block superBlock, PogoTokenizer tokenizer) throws InvalidCodeException {
-        // public method main = () -> void
+        // method main = () -> void
 
-        // TODO: Parser properties.
+        ArrayList<Token> properties = new ArrayList<>();
 
-        tokenizer.nextToken(); // Skip the Method token.
+        while (tokenizer.hasNextToken()) {
+            Token token = tokenizer.nextToken();
+
+            if (token.getType() == Token.TokenType.PROPERTY) {
+                properties.add(token);
+            }
+
+            else {
+                tokenizer.pushBack();
+                break;
+            }
+        }
+
+        tokenizer.nextToken(); // Skip the method token.
 
         String methodName = tokenizer.nextToken().getToken();
 
@@ -68,6 +81,6 @@ public class MethodParser extends Parser<Method> {
 
         Token returnToken = tokenizer.nextToken();
 
-        return new Method(superBlock, methodName, returnToken, params.toArray(new Parameter[params.size()]));
+        return new Method(superBlock, methodName, returnToken, params.toArray(new Parameter[params.size()]), properties.toArray(new Token[properties.size()]));
     }
 }

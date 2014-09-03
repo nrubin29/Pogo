@@ -15,7 +15,7 @@ public class ConstructorParser extends Parser<Constructor> {
 
     @Override
     public boolean shouldParseLine(String line) {
-        return line.matches("((" + PROPERTY + " )*)?" + " constructor( )?\\((" + IDENTIFIER + " " + IDENTIFIER + ")?((,( )?" + IDENTIFIER + " " + IDENTIFIER + ")?)*\\)?");
+        return line.matches("((" + PROPERTY + " )*)?" + "constructor( )?\\((" + IDENTIFIER + " " + IDENTIFIER + ")?((,( )?" + IDENTIFIER + " " + IDENTIFIER + ")?)*\\)?");
     }
 
     @Override

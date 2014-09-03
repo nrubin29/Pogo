@@ -69,12 +69,12 @@ public class Class extends RootBlock implements Type, Cloneable {
 
     @Override
     public boolean equalsType(Type other) {
-        return other instanceof Class && (((Class) other).getName().equals(name) || other == PrimitiveType.OBJECT);
+        return other == PrimitiveType.OBJECT || (other instanceof Class && ((Class) other).getName().equals(name));
     }
 
     @Override
     public boolean equals(Object other) {
-        throw new RuntimeException("Use equalsType.");
+        return other instanceof Type && equalsType((Type) other);
     }
 
     @Override

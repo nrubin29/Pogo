@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class Method extends Block implements Nameable {
 
@@ -48,8 +49,6 @@ public class Method extends Block implements Nameable {
     public Object invoke(List<Value> values) throws InvalidCodeException, IOException {
         Runtime.RUNTIME.print("invoke() called on method " + name + ".", Console.MessageType.OUTPUT);
 
-        // TODO: Parse properties and call applyToMethod method on them if that method is defined.
-
         this.type = Type.match(typeToken.getToken());
 
         if (values.size() != parameters.length) {
@@ -65,6 +64,24 @@ public class Method extends Block implements Nameable {
             }
 
             addVariable(new Variable(this, p.getName(), p.getMatchedType(), v.getValue()));
+        }
+
+        for (Token token : getPropertyTokens()) {
+            Property property = Runtime.RUNTIME.getPogoClass(token.getToken().substring(token.getToken().indexOf('@') + 1));
+
+            if (property == null) {
+                throw new InvalidCodeException("Expected property, found " + token.getToken().substring(token.getToken().indexOf('@') + 1) + ".");
+            }
+
+            addProperty(property);
+
+            Optional<Method> method = property.getMethod("applyToMethod");
+
+            if (!method.isPresent()) {
+                throw new InvalidCodeException("Property is not applicable to methods.");
+            }
+
+            method.get().run();
         }
 
         for (Block block : getSubBlocks()) {
