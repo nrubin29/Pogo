@@ -21,7 +21,7 @@ public class MethodParser extends Parser<Method> {
 
     @Override
     public Method parse(Block superBlock, PogoTokenizer tokenizer) throws InvalidCodeException {
-        // method main = () -> void
+        // [@...] method main = () -> void
 
         ArrayList<Token> properties = new ArrayList<>();
 

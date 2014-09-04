@@ -15,16 +15,30 @@ public class ConstructorParser extends Parser<Constructor> {
 
     @Override
     public boolean shouldParseLine(String line) {
-        return line.matches("((" + PROPERTY + " )*)?" + "constructor( )?\\((" + IDENTIFIER + " " + IDENTIFIER + ")?((,( )?" + IDENTIFIER + " " + IDENTIFIER + ")?)*\\)?");
+        return line.matches("((" + PROPERTY + " )*)?" + "constructor( )?=( )?\\((" + IDENTIFIER + " " + IDENTIFIER + ")?((,( )?" + IDENTIFIER + " " + IDENTIFIER + ")?)*\\)");
     }
 
     @Override
     public Constructor parse(Block superBlock, PogoTokenizer tokenizer) throws InvalidCodeException {
-        // public (string name)
+        // [@...] constructor = (string name)
 
-        // TODO: Parser properties.
+        ArrayList<Token> properties = new ArrayList<>();
+
+        while (tokenizer.hasNextToken()) {
+            Token token = tokenizer.nextToken();
+
+            if (token.getType() == Token.TokenType.PROPERTY) {
+                properties.add(token);
+            }
+
+            else {
+                tokenizer.pushBack();
+                break;
+            }
+        }
 
         tokenizer.nextToken(); // Skip the constructor token.
+        tokenizer.nextToken(); // Skip the = token.
 
         if (!tokenizer.nextToken().getToken().equals("(")) {
             throw new InvalidCodeException("Method declaration missing parentheses.");
@@ -63,6 +77,6 @@ public class ConstructorParser extends Parser<Constructor> {
             }
         }
 
-        return new Constructor(superBlock, params.toArray(new Parameter[params.size()]));
+        return new Constructor(superBlock, params.toArray(new Parameter[params.size()]), properties.toArray(new Token[properties.size()]));
     }
 }

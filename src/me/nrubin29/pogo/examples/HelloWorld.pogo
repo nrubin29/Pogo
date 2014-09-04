@@ -1,4 +1,4 @@
 class HelloWorld
 
-    public method main = () -> void
+    method main = () -> void
         System.print("Hello, world!")

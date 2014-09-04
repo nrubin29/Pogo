@@ -1,5 +1,5 @@
 class VariableDeclaration
 
-    public method main = () -> void
+    method main = () -> void
         string name = "Noah"
         System.print(name)

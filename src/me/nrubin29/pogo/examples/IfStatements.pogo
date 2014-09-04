@@ -1,6 +1,6 @@
 class IfStatements
 
-    public method main = () -> void
+    method main = () -> void
         string name = "Noah"
         if (name == "Noah")
             System.print("You rock, Noah!")

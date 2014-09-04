@@ -3,8 +3,8 @@ class Lambdas
 
     lambda Runnable = () -> void
 
-    public method run = (Runnable runnable) -> void
+    method run = (Runnable runnable) -> void
         runnable.invoke() // our Runnable lambda has no arguments and returns void, so we can invoke it like this.
 
-    public method emptyMethod = Runnable // () -> void
+    method emptyMethod = Runnable // () -> void
         // Empty...

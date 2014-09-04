@@ -6,13 +6,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class Constructor extends Block {
 
     private Parameter[] parameters;
 
-    public Constructor(Block superBlock, Parameter... parameters) {
-        super(superBlock);
+    public Constructor(Block superBlock, Parameter[] parameters, Token... propertyTokens) {
+        super(superBlock, propertyTokens);
 
         this.parameters = parameters;
     }
@@ -43,6 +44,24 @@ public class Constructor extends Block {
             }
 
             addVariable(new Variable(this, p.getName(), p.getMatchedType(), v.getValue()));
+        }
+
+        for (Token token : getPropertyTokens()) {
+            Property property = Runtime.RUNTIME.getPogoClass(token.getToken().substring(token.getToken().indexOf('@') + 1));
+
+            if (property == null) {
+                throw new InvalidCodeException("Expected property, found " + token.getToken().substring(token.getToken().indexOf('@') + 1) + ".");
+            }
+
+            addProperty(property);
+
+            Optional<Method> method = property.getMethod("applyToConstructor");
+
+            if (!method.isPresent()) {
+                throw new InvalidCodeException("Property is not applicable to constructors.");
+            }
+
+            method.get().run();
         }
 
         for (Block block : getSubBlocks()) {

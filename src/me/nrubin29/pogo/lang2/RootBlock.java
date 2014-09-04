@@ -7,8 +7,8 @@ import java.util.Optional;
  */
 public abstract class RootBlock extends Block implements Nameable {
 
-    public RootBlock(Block superBlock) {
-        super(superBlock);
+    public RootBlock(Block superBlock, Token... rootTokens) {
+        super(superBlock, rootTokens);
     }
 
     public Optional<Method> getMethod(String name, Type... paramTypes) {

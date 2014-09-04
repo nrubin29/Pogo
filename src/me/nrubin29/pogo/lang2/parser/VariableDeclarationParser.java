@@ -2,7 +2,10 @@ package me.nrubin29.pogo.lang2.parser;
 
 import me.nrubin29.pogo.lang2.*;
 
+import java.util.ArrayList;
+
 import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER;
+import static me.nrubin29.pogo.lang2.Regex.PROPERTY;
 
 public class VariableDeclarationParser extends Parser<VariableDeclaration> {
 
@@ -12,13 +15,28 @@ public class VariableDeclarationParser extends Parser<VariableDeclaration> {
 
     @Override
     public boolean shouldParseLine(String line) {
-        return line.matches(IDENTIFIER + " " + IDENTIFIER + "( = .*)?");
+        return line.matches("((" + PROPERTY + " )*)?" + IDENTIFIER + " " + IDENTIFIER + "( = .*)?");
     }
 
     @Override
     public VariableDeclaration parse(Block superBlock, PogoTokenizer tokenizer) throws InvalidCodeException {
-        // string name = "Noah"
-        // Person person = new("Noah")
+        // [@...] string name = "Noah"
+        // [@...] Person person = new("Noah")
+
+        ArrayList<Token> properties = new ArrayList<>();
+
+        while (tokenizer.hasNextToken()) {
+            Token token = tokenizer.nextToken();
+
+            if (token.getType() == Token.TokenType.PROPERTY) {
+                properties.add(token);
+            }
+
+            else {
+                tokenizer.pushBack();
+                break;
+            }
+        }
 
         Token type = tokenizer.nextToken();
 
@@ -32,6 +50,6 @@ public class VariableDeclarationParser extends Parser<VariableDeclaration> {
             init = true;
         }
 
-        return new VariableDeclaration(superBlock, type, name, init, tokenizer);
+        return new VariableDeclaration(superBlock, type, name, init, tokenizer, properties.toArray(new Token[properties.size()]));
     }
 }

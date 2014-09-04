@@ -7,8 +7,8 @@ import java.util.Optional;
  */
 public abstract class ReadOnlyBlock extends Block {
 
-    public ReadOnlyBlock(Block superBlock) {
-        super(superBlock);
+    public ReadOnlyBlock(Block superBlock, Token... propertyTokens) {
+        super(superBlock, propertyTokens);
     }
 
     @Override

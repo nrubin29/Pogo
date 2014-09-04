@@ -10,8 +10,8 @@ public class VariableDeclaration extends ReadOnlyBlock implements Nameable {
     private boolean init;
     private PogoTokenizer tokenizer;
 
-    public VariableDeclaration(Block superBlock, Token typeToken, Token nameToken, boolean init, PogoTokenizer tokenizer) {
-        super(superBlock);
+    public VariableDeclaration(Block superBlock, Token typeToken, Token nameToken, boolean init, PogoTokenizer tokenizer, Token... propertyTokens) {
+        super(superBlock, propertyTokens);
 
         this.typeToken = typeToken;
         this.nameToken = nameToken;
@@ -82,6 +82,24 @@ public class VariableDeclaration extends ReadOnlyBlock implements Nameable {
             else {
                 variable.setValue(Utils.parseToken(firstToken, getSuperBlock()).getValue());
             }
+        }
+
+        for (Token token : getPropertyTokens()) {
+            Property property = Runtime.RUNTIME.getPogoClass(token.getToken().substring(token.getToken().indexOf('@') + 1));
+
+            if (property == null) {
+                throw new InvalidCodeException("Expected property, found " + token.getToken().substring(token.getToken().indexOf('@') + 1) + ".");
+            }
+
+            addProperty(property);
+
+            Optional<Method> method = property.getMethod("applyToVariable");
+
+            if (!method.isPresent()) {
+                throw new InvalidCodeException("Property is not applicable to variables.");
+            }
+
+            method.get().run();
         }
 
         getSuperBlock().addVariable(variable);

@@ -15,12 +15,13 @@ public class ClassParser extends Parser<Class> {
 
     @Override
     public boolean shouldParseLine(String line) {
-        return line.matches("^(class " + IDENTIFIER + ")");
+        return line.matches("class " + IDENTIFIER);
     }
 
     @Override
     public Class parse(Block superBlock, PogoTokenizer tokenizer) throws InvalidCodeException {
         tokenizer.nextToken(); // Skip the class token.
+
         return new Class(tokenizer.nextToken().getToken());
     }
 }
