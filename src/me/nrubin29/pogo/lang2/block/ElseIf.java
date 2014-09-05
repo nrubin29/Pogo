@@ -1,4 +1,7 @@
-package me.nrubin29.pogo.lang2;
+package me.nrubin29.pogo.lang2.block;
+
+import me.nrubin29.pogo.lang2.Comparison;
+import me.nrubin29.pogo.lang2.Value;
 
 public class ElseIf extends ConditionalBlock {
 

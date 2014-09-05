@@ -1,5 +1,7 @@
 package me.nrubin29.pogo.lang2;
 
+import me.nrubin29.pogo.lang2.block.Block;
+
 public class Variable extends Value implements Nameable {
 
     private Block block;

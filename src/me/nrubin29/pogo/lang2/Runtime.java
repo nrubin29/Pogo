@@ -3,6 +3,8 @@ package me.nrubin29.pogo.lang2;
 import me.nrubin29.pogo.Pogo;
 import me.nrubin29.pogo.ide.Console;
 import me.nrubin29.pogo.ide.Project;
+import me.nrubin29.pogo.lang2.block.*;
+import me.nrubin29.pogo.lang2.block.Class;
 import me.nrubin29.pogo.lang2.parser.*;
 
 import java.io.IOException;
@@ -40,7 +42,7 @@ public class Runtime {
                 new WhileParser()
         };
 
-        Class mainClass = null;
+        me.nrubin29.pogo.lang2.block.Class mainClass = null;
 
         for (int i = 0; i < classes.length; i++) {
             Block block = null;

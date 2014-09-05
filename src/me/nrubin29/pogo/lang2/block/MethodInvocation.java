@@ -1,4 +1,9 @@
-package me.nrubin29.pogo.lang2;
+package me.nrubin29.pogo.lang2.block;
+
+import me.nrubin29.pogo.lang2.*;
+import me.nrubin29.pogo.lang2.Runtime;
+import me.nrubin29.pogo.lang2.system.MethodMeta;
+import me.nrubin29.pogo.lang2.system.SystemClass;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,6 +27,24 @@ public class MethodInvocation extends ReadOnlyBlock {
 
     @Override
     public void run() throws InvalidCodeException, IOException {
+        List<Value> values = this.values.stream()
+                .map(token -> {
+                    try {
+                        return Utils.parseToken(token, getSuperBlock());
+                    }
+
+                    catch (InvalidCodeException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                })
+                .filter(value -> value != null)
+                .collect(Collectors.toList());
+
+        List<Type> types = values.stream()
+                .map(Value::getType)
+                .collect(Collectors.toList());
+
         Class clazz;
 
         if (invokableToken.getToken().equals("System")) {
@@ -49,26 +72,18 @@ public class MethodInvocation extends ReadOnlyBlock {
                 throw new InvalidCodeException("Attempted to invoke method on primitive variable.");
             }
 
-            clazz = (Class) var.getType();
+            if (var.getType() instanceof MethodMeta) {
+                clazz = (MethodMeta) var.getValue();
+            }
+
+            else {
+                clazz = (Class) var.getType();
+            }
         }
 
-        List<Value> values = this.values.stream()
-                .map(token -> {
-                    try {
-                        return Utils.parseToken(token, getSuperBlock());
-                    }
-
-                    catch (InvalidCodeException e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-                })
-                .filter(value -> value != null)
-                .collect(Collectors.toList());
-
-        List<Type> types = values.stream()
-                .map(Value::getType)
-                .collect(Collectors.toList());
+        if (clazz == null) {
+            throw new InvalidCodeException("Expected class or variable, got " + invokableToken.getToken() + ".");
+        }
 
         Optional<Method> m = clazz.getMethod(methodToken.getToken(), types.toArray(new Type[types.size()]));
 
@@ -76,10 +91,20 @@ public class MethodInvocation extends ReadOnlyBlock {
             throw new InvalidCodeException("Expected method, found " + methodToken + ".");
         }
 
-        Object ret = m.get().invoke(values);
+        Value ret = m.get().invoke(values);
 
         if (captureToken != null && captureToken.getType() != Token.TokenType.EMPTY) {
-            getSuperBlock().getVariable(captureToken.getToken()).get().setValue(ret);
+            Optional<Variable> var = getSuperBlock().getVariable(captureToken.getToken());
+
+            if (!var.isPresent()) {
+                throw new InvalidCodeException("Expected capture variable, found " + captureToken + ".");
+            }
+
+            if (!var.get().getType().equalsType(ret.getType())) {
+                throw new InvalidCodeException("Incompatible type for capture variable.");
+            }
+
+            var.get().setValue(ret.getValue());
         }
     }
 

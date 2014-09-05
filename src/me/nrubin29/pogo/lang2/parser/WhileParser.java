@@ -1,6 +1,10 @@
 package me.nrubin29.pogo.lang2.parser;
 
 import me.nrubin29.pogo.lang2.*;
+import me.nrubin29.pogo.lang2.block.Block;
+import me.nrubin29.pogo.lang2.block.ConditionalBlock;
+import me.nrubin29.pogo.lang2.block.DoWhile;
+import me.nrubin29.pogo.lang2.block.While;
 
 import static me.nrubin29.pogo.lang2.Regex.COMPARISON;
 import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER_OR_LITERAL;

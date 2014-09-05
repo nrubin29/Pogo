@@ -1,6 +1,9 @@
-package me.nrubin29.pogo.lang2;
+package me.nrubin29.pogo.lang2.block;
 
 import me.nrubin29.pogo.ide.Console;
+import me.nrubin29.pogo.lang2.InvalidCodeException;
+import me.nrubin29.pogo.lang2.Token;
+import me.nrubin29.pogo.lang2.Variable;
 
 import java.io.IOException;
 import java.util.*;
@@ -79,7 +82,7 @@ public abstract class Block implements Cloneable {
     }
 
     public void addVariable(Variable variable) throws InvalidCodeException {
-        Runtime.RUNTIME.print("Going to add variable " + variable.getName() + ".", Console.MessageType.OUTPUT);
+        me.nrubin29.pogo.lang2.Runtime.RUNTIME.print("Going to add variable " + variable.getName() + ".", Console.MessageType.OUTPUT);
 
         Optional<Variable> v = getVariable(variable.getName());
 

@@ -1,9 +1,14 @@
-package me.nrubin29.pogo.lang2;
+package me.nrubin29.pogo.lang2.block;
+
+import me.nrubin29.pogo.lang2.InvalidCodeException;
+import me.nrubin29.pogo.lang2.Nameable;
+import me.nrubin29.pogo.lang2.Token;
+import me.nrubin29.pogo.lang2.Type;
 
 import java.util.Optional;
 
 /**
- * Represents a root block that can contain methods. Current implementations are {@link me.nrubin29.pogo.lang2.Class} and {@link me.nrubin29.pogo.lang2.Property}
+ * Represents a root block that can contain methods. Current implementations are {@link Class} and {@link Property}
  */
 public abstract class RootBlock extends Block implements Nameable {
 

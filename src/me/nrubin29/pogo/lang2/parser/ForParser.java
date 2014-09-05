@@ -1,6 +1,10 @@
 package me.nrubin29.pogo.lang2.parser;
 
-import me.nrubin29.pogo.lang2.*;
+import me.nrubin29.pogo.lang2.InvalidCodeException;
+import me.nrubin29.pogo.lang2.PogoTokenizer;
+import me.nrubin29.pogo.lang2.Token;
+import me.nrubin29.pogo.lang2.block.Block;
+import me.nrubin29.pogo.lang2.block.For;
 
 import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER_OR_LITERAL;
 

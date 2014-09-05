@@ -1,6 +1,11 @@
 package me.nrubin29.pogo.lang2.parser;
 
-import me.nrubin29.pogo.lang2.*;
+import me.nrubin29.pogo.lang2.InvalidCodeException;
+import me.nrubin29.pogo.lang2.Parameter;
+import me.nrubin29.pogo.lang2.PogoTokenizer;
+import me.nrubin29.pogo.lang2.Token;
+import me.nrubin29.pogo.lang2.block.Block;
+import me.nrubin29.pogo.lang2.block.Constructor;
 
 import java.util.ArrayList;
 

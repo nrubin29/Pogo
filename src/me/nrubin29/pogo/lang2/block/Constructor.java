@@ -1,6 +1,8 @@
-package me.nrubin29.pogo.lang2;
+package me.nrubin29.pogo.lang2.block;
 
 import me.nrubin29.pogo.ide.Console;
+import me.nrubin29.pogo.lang2.*;
+import me.nrubin29.pogo.lang2.Runtime;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ public class Constructor extends Block {
     }
 
     public void invoke(List<Value> values) throws InvalidCodeException, IOException {
-        Runtime.RUNTIME.print("invoke() called on constructor.", Console.MessageType.OUTPUT);
+        me.nrubin29.pogo.lang2.Runtime.RUNTIME.print("invoke() called on constructor.", Console.MessageType.OUTPUT);
         Runtime.RUNTIME.print("Constructor superblock is " + getSuperBlock(), Console.MessageType.OUTPUT);
 
         if (values.size() != parameters.length) {

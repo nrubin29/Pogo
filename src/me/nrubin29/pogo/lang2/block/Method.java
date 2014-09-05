@@ -1,6 +1,9 @@
-package me.nrubin29.pogo.lang2;
+package me.nrubin29.pogo.lang2.block;
 
 import me.nrubin29.pogo.ide.Console;
+import me.nrubin29.pogo.lang2.*;
+import me.nrubin29.pogo.lang2.Runtime;
+import me.nrubin29.pogo.lang2.system.MethodMeta;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -46,7 +49,7 @@ public class Method extends Block implements Nameable {
         invoke(Collections.emptyList());
     }
 
-    public Object invoke(List<Value> values) throws InvalidCodeException, IOException {
+    public Value invoke(List<Value> values) throws InvalidCodeException, IOException {
         Runtime.RUNTIME.print("invoke() called on method " + name + ".", Console.MessageType.OUTPUT);
 
         this.type = Type.match(typeToken.getToken());
@@ -75,13 +78,13 @@ public class Method extends Block implements Nameable {
 
             addProperty(property);
 
-            Optional<Method> method = property.getMethod("applyToMethod");
+            Optional<Method> method = property.getMethod("applyToMethod", MethodMeta.TYPE);
 
             if (!method.isPresent()) {
                 throw new InvalidCodeException("Property is not applicable to methods.");
             }
 
-            method.get().run();
+            method.get().invoke(Arrays.asList(new Value(MethodMeta.TYPE, new MethodMeta(this))));
         }
 
         for (Block block : getSubBlocks()) {

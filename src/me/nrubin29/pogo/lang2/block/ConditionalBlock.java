@@ -1,4 +1,6 @@
-package me.nrubin29.pogo.lang2;
+package me.nrubin29.pogo.lang2.block;
+
+import me.nrubin29.pogo.lang2.*;
 
 public abstract class ConditionalBlock extends Block implements Endable {
 

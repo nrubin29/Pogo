@@ -1,10 +1,13 @@
 package me.nrubin29.pogo.lang2;
 
+import me.nrubin29.pogo.lang2.block.Block;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -24,7 +27,34 @@ public class Utils {
         }
 
         else if (token.getType() == Token.TokenType.STRING_LITERAL) {
-            return new Value(PrimitiveType.STRING, token.getToken());
+            StringTokenizer tokenizer = new StringTokenizer(token.getToken());
+            StringBuilder value = new StringBuilder();
+
+            while (tokenizer.hasNextToken()) {
+                Token t = tokenizer.nextToken();
+
+                if (t.getType().equals(Token.TokenType.STRING_PART)) {
+                    value.append(t.getToken());
+                }
+
+                else if (t.getType().equals(Token.TokenType.IDENTIFIER)) {
+                    value.append(" ");
+                    Optional<Variable> v = block.getVariable(t.getToken().substring(1, t.getToken().length() - 1));
+
+                    if (!v.isPresent()) {
+                        value.append(t.getToken());
+                    }
+
+                    else {
+                        value.append(v.get().getValue());
+                    }
+
+                    value.append(" "); // This fixes one issue and causes another...
+                }
+            }
+
+
+            return new Value(PrimitiveType.STRING, value.toString());
         }
 
         else {

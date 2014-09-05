@@ -1,6 +1,10 @@
-package me.nrubin29.pogo.lang2;
+package me.nrubin29.pogo.lang2.block;
 
 import me.nrubin29.pogo.ide.Console;
+import me.nrubin29.pogo.lang2.Comparison;
+import me.nrubin29.pogo.lang2.InvalidCodeException;
+import me.nrubin29.pogo.lang2.Runtime;
+import me.nrubin29.pogo.lang2.Value;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,7 +31,7 @@ public class If extends ConditionalBlock {
 
     @Override
     public void run() throws InvalidCodeException, IOException {
-        Runtime.RUNTIME.print("run() called on " + toString(), Console.MessageType.OUTPUT);
+        me.nrubin29.pogo.lang2.Runtime.RUNTIME.print("run() called on " + toString(), Console.MessageType.OUTPUT);
         Runtime.RUNTIME.print("doComparison() -> " + doComparison(), Console.MessageType.OUTPUT);
 
         if (doComparison()) {

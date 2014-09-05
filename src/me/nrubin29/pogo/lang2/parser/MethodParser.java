@@ -1,6 +1,11 @@
 package me.nrubin29.pogo.lang2.parser;
 
-import me.nrubin29.pogo.lang2.*;
+import me.nrubin29.pogo.lang2.InvalidCodeException;
+import me.nrubin29.pogo.lang2.Parameter;
+import me.nrubin29.pogo.lang2.PogoTokenizer;
+import me.nrubin29.pogo.lang2.Token;
+import me.nrubin29.pogo.lang2.block.Block;
+import me.nrubin29.pogo.lang2.block.Method;
 
 import java.util.ArrayList;
 
@@ -45,7 +50,8 @@ public class MethodParser extends Parser<Method> {
         tokenizer.nextToken(); // Skip the = token.
 
         if (!tokenizer.nextToken().getToken().equals("(")) {
-            throw new InvalidCodeException("Method declaration missing parentheses.");
+            tokenizer.pushBack();
+            throw new InvalidCodeException("Method declaration missing parentheses. Got " + tokenizer.nextToken() + " instead.");
         }
 
         Token beginningParams = tokenizer.nextToken();

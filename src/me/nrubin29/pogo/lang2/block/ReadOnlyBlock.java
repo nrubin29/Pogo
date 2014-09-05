@@ -1,4 +1,7 @@
-package me.nrubin29.pogo.lang2;
+package me.nrubin29.pogo.lang2.block;
+
+import me.nrubin29.pogo.lang2.Token;
+import me.nrubin29.pogo.lang2.Variable;
 
 import java.util.Optional;
 

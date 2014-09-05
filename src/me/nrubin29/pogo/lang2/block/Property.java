@@ -1,4 +1,4 @@
-package me.nrubin29.pogo.lang2;
+package me.nrubin29.pogo.lang2.block;
 
 public class Property extends RootBlock {
 

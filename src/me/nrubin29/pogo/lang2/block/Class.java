@@ -1,6 +1,7 @@
-package me.nrubin29.pogo.lang2;
+package me.nrubin29.pogo.lang2.block;
 
 import me.nrubin29.pogo.ide.Console;
+import me.nrubin29.pogo.lang2.*;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -22,7 +23,7 @@ public class Class extends RootBlock implements Type, Cloneable {
 
     @Override
     public void run() throws InvalidCodeException, IOException {
-        Runtime.RUNTIME.print("run() called on class " + name + ".", Console.MessageType.OUTPUT);
+        me.nrubin29.pogo.lang2.Runtime.RUNTIME.print("run() called on class " + name + ".", Console.MessageType.OUTPUT);
 
         getMethod("main").get().run();
     }

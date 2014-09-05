@@ -1,12 +1,23 @@
 package me.nrubin29.pogo.lang2;
 
+import me.nrubin29.pogo.lang2.system.MethodMeta;
+import me.nrubin29.pogo.lang2.system.SystemClass;
+
 /**
- * Represents a value that can be returned from a method. Subclasses are {@link me.nrubin29.pogo.lang2.Class} and {@link me.nrubin29.pogo.lang2.Variable}.
+ * Represents a value that can be returned from a method. Subclasses are {@link me.nrubin29.pogo.lang2.block.Class} and {@link me.nrubin29.pogo.lang2.Variable}.
  */
 public interface Type {
 
     public static Type match(String str) throws InvalidCodeException {
         Type type = null;
+
+        if (str.equals("System")) {
+            type = SystemClass.getInstance();
+        }
+
+        else if (str.equals("MethodMeta")) {
+            type = MethodMeta.TYPE;
+        }
 
         try {
             type = PrimitiveType.valueOf(str.toUpperCase());

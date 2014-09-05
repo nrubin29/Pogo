@@ -1,8 +1,8 @@
 package me.nrubin29.pogo.lang2.parser;
 
-import me.nrubin29.pogo.lang2.Block;
 import me.nrubin29.pogo.lang2.InvalidCodeException;
 import me.nrubin29.pogo.lang2.PogoTokenizer;
+import me.nrubin29.pogo.lang2.block.Block;
 
 public abstract class Parser<T extends Block> {
 

@@ -10,6 +10,7 @@ public class Token {
         DOUBLE_LITERAL(PrimitiveType.DOUBLE),
         INTEGER_LITERAL(PrimitiveType.INTEGER),
         STRING_LITERAL(PrimitiveType.STRING),
+        STRING_PART(PrimitiveType.STRING),
         PROPERTY(null);
 
         public static final TokenType[] NOT_TOKEN = { BOOLEAN_LITERAL, DOUBLE_LITERAL, INTEGER_LITERAL, STRING_LITERAL, IDENTIFIER, PROPERTY };
