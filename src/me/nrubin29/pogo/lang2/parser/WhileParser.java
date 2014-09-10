@@ -6,6 +6,8 @@ import me.nrubin29.pogo.lang2.block.ConditionalBlock;
 import me.nrubin29.pogo.lang2.block.DoWhile;
 import me.nrubin29.pogo.lang2.block.While;
 
+import java.util.ArrayList;
+
 import static me.nrubin29.pogo.lang2.Regex.COMPARISON;
 import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER_OR_LITERAL;
 
@@ -17,7 +19,7 @@ public class WhileParser extends Parser<ConditionalBlock> {
 
     @Override
     public boolean shouldParseLine(String line) {
-        return line.matches("(while|dowhile) \\(" + IDENTIFIER_OR_LITERAL + " " + COMPARISON + " " + IDENTIFIER_OR_LITERAL + "\\)");
+        return line.matches("(while|dowhile) \\(" + IDENTIFIER_OR_LITERAL + "( )?" + COMPARISON + "( )?" + IDENTIFIER_OR_LITERAL + "( )? ((&( )?" + IDENTIFIER_OR_LITERAL + "( )?" + COMPARISON + "( )?" + IDENTIFIER_OR_LITERAL + ")*)?\\)");
     }
 
     @Override
@@ -30,22 +32,42 @@ public class WhileParser extends Parser<ConditionalBlock> {
             throw new InvalidCodeException("While statement does not begin with opening parenthesis.");
         }
 
-        Value a = Utils.parseToken(tokenizer.nextToken(), superBlock);
+        ArrayList<Condition> conditions = new ArrayList<>();
 
-        Comparison comparison = Comparison.valueOfToken(tokenizer.nextToken().getToken());
+        while (tokenizer.hasNextToken()) {
+            Token a = tokenizer.nextToken();
 
-        Value b = Utils.parseToken(tokenizer.nextToken(), superBlock);
+            Comparison comparison = Comparison.valueOfToken(tokenizer.nextToken().getToken());
 
-        if (!tokenizer.nextToken().getToken().equals(")")) {
-            throw new InvalidCodeException("While statement does not end with closing parenthesis.");
+            Token b = tokenizer.nextToken();
+
+            conditions.add(new Condition(a, b, comparison));
+
+            Token token = tokenizer.nextToken();
+
+            if (token.getToken().equals(")")) {
+                break;
+            }
+
+            else {
+                ConditionalOperator operator = ConditionalOperator.valueOfToken(token.getToken());
+
+                if (operator == null) {
+                    tokenizer.pushBack();
+                }
+
+                else {
+                    // Do something with the operator.
+                }
+            }
         }
 
         if (type.getToken().equals("while")) {
-            return new While(superBlock, a, b, comparison);
+            return new While(superBlock, conditions.toArray(new Condition[conditions.size()]));
         }
 
         else {
-            return new DoWhile(superBlock, a, b, comparison);
+            return new DoWhile(superBlock, conditions.toArray(new Condition[conditions.size()]));
         }
     }
 }

@@ -58,6 +58,10 @@ public class Runtime {
                     continue;
                 }
 
+                if (firstToken.startsWith("//")) {
+                    continue;
+                }
+
                 if (firstToken.equals("end")) {
                     if (block == null) {
                         throw new InvalidCodeException("Attempted to end non-existent block.");

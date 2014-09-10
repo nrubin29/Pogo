@@ -10,6 +10,7 @@ public class PogoTokenizer extends Tokenizer {
         super(str);
 
         registerTokenData(new TokenData(Pattern.compile("^(" + COMPARISON + ")"), Token.TokenType.TOKEN));
+        registerTokenData(new TokenData(Pattern.compile("^(" + CONDITIONAL_OPERATOR + ")"), Token.TokenType.TOKEN));
 
         for (String t : new String[] { "=", "\\(", "\\)", "\\.", "\\,", "->" }) {
             registerTokenData(new TokenData(Pattern.compile("^(" + t + ")"), Token.TokenType.TOKEN));

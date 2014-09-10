@@ -1,12 +1,11 @@
 package me.nrubin29.pogo.lang2.block;
 
-import me.nrubin29.pogo.lang2.Comparison;
-import me.nrubin29.pogo.lang2.Value;
+import me.nrubin29.pogo.lang2.Condition;
 
 public class ElseIf extends ConditionalBlock {
 
-    public ElseIf(Block superBlock, Value a, Value b, Comparison comparison) {
-        super(superBlock, a, b, comparison);
+    public ElseIf(Block superBlock, Condition... conditions) {
+        super(superBlock, conditions);
     }
 
     @Override
