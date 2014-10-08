@@ -5,6 +5,7 @@ import me.nrubin29.pogo.lang2.block.Block;
 import me.nrubin29.pogo.lang2.block.Else;
 import me.nrubin29.pogo.lang2.block.ElseIf;
 import me.nrubin29.pogo.lang2.block.If;
+import me.nrubin29.pogo.lang2.expression.Expression;
 
 import java.util.ArrayList;
 
@@ -54,13 +55,22 @@ public class IfParser extends Parser<Block> {
         ArrayList<Condition> conditions = new ArrayList<>();
 
         while (tokenizer.hasNextToken()) {
+            /*
+            TODO: This assumes that each condition is only one word and also I use the tokenizer twice in Expression.parse() below.
+            TODO: This needs to keep looking until it finds the comparison, then make a tokenizer with the first expression
+            TODO: and one with the second expression. That should fix this.
+             */
+
             Token a = tokenizer.nextToken();
 
             Comparison comparison = Comparison.valueOfToken(tokenizer.nextToken().getToken());
 
             Token b = tokenizer.nextToken();
 
-            conditions.add(new Condition(a, b, comparison));
+            /*
+            This might cause an issue with superBlock.
+             */
+            conditions.add(new Condition(Expression.parse(tokenizer, superBlock, null), Expression.parse(tokenizer, superBlock, null), comparison));
 
             Token token = tokenizer.nextToken();
 

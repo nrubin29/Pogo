@@ -46,14 +46,12 @@ public class VariableDeclarationParser extends Parser<VariableDeclaration> {
 
         Token name = tokenizer.nextToken();
 
-        boolean init = false;
-
         Token possibleEquals = tokenizer.nextToken();
 
-        if (possibleEquals.getToken() != null && possibleEquals.getToken().equals("=")) {
-            init = true;
+        if (possibleEquals.getToken() == null || !possibleEquals.getToken().equals("=")) {
+            tokenizer.pushBack();
         }
 
-        return new VariableDeclaration(superBlock, type, name, init, tokenizer, properties.toArray(new Token[properties.size()]));
+        return new VariableDeclaration(superBlock, type, name, tokenizer, properties.toArray(new Token[properties.size()]));
     }
 }

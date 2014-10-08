@@ -10,10 +10,10 @@ class Comparison
     Comparison greaterThanEqualTo = new(">=")
     Comparison lessThanEqualTo = new("<=")
 
-    constructor private (string t)
+    @private constructor = (string t)
         token = t
 
-    method public Comparison valueOf(string t)
+    method valueOf = (string t) -> Comparison
         if (t == "==")
             return equals
         end
@@ -41,5 +41,5 @@ class Comparison
         else
             exception InvalidCode
 
-    method public string asString()
+    method asString = () -> string
         return token

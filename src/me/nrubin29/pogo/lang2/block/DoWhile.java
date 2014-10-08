@@ -23,7 +23,7 @@ public class DoWhile extends ConditionalBlock {
             for (Block subBlock : getSubBlocks()) {
                 subBlock.run();
             }
-        } while (areConditionsTrue(this));
+        } while (areConditionsTrue());
 
         Runtime.RUNTIME.print("Do while loop finished.", Console.MessageType.OUTPUT);
     }

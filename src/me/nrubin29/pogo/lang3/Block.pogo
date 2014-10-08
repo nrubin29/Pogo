@@ -1,16 +1,16 @@
 // This class represents a block. All other blocks inherit from it (once I add inheritance... lol)
-class Block abstract
+abstract class Block
 
     Block superBlock
     List(Block) subBlocks
     List(Variable) variables
 
-    constructor public (Block sB)
+    constructor = (Block sB)
         superBlock = sB
         subBlocks = new
         variables = new
 
-    method public List(Block) getBlockTree()
+    method getBlockTree = () -> List(Block)
         List(Block) tree = new
         Block b = this
 
@@ -22,6 +22,6 @@ class Block abstract
         tree.reverse()
         return tree
 
-    abstractmethod public void run()
+    abstract method run = () -> void
 
-    abstractmethod public string asString()
+    abstract method asString = () -> string

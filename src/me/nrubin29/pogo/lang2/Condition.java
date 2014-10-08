@@ -1,20 +1,22 @@
 package me.nrubin29.pogo.lang2;
 
-import me.nrubin29.pogo.lang2.block.Block;
+import me.nrubin29.pogo.lang2.expression.Expression;
+
+import java.io.IOException;
 
 public class Condition {
 
-    private Token a, b;
+    private Expression a, b;
     private Comparison comparison;
 
-    public Condition(Token a, Token b, Comparison comparison) {
+    public Condition(Expression a, Expression b, Comparison comparison) {
         this.a = a;
         this.b = b;
         this.comparison = comparison;
     }
 
-    public boolean isConditionTrue(Block block) throws InvalidCodeException {
-        Value a = Utils.parseToken(this.a, block), b = Utils.parseToken(this.b, block);
+    public boolean isConditionTrue() throws InvalidCodeException, IOException {
+        Value a = this.a.evaluate(), b = this.b.evaluate();
 
         boolean success;
 

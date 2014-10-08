@@ -3,14 +3,14 @@ class Value
     Type type
     object value
 
-    constructor public (object v)
+    constructor = (object v)
         value = v
 
-    constructor public (Type t, object v)
+    constructor = (Type t, object v)
         type = t
         value = v
 
-    method public object getValue()
+    method getValue = () -> object
         if (type == null || value == null)
             return value
 
@@ -29,7 +29,7 @@ class Value
         else
             return value
 
-    method public void setValue(object v)
+    method setValue = (object v) -> void
         if (type == null || value == null)
             value = v
             return

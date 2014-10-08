@@ -30,10 +30,10 @@ public class If extends ConditionalBlock {
 
     @Override
     public void run() throws InvalidCodeException, IOException {
-        me.nrubin29.pogo.lang2.Runtime.RUNTIME.print("run() called on " + toString(), Console.MessageType.OUTPUT);
-        Runtime.RUNTIME.print("areConditionsTrue() -> " + areConditionsTrue(this), Console.MessageType.OUTPUT);
+        Runtime.RUNTIME.print("run() called on " + toString(), Console.MessageType.OUTPUT);
+        Runtime.RUNTIME.print("areConditionsTrue() -> " + areConditionsTrue(), Console.MessageType.OUTPUT);
 
-        if (areConditionsTrue(this)) {
+        if (areConditionsTrue()) {
             for (Block subBlock : getSubBlocks()) {
                 subBlock.run();
             }
@@ -41,7 +41,7 @@ public class If extends ConditionalBlock {
 
         else {
             for (ElseIf elseIf : elseIfs) {
-                if (elseIf.areConditionsTrue(elseIf)) {
+                if (elseIf.areConditionsTrue()) {
                     for (Block subBlock : elseIf.getSubBlocks()) {
                         subBlock.run();
                     }

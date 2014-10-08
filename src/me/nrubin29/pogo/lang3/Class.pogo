@@ -3,14 +3,13 @@ class Class is Block
 
     string name
 
-    constructor public (Block superBlock, string n)
+    constructor = (Block superBlock, string n)
         super(superBlock)
         name = n
 
-    method public void run()
-        Method main
-        subBlocks.get("method", "main") main
+    method run = () -> void
+        Method main = subBlocks.get("method", "main")
         main.run()
 
-    method public string asString()
+    method asString = () -> string
         return "Class"

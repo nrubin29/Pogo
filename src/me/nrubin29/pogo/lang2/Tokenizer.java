@@ -76,6 +76,10 @@ public class Tokenizer implements Cloneable {
         return count;
     }
 
+    public String getLine() {
+        return str;
+    }
+
     public void registerTokenData(TokenData data) {
         tokenDatas.add(data);
     }

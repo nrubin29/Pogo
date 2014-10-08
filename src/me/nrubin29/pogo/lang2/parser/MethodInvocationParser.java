@@ -19,7 +19,7 @@ public class MethodInvocationParser extends Parser<MethodInvocation> {
     @Override
     public boolean shouldParseLine(String line) {
         // TODO: Using .* is probably not the best approach.
-        return line.matches(IDENTIFIER + "[.]" + IDENTIFIER + "\\((.*((,.*)?)*)*?\\)( " + IDENTIFIER + ")?");
+        return line.matches(IDENTIFIER + "[.]" + IDENTIFIER + "\\((.*(,.*)*)*\\)( " + IDENTIFIER + ")?");
     }
 
     @Override

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class MethodInvocation extends ReadOnlyBlock {
+public class MethodInvocation extends ReadOnlyBlock implements Nameable {
 
     private Token invokableToken, methodToken, captureToken;
     private ArrayList<Token> values;
@@ -27,19 +27,7 @@ public class MethodInvocation extends ReadOnlyBlock {
 
     @Override
     public void run() throws InvalidCodeException, IOException {
-        List<Value> values = this.values.stream()
-                .map(token -> {
-                    try {
-                        return Utils.parseToken(token, getSuperBlock());
-                    }
-
-                    catch (InvalidCodeException e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-                })
-                .filter(value -> value != null)
-                .collect(Collectors.toList());
+        List<Value> values = getValues();
 
         List<Type> types = values.stream()
                 .map(Value::getType)
@@ -106,6 +94,27 @@ public class MethodInvocation extends ReadOnlyBlock {
 
             var.get().setValue(ret.getValue());
         }
+    }
+
+    public List<Value> getValues() {
+        return this.values.stream()
+                .map(token -> {
+                    try {
+                        return Utils.parseToken(token, getSuperBlock());
+                    }
+
+                    catch (InvalidCodeException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                })
+                .filter(value -> value != null)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public String getName() {
+        return methodToken.getToken();
     }
 
     @Override

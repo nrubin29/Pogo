@@ -5,6 +5,7 @@ import me.nrubin29.pogo.lang2.PogoTokenizer;
 import me.nrubin29.pogo.lang2.Token;
 import me.nrubin29.pogo.lang2.block.Block;
 import me.nrubin29.pogo.lang2.block.VariableReassignment;
+import me.nrubin29.pogo.lang2.expression.Expression;
 
 import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER;
 
@@ -26,6 +27,12 @@ public class VariableReassignmentParser extends Parser<VariableReassignment> {
 
         Token name = tokenizer.nextToken();
 
-        return new VariableReassignment(superBlock, name, tokenizer);
+        Token possibleEquals = tokenizer.nextToken();
+
+        if (possibleEquals.getToken() == null || !possibleEquals.getToken().equals("=")) {
+            tokenizer.pushBack();
+        }
+
+        return new VariableReassignment(superBlock, name, Expression.parse(tokenizer, superBlock, null));
     }
 }

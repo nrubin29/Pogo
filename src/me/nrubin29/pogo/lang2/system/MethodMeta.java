@@ -7,10 +7,6 @@ import me.nrubin29.pogo.lang2.Value;
 import me.nrubin29.pogo.lang2.block.Class;
 import me.nrubin29.pogo.lang2.block.Method;
 
-/**
- * This is similar to the MethodParser class in lang except that this extends Class and contains subclasses which extend Method.
- * This method is better, especially using the Parser scheme.
- */
 public class MethodMeta extends Class {
 
     public static MethodMeta TYPE = new MethodMeta(null);

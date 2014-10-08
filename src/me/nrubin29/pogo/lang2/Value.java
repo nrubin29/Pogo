@@ -78,11 +78,38 @@ public class Value {
 
     @Override
     public boolean equals(Object other) {
-        return
-                other != null &&
-                other instanceof Value &&
-                !(((Value) other).getType() != null && getType() != null &&
-                !((Value) other).getType().equals(getType())) &&
-                ((Value) other).getValue().equals(getValue());
+        if (other == null) {
+            return false;
+        }
+
+        if (!(other instanceof Value)) {
+            return false;
+        }
+
+        if (((Value) other).getType() == null && getType() != null) {
+            return false;
+        }
+
+        if (((Value) other).getType() != null && getType() == null) {
+            return false;
+        }
+
+        if (((Value) other).getType() != null && getType() != null && !((Value) other).getType().equals(getType())) {
+            return false;
+        }
+
+        if (((Value) other).getValue() == null && getValue() != null) {
+            return false;
+        }
+
+        if (((Value) other).getValue() != null && getValue() == null) {
+            return false;
+        }
+
+        if (((Value) other).getValue() != null && getValue() != null && !((Value) other).getValue().equals(getValue())) {
+            return false;
+        }
+
+        return true;
     }
 }

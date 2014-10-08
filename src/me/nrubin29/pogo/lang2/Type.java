@@ -2,6 +2,7 @@ package me.nrubin29.pogo.lang2;
 
 import me.nrubin29.pogo.lang2.system.MethodMeta;
 import me.nrubin29.pogo.lang2.system.SystemClass;
+import me.nrubin29.pogo.lang2.system.VariableMeta;
 
 /**
  * Represents a value that can be returned from a method. Subclasses are {@link me.nrubin29.pogo.lang2.block.Class} and {@link me.nrubin29.pogo.lang2.Variable}.
@@ -17,6 +18,10 @@ public interface Type {
 
         else if (str.equals("MethodMeta")) {
             type = MethodMeta.TYPE;
+        }
+
+        else if (str.equals("VariableMeta")) {
+            type = VariableMeta.TYPE;
         }
 
         try {

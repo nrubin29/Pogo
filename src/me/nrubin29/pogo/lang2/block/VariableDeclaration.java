@@ -2,23 +2,21 @@ package me.nrubin29.pogo.lang2.block;
 
 import me.nrubin29.pogo.lang2.*;
 import me.nrubin29.pogo.lang2.Runtime;
+import me.nrubin29.pogo.lang2.expression.Expression;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Optional;
 
 public class VariableDeclaration extends ReadOnlyBlock implements Nameable {
 
     private Token typeToken, nameToken;
-    private boolean init;
     private PogoTokenizer tokenizer;
 
-    public VariableDeclaration(Block superBlock, Token typeToken, Token nameToken, boolean init, PogoTokenizer tokenizer, Token... propertyTokens) {
+    public VariableDeclaration(Block superBlock, Token typeToken, Token nameToken, PogoTokenizer tokenizer, Token... propertyTokens) {
         super(superBlock, propertyTokens);
 
         this.typeToken = typeToken;
         this.nameToken = nameToken;
-        this.init = init;
         this.tokenizer = tokenizer;
     }
 
@@ -35,56 +33,12 @@ public class VariableDeclaration extends ReadOnlyBlock implements Nameable {
         }
 
         Variable variable = new Variable(getSuperBlock(), nameToken.getToken(), type);
+        Expression expression = Expression.parse(tokenizer, this, variable);
 
-        if (init) {
-            Token firstToken = tokenizer.nextToken();
+        System.out.println("Expression: " + expression);
 
-            if (firstToken.getToken().equals("new")) {
-                if (!tokenizer.nextToken().getToken().equals("(")) {
-                    throw new InvalidCodeException("Variable declaration does not contain opening parenthesis.");
-                }
-
-                if (type instanceof PrimitiveType) {
-                    throw new InvalidCodeException("Attempted to instantiate primitive type with new.");
-                }
-
-                else {
-                    Class clazz = ((Class) type).clone();
-                    Optional<Constructor> c = clazz.getConstructor(tokenizer.clone(), getSuperBlock());
-
-                    if (c.isPresent()) {
-                        ArrayList<Value> values = new ArrayList<>();
-
-                        while (tokenizer.hasNextToken()) {
-                            Token token = tokenizer.nextToken();
-
-                            if (token.getToken().equals(",")) {
-                                continue;
-                            }
-
-                            else if (token.getToken().equals(")")) {
-                                break;
-                            }
-
-                            else {
-                                values.add(Utils.parseToken(token, getSuperBlock()));
-                            }
-                        }
-
-                        c.get().invoke(values);
-                    }
-
-                    else {
-                        throw new InvalidCodeException("Could not find constructor for given parameters.");
-                    }
-
-                    variable.setValue(clazz);
-                }
-            }
-
-            else {
-                variable.setValue(Utils.parseToken(firstToken, getSuperBlock()).getValue());
-            }
+        if (expression.evaluate().getValue() != null) {
+            variable.setValue(expression.evaluate().getValue());
         }
 
         for (Token token : getPropertyTokens()) {
@@ -119,6 +73,6 @@ public class VariableDeclaration extends ReadOnlyBlock implements Nameable {
 
     @Override
     public String toString() {
-        return getClass() + " typeToken=" + typeToken + " nameToken=" + nameToken + " init=" + init;
+        return getClass() + " typeToken=" + typeToken + " nameToken=" + nameToken;
     }
 }

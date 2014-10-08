@@ -1,18 +1,18 @@
 // This class represents a block. All other blocks inherit from it (once I add inheritance... lol)
-class ConditionalBlock abstract is Block
+abstract class ConditionalBlock is Block
 
     Value aValue
     Value bValue
     Comparison comparison
 
-    constructor public (Block sB, Value a, Value b, Comparison c)
+    constructor = (Block sB, Value a, Value b, Comparison c)
         super(sB)
 
         aValue = a
         bValue = b
         comparison = c
 
-    method instance boolean doComparison()
+    @instance method doComparison = () -> boolean
         boolean success
 
         if (comparison == Comparison.equals)
@@ -61,5 +61,5 @@ class ConditionalBlock abstract is Block
 
         return success
 
-    method public string asString()
+    method asString = () -> string
         return "ConditionalBlock"

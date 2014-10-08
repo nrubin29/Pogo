@@ -5,6 +5,7 @@ import me.nrubin29.pogo.lang2.block.Block;
 import me.nrubin29.pogo.lang2.block.ConditionalBlock;
 import me.nrubin29.pogo.lang2.block.DoWhile;
 import me.nrubin29.pogo.lang2.block.While;
+import me.nrubin29.pogo.lang2.expression.VariableExpression;
 
 import java.util.ArrayList;
 
@@ -41,7 +42,10 @@ public class WhileParser extends Parser<ConditionalBlock> {
 
             Token b = tokenizer.nextToken();
 
-            conditions.add(new Condition(a, b, comparison));
+            /*
+            This might cause an issue with superBlock.
+             */
+            conditions.add(new Condition(new VariableExpression(a, superBlock), new VariableExpression(b, superBlock), comparison));
 
             Token token = tokenizer.nextToken();
 
