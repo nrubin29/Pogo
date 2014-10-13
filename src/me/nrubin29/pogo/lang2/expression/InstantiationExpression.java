@@ -4,6 +4,8 @@ import me.nrubin29.pogo.lang2.*;
 import me.nrubin29.pogo.lang2.block.Block;
 import me.nrubin29.pogo.lang2.block.Class;
 import me.nrubin29.pogo.lang2.block.Constructor;
+import me.nrubin29.pogo.lang2.tokenizer.Token;
+import me.nrubin29.pogo.lang2.tokenizer.Tokenizer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,10 +14,10 @@ import java.util.Optional;
 public class InstantiationExpression extends Expression {
 
     private Variable variable;
-    private PogoTokenizer tokenizer;
+    private Tokenizer tokenizer;
     private Block block;
 
-    public InstantiationExpression(Variable variable, PogoTokenizer tokenizer, Block block) {
+    public InstantiationExpression(Variable variable, Tokenizer tokenizer, Block block) {
         this.variable = variable;
         this.tokenizer = tokenizer;
         this.block = block;
@@ -23,7 +25,7 @@ public class InstantiationExpression extends Expression {
 
     @Override
     public Value evaluate() throws IOException, InvalidCodeException {
-        if (tokenizer.getLine().isEmpty()) {
+        if (!tokenizer.hasNextToken()) {
             return new Value(null);
         }
 

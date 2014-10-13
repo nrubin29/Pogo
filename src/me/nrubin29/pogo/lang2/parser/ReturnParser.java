@@ -1,9 +1,10 @@
 package me.nrubin29.pogo.lang2.parser;
 
 import me.nrubin29.pogo.lang2.InvalidCodeException;
-import me.nrubin29.pogo.lang2.PogoTokenizer;
 import me.nrubin29.pogo.lang2.block.Block;
 import me.nrubin29.pogo.lang2.block.Return;
+import me.nrubin29.pogo.lang2.expression.Expression;
+import me.nrubin29.pogo.lang2.tokenizer.Tokenizer;
 
 public class ReturnParser extends Parser<Return> {
 
@@ -17,10 +18,10 @@ public class ReturnParser extends Parser<Return> {
     }
 
     @Override
-    public Return parse(Block superBlock, PogoTokenizer tokenizer) throws InvalidCodeException {
+    public Return parse(Block superBlock, Tokenizer tokenizer) throws InvalidCodeException {
         // "Noah"
 
         tokenizer.nextToken(); // Skip the return token.
-        return new Return(superBlock, tokenizer.nextToken());
+        return new Return(superBlock, Expression.parse(tokenizer, superBlock, null));
     }
 }

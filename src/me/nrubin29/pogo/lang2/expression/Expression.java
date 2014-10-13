@@ -1,14 +1,18 @@
 package me.nrubin29.pogo.lang2.expression;
 
-import me.nrubin29.pogo.lang2.*;
+import me.nrubin29.pogo.lang2.InvalidCodeException;
+import me.nrubin29.pogo.lang2.Value;
+import me.nrubin29.pogo.lang2.Variable;
 import me.nrubin29.pogo.lang2.block.Block;
 import me.nrubin29.pogo.lang2.block.Class;
 import me.nrubin29.pogo.lang2.block.MethodInvocation;
 import me.nrubin29.pogo.lang2.parser.MethodInvocationParser;
+import me.nrubin29.pogo.lang2.tokenizer.Regex;
+import me.nrubin29.pogo.lang2.tokenizer.Tokenizer;
 
 import java.io.IOException;
 
-import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER;
+import static me.nrubin29.pogo.lang2.tokenizer.Regex.IDENTIFIER;
 
 /**
  * Represents an expression that must be evaluated. This could be a method call, variable, math equation, etc.
@@ -17,10 +21,8 @@ public abstract class Expression {
 
     public abstract Value evaluate() throws IOException, InvalidCodeException;
 
-    public static Expression parse(PogoTokenizer tokenizer, Block block, Variable variable) throws InvalidCodeException {
+    public static Expression parse(Tokenizer tokenizer, Block block, Variable variable) throws InvalidCodeException {
         String line = tokenizer.getLine().trim();
-
-        System.out.println("Expression line: " + line);
 
         if (line.isEmpty()) {
             return new NullExpression();

@@ -1,16 +1,22 @@
 package me.nrubin29.pogo.lang2.parser;
 
-import me.nrubin29.pogo.lang2.*;
+import me.nrubin29.pogo.lang2.Comparison;
+import me.nrubin29.pogo.lang2.Condition;
+import me.nrubin29.pogo.lang2.ConditionalOperator;
+import me.nrubin29.pogo.lang2.InvalidCodeException;
 import me.nrubin29.pogo.lang2.block.Block;
 import me.nrubin29.pogo.lang2.block.Else;
 import me.nrubin29.pogo.lang2.block.ElseIf;
 import me.nrubin29.pogo.lang2.block.If;
 import me.nrubin29.pogo.lang2.expression.Expression;
+import me.nrubin29.pogo.lang2.tokenizer.PreProcessedTokenizer;
+import me.nrubin29.pogo.lang2.tokenizer.Token;
+import me.nrubin29.pogo.lang2.tokenizer.Tokenizer;
 
 import java.util.ArrayList;
 
-import static me.nrubin29.pogo.lang2.Regex.COMPARISON;
-import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER_OR_LITERAL;
+import static me.nrubin29.pogo.lang2.tokenizer.Regex.COMPARISON;
+import static me.nrubin29.pogo.lang2.tokenizer.Regex.IDENTIFIER_OR_LITERAL;
 
 public class IfParser extends Parser<Block> {
 
@@ -22,12 +28,12 @@ public class IfParser extends Parser<Block> {
 
     @Override
     public boolean shouldParseLine(String line) {
-        return line.equals("else") || line.matches("(if|elseif) \\(" + IDENTIFIER_OR_LITERAL + "( )?" + COMPARISON + "( )?" + IDENTIFIER_OR_LITERAL + "( )? ((&( )?" + IDENTIFIER_OR_LITERAL + "( )?" + COMPARISON + "( )?" + IDENTIFIER_OR_LITERAL + ")*)?\\)");
+        return line.equals("else") || line.matches("(if|elseif) \\(" + IDENTIFIER_OR_LITERAL + "( )?" + COMPARISON + "( )?" + IDENTIFIER_OR_LITERAL + "( )?(&( )?" + IDENTIFIER_OR_LITERAL + "( )?" + COMPARISON + "( )?" + IDENTIFIER_OR_LITERAL + ")*\\)");
     }
 
     @Override
-    public Block parse(Block superBlock, PogoTokenizer tokenizer) throws InvalidCodeException {
-        // if|elseif|else ((name == "Noah"))?
+    public Block parse(Block superBlock, Tokenizer tokenizer) throws InvalidCodeException {
+        // if|elseif|else ((name == "Noah"))
 
         String type = tokenizer.nextToken().getToken();
 
@@ -54,40 +60,48 @@ public class IfParser extends Parser<Block> {
 
         ArrayList<Condition> conditions = new ArrayList<>();
 
+        ArrayList<Token> a = new ArrayList<>(), b = new ArrayList<>();
+        Comparison comparison = null;
+        boolean isA = true;
+
         while (tokenizer.hasNextToken()) {
-            /*
-            TODO: This assumes that each condition is only one word and also I use the tokenizer twice in Expression.parse() below.
-            TODO: This needs to keep looking until it finds the comparison, then make a tokenizer with the first expression
-            TODO: and one with the second expression. That should fix this.
-             */
-
-            Token a = tokenizer.nextToken();
-
-            Comparison comparison = Comparison.valueOfToken(tokenizer.nextToken().getToken());
-
-            Token b = tokenizer.nextToken();
-
-            /*
-            This might cause an issue with superBlock.
-             */
-            conditions.add(new Condition(Expression.parse(tokenizer, superBlock, null), Expression.parse(tokenizer, superBlock, null), comparison));
-
             Token token = tokenizer.nextToken();
 
-            if (token.getToken().equals(")")) {
-                break;
-            }
+            ConditionalOperator operator = ConditionalOperator.valueOfToken(token.getToken());
 
-            else {
-                ConditionalOperator operator = ConditionalOperator.valueOfToken(token.getToken());
+            if (operator != null || token.getToken().equals(")")) {
+                /*
+                This might cause an issue with superBlock.
+                */
+                conditions.add(new Condition(Expression.parse(new PreProcessedTokenizer(a), superBlock, null), Expression.parse(new PreProcessedTokenizer(b), superBlock, null), comparison));
 
-                if (operator == null) {
-                    tokenizer.pushBack();
+                a.clear();
+                b.clear();
+                comparison = null;
+                isA = true;
+
+                if (token.getToken().equals(")")) {
+                    break;
                 }
 
                 else {
-                    // Do something with the operator.
+                    continue;
                 }
+            }
+
+            if (Comparison.valueOfToken(token.getToken()) == null) {
+                if (isA) {
+                    a.add(token);
+                }
+
+                else {
+                    b.add(token);
+                }
+            }
+
+            else {
+                comparison = Comparison.valueOfToken(token.getToken());
+                isA = false;
             }
         }
 

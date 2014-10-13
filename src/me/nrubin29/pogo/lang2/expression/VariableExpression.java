@@ -1,10 +1,10 @@
 package me.nrubin29.pogo.lang2.expression;
 
 import me.nrubin29.pogo.lang2.InvalidCodeException;
-import me.nrubin29.pogo.lang2.Token;
 import me.nrubin29.pogo.lang2.Utils;
 import me.nrubin29.pogo.lang2.Value;
 import me.nrubin29.pogo.lang2.block.Block;
+import me.nrubin29.pogo.lang2.tokenizer.Token;
 
 import java.io.IOException;
 

@@ -1,8 +1,7 @@
 package me.nrubin29.pogo.lang2.block;
 
 import me.nrubin29.pogo.lang2.InvalidCodeException;
-import me.nrubin29.pogo.lang2.Token;
-import me.nrubin29.pogo.lang2.Utils;
+import me.nrubin29.pogo.lang2.expression.Expression;
 
 import java.io.IOException;
 
@@ -12,22 +11,22 @@ import java.io.IOException;
  */
 public class Return extends ReadOnlyBlock {
 
-    private Token value;
+    private Expression expression;
 
-    public Return(Block superBlock, Token value) {
+    public Return(Block superBlock, Expression expression) {
         super(superBlock);
 
-        this.value = value;
+        this.expression = expression;
     }
 
     @Override
     public void run() throws InvalidCodeException, IOException {
         Method method = (Method) getBlockTree()[1]; // [0] is the class, [1] is the method.
-        method.setReturnValue(Utils.parseToken(value, getSuperBlock()));
+        method.setReturnValue(expression.evaluate());
     }
 
     @Override
     public String toString() {
-        return getClass() + " value=" + value;
+        return getClass() + " expression=" + expression;
     }
 }

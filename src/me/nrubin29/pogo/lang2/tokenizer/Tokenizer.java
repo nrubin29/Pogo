@@ -1,4 +1,6 @@
-package me.nrubin29.pogo.lang2;
+package me.nrubin29.pogo.lang2.tokenizer;
+
+import me.nrubin29.pogo.lang2.InvalidCodeException;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;

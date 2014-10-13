@@ -1,5 +1,7 @@
 package me.nrubin29.pogo.lang2;
 
+import me.nrubin29.pogo.lang2.tokenizer.Token;
+
 public class Parameter implements Nameable {
 
     private String name;

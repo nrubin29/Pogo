@@ -4,6 +4,7 @@ import me.nrubin29.pogo.ide.Console;
 import me.nrubin29.pogo.lang2.*;
 import me.nrubin29.pogo.lang2.Runtime;
 import me.nrubin29.pogo.lang2.system.MethodMeta;
+import me.nrubin29.pogo.lang2.tokenizer.Token;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -90,7 +91,7 @@ public class Method extends Block implements Nameable {
         for (Block block : getSubBlocks()) {
             block.run();
 
-            if (block instanceof Return && returnValue != null) {
+            if (returnValue != null) {
                 break;
             }
         }

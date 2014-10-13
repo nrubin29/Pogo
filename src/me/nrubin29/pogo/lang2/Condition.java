@@ -37,7 +37,23 @@ public class Condition {
                 throw new InvalidCodeException("Attempted to use " + comparison + " with non-number second value.");
             }
 
-            double aDouble = (double) a.getValue(), bDouble = (double) b.getValue();
+            double aDouble = 0, bDouble = 0;
+
+            if (a.getType().equalsType(PrimitiveType.DOUBLE)) {
+                aDouble = (double) a.getValue();
+            }
+
+            else if (a.getType().equalsType(PrimitiveType.INTEGER)) {
+                aDouble = (int) a.getValue();
+            }
+
+            if (b.getType().equalsType(PrimitiveType.DOUBLE)) {
+                bDouble = (double) b.getValue();
+            }
+
+            else if (b.getType().equalsType(PrimitiveType.INTEGER)) {
+                bDouble = (int) b.getValue();
+            }
 
             if (comparison == Comparison.GREATERTHAN) {
                 success = aDouble > bDouble;

@@ -2,6 +2,8 @@ package me.nrubin29.pogo.lang2.block;
 
 import me.nrubin29.pogo.ide.Console;
 import me.nrubin29.pogo.lang2.*;
+import me.nrubin29.pogo.lang2.tokenizer.Token;
+import me.nrubin29.pogo.lang2.tokenizer.Tokenizer;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -28,7 +30,7 @@ public class Class extends RootBlock implements Type, Cloneable {
         getMethod("main").get().run();
     }
 
-    public Optional<Constructor> getConstructor(PogoTokenizer tokenizer, Block block) throws InvalidCodeException {
+    public Optional<Constructor> getConstructor(Tokenizer tokenizer, Block block) throws InvalidCodeException {
         Constructor constructor = null;
 
         for (Constructor c : getSubBlocks(Constructor.class)) {

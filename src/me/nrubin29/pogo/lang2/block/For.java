@@ -1,6 +1,7 @@
 package me.nrubin29.pogo.lang2.block;
 
 import me.nrubin29.pogo.lang2.*;
+import me.nrubin29.pogo.lang2.tokenizer.Token;
 
 import java.io.IOException;
 

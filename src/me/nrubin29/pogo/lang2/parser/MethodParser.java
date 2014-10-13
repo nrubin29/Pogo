@@ -2,15 +2,15 @@ package me.nrubin29.pogo.lang2.parser;
 
 import me.nrubin29.pogo.lang2.InvalidCodeException;
 import me.nrubin29.pogo.lang2.Parameter;
-import me.nrubin29.pogo.lang2.PogoTokenizer;
-import me.nrubin29.pogo.lang2.Token;
 import me.nrubin29.pogo.lang2.block.Block;
 import me.nrubin29.pogo.lang2.block.Method;
+import me.nrubin29.pogo.lang2.tokenizer.Token;
+import me.nrubin29.pogo.lang2.tokenizer.Tokenizer;
 
 import java.util.ArrayList;
 
-import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER;
-import static me.nrubin29.pogo.lang2.Regex.PROPERTY;
+import static me.nrubin29.pogo.lang2.tokenizer.Regex.IDENTIFIER;
+import static me.nrubin29.pogo.lang2.tokenizer.Regex.PROPERTY;
 
 public class MethodParser extends Parser<Method> {
 
@@ -25,7 +25,7 @@ public class MethodParser extends Parser<Method> {
     }
 
     @Override
-    public Method parse(Block superBlock, PogoTokenizer tokenizer) throws InvalidCodeException {
+    public Method parse(Block superBlock, Tokenizer tokenizer) throws InvalidCodeException {
         // [@...] method main = () -> void
 
         ArrayList<Token> properties = new ArrayList<>();
@@ -64,6 +64,14 @@ public class MethodParser extends Parser<Method> {
             while (tokenizer.hasNextToken()) {
                 Token token = tokenizer.nextToken();
 
+                if (token.getToken().equals(",")) {
+                    continue;
+                }
+
+                if (token.getToken().equals(")")) {
+                    break;
+                }
+
                 if (paramData[0] == null) { // In this case, we expect this token to be the type.
                     paramData[0] = token;
                 }
@@ -75,10 +83,6 @@ public class MethodParser extends Parser<Method> {
 
                     paramData[0] = null;
                     paramData[1] = null;
-                }
-
-                if (token.getToken().equals(")")) {
-                    break;
                 }
             }
         }

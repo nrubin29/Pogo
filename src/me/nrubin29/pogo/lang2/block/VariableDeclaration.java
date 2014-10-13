@@ -3,6 +3,8 @@ package me.nrubin29.pogo.lang2.block;
 import me.nrubin29.pogo.lang2.*;
 import me.nrubin29.pogo.lang2.Runtime;
 import me.nrubin29.pogo.lang2.expression.Expression;
+import me.nrubin29.pogo.lang2.tokenizer.Token;
+import me.nrubin29.pogo.lang2.tokenizer.Tokenizer;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -10,9 +12,9 @@ import java.util.Optional;
 public class VariableDeclaration extends ReadOnlyBlock implements Nameable {
 
     private Token typeToken, nameToken;
-    private PogoTokenizer tokenizer;
+    private Tokenizer tokenizer;
 
-    public VariableDeclaration(Block superBlock, Token typeToken, Token nameToken, PogoTokenizer tokenizer, Token... propertyTokens) {
+    public VariableDeclaration(Block superBlock, Token typeToken, Token nameToken, Tokenizer tokenizer, Token... propertyTokens) {
         super(superBlock, propertyTokens);
 
         this.typeToken = typeToken;
@@ -34,8 +36,6 @@ public class VariableDeclaration extends ReadOnlyBlock implements Nameable {
 
         Variable variable = new Variable(getSuperBlock(), nameToken.getToken(), type);
         Expression expression = Expression.parse(tokenizer, this, variable);
-
-        System.out.println("Expression: " + expression);
 
         if (expression.evaluate().getValue() != null) {
             variable.setValue(expression.evaluate().getValue());

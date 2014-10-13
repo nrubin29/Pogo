@@ -1,13 +1,13 @@
 package me.nrubin29.pogo.lang2.parser;
 
 import me.nrubin29.pogo.lang2.InvalidCodeException;
-import me.nrubin29.pogo.lang2.PogoTokenizer;
-import me.nrubin29.pogo.lang2.Token;
 import me.nrubin29.pogo.lang2.block.Block;
 import me.nrubin29.pogo.lang2.block.VariableReassignment;
 import me.nrubin29.pogo.lang2.expression.Expression;
+import me.nrubin29.pogo.lang2.tokenizer.Token;
+import me.nrubin29.pogo.lang2.tokenizer.Tokenizer;
 
-import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER;
+import static me.nrubin29.pogo.lang2.tokenizer.Regex.IDENTIFIER;
 
 public class VariableReassignmentParser extends Parser<VariableReassignment> {
 
@@ -21,7 +21,7 @@ public class VariableReassignmentParser extends Parser<VariableReassignment> {
     }
 
     @Override
-    public VariableReassignment parse(Block superBlock, PogoTokenizer tokenizer) throws InvalidCodeException {
+    public VariableReassignment parse(Block superBlock, Tokenizer tokenizer) throws InvalidCodeException {
         // name = "Noah"
         // person = new("Noah")
 

@@ -1,16 +1,22 @@
 package me.nrubin29.pogo.lang2.parser;
 
-import me.nrubin29.pogo.lang2.*;
+import me.nrubin29.pogo.lang2.Comparison;
+import me.nrubin29.pogo.lang2.Condition;
+import me.nrubin29.pogo.lang2.ConditionalOperator;
+import me.nrubin29.pogo.lang2.InvalidCodeException;
 import me.nrubin29.pogo.lang2.block.Block;
 import me.nrubin29.pogo.lang2.block.ConditionalBlock;
 import me.nrubin29.pogo.lang2.block.DoWhile;
 import me.nrubin29.pogo.lang2.block.While;
-import me.nrubin29.pogo.lang2.expression.VariableExpression;
+import me.nrubin29.pogo.lang2.expression.Expression;
+import me.nrubin29.pogo.lang2.tokenizer.PreProcessedTokenizer;
+import me.nrubin29.pogo.lang2.tokenizer.Token;
+import me.nrubin29.pogo.lang2.tokenizer.Tokenizer;
 
 import java.util.ArrayList;
 
-import static me.nrubin29.pogo.lang2.Regex.COMPARISON;
-import static me.nrubin29.pogo.lang2.Regex.IDENTIFIER_OR_LITERAL;
+import static me.nrubin29.pogo.lang2.tokenizer.Regex.COMPARISON;
+import static me.nrubin29.pogo.lang2.tokenizer.Regex.IDENTIFIER_OR_LITERAL;
 
 public class WhileParser extends Parser<ConditionalBlock> {
 
@@ -24,7 +30,7 @@ public class WhileParser extends Parser<ConditionalBlock> {
     }
 
     @Override
-    public ConditionalBlock parse(Block superBlock, PogoTokenizer tokenizer) throws InvalidCodeException {
+    public ConditionalBlock parse(Block superBlock, Tokenizer tokenizer) throws InvalidCodeException {
         // while|dowhile (name == "Noah")
 
         Token type = tokenizer.nextToken();
@@ -35,34 +41,48 @@ public class WhileParser extends Parser<ConditionalBlock> {
 
         ArrayList<Condition> conditions = new ArrayList<>();
 
+        ArrayList<Token> a = new ArrayList<>(), b = new ArrayList<>();
+        Comparison comparison = null;
+        boolean isA = true;
+
         while (tokenizer.hasNextToken()) {
-            Token a = tokenizer.nextToken();
-
-            Comparison comparison = Comparison.valueOfToken(tokenizer.nextToken().getToken());
-
-            Token b = tokenizer.nextToken();
-
-            /*
-            This might cause an issue with superBlock.
-             */
-            conditions.add(new Condition(new VariableExpression(a, superBlock), new VariableExpression(b, superBlock), comparison));
-
             Token token = tokenizer.nextToken();
 
-            if (token.getToken().equals(")")) {
-                break;
-            }
+            ConditionalOperator operator = ConditionalOperator.valueOfToken(token.getToken());
 
-            else {
-                ConditionalOperator operator = ConditionalOperator.valueOfToken(token.getToken());
+            if (operator != null || token.getToken().equals(")")) {
+                /*
+                This might cause an issue with superBlock.
+                */
+                conditions.add(new Condition(Expression.parse(new PreProcessedTokenizer(a), superBlock, null), Expression.parse(new PreProcessedTokenizer(b), superBlock, null), comparison));
 
-                if (operator == null) {
-                    tokenizer.pushBack();
+                a.clear();
+                b.clear();
+                comparison = null;
+                isA = true;
+
+                if (token.getToken().equals(")")) {
+                    break;
                 }
 
                 else {
-                    // Do something with the operator.
+                    continue;
                 }
+            }
+
+            if (Comparison.valueOfToken(token.getToken()) == null) {
+                if (isA) {
+                    a.add(token);
+                }
+
+                else {
+                    b.add(token);
+                }
+            }
+
+            else {
+                comparison = Comparison.valueOfToken(token.getToken());
+                isA = false;
             }
         }
 

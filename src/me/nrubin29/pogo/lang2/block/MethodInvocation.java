@@ -2,8 +2,10 @@ package me.nrubin29.pogo.lang2.block;
 
 import me.nrubin29.pogo.lang2.*;
 import me.nrubin29.pogo.lang2.Runtime;
+import me.nrubin29.pogo.lang2.expression.Expression;
 import me.nrubin29.pogo.lang2.system.MethodMeta;
 import me.nrubin29.pogo.lang2.system.SystemClass;
+import me.nrubin29.pogo.lang2.tokenizer.Token;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,14 +16,14 @@ import java.util.stream.Collectors;
 public class MethodInvocation extends ReadOnlyBlock implements Nameable {
 
     private Token invokableToken, methodToken, captureToken;
-    private ArrayList<Token> values;
+    private ArrayList<Expression> expressions;
 
-    public MethodInvocation(Block superBlock, Token invokableToken, Token methodToken, ArrayList<Token> values, Token captureToken) {
+    public MethodInvocation(Block superBlock, Token invokableToken, Token methodToken, ArrayList<Expression> expressions, Token captureToken) {
         super(superBlock);
 
         this.invokableToken = invokableToken;
         this.methodToken = methodToken;
-        this.values = values;
+        this.expressions = expressions;
         this.captureToken = captureToken;
     }
 
@@ -97,13 +99,14 @@ public class MethodInvocation extends ReadOnlyBlock implements Nameable {
     }
 
     public List<Value> getValues() {
-        return this.values.stream()
-                .map(token -> {
+        return this.expressions.stream()
+                .map(expression -> {
                     try {
-                        return Utils.parseToken(token, getSuperBlock());
+                        return expression.evaluate();
                     }
 
-                    catch (InvalidCodeException e) {
+                    catch (Exception e) {
+                        System.err.println("getValues() Error!");
                         e.printStackTrace();
                         return null;
                     }

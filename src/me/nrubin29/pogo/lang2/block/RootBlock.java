@@ -2,8 +2,8 @@ package me.nrubin29.pogo.lang2.block;
 
 import me.nrubin29.pogo.lang2.InvalidCodeException;
 import me.nrubin29.pogo.lang2.Nameable;
-import me.nrubin29.pogo.lang2.Token;
 import me.nrubin29.pogo.lang2.Type;
+import me.nrubin29.pogo.lang2.tokenizer.Token;
 
 import java.util.Optional;
 
@@ -27,7 +27,7 @@ public abstract class RootBlock extends Block implements Nameable {
 
                         for (int i = 0; i < method.getParameters().length && i < paramTypes.length; i++) {
                             if (!paramTypes[i].equalsType(method.getParameters()[i].getMatchedType())) {
-                                throw new InvalidCodeException("Type mismatch for parameter " + method.getParameters()[i].getName() + ". Type is " + paramTypes[i] + ". Should be " + method.getParameters()[i].getMatchedType() + ".");
+                                return false;
                             }
                         }
 

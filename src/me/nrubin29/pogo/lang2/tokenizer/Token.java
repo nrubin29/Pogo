@@ -1,4 +1,6 @@
-package me.nrubin29.pogo.lang2;
+package me.nrubin29.pogo.lang2.tokenizer;
+
+import me.nrubin29.pogo.lang2.PrimitiveType;
 
 public class Token {
 

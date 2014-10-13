@@ -6,6 +6,7 @@ import me.nrubin29.pogo.ide.Project;
 import me.nrubin29.pogo.lang2.block.*;
 import me.nrubin29.pogo.lang2.block.Class;
 import me.nrubin29.pogo.lang2.parser.*;
+import me.nrubin29.pogo.lang2.tokenizer.PogoTokenizer;
 
 import java.io.IOException;
 import java.util.Scanner;
