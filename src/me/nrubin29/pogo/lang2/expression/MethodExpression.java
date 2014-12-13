@@ -13,6 +13,8 @@ public class MethodExpression extends Expression {
     private List<Value> values;
 
     public MethodExpression(Method method, List<Value> values) {
+        super(null, null);
+
         this.method = method;
         this.values = values;
     }

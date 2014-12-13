@@ -4,6 +4,7 @@ import me.nrubin29.pogo.lang2.InvalidCodeException;
 import me.nrubin29.pogo.lang2.Utils;
 import me.nrubin29.pogo.lang2.Value;
 import me.nrubin29.pogo.lang2.block.Block;
+import me.nrubin29.pogo.lang2.tokenizer.PreProcessedTokenizer;
 import me.nrubin29.pogo.lang2.tokenizer.Token;
 
 import java.io.IOException;
@@ -11,11 +12,11 @@ import java.io.IOException;
 public class VariableExpression extends Expression {
 
     private Token token;
-    private Block block;
 
     public VariableExpression(Token token, Block block) {
+        super(new PreProcessedTokenizer(token), block);
+
         this.token = token;
-        this.block = block;
     }
 
     @Override

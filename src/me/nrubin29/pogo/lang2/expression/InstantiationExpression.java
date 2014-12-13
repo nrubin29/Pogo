@@ -14,13 +14,11 @@ import java.util.Optional;
 public class InstantiationExpression extends Expression {
 
     private Variable variable;
-    private Tokenizer tokenizer;
-    private Block block;
 
     public InstantiationExpression(Variable variable, Tokenizer tokenizer, Block block) {
+        super(tokenizer, block);
+
         this.variable = variable;
-        this.tokenizer = tokenizer;
-        this.block = block;
     }
 
     @Override

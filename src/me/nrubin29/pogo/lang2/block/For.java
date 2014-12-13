@@ -1,15 +1,18 @@
 package me.nrubin29.pogo.lang2.block;
 
-import me.nrubin29.pogo.lang2.*;
-import me.nrubin29.pogo.lang2.tokenizer.Token;
+import me.nrubin29.pogo.lang2.Endable;
+import me.nrubin29.pogo.lang2.InvalidCodeException;
+import me.nrubin29.pogo.lang2.PrimitiveType;
+import me.nrubin29.pogo.lang2.Value;
+import me.nrubin29.pogo.lang2.expression.Expression;
 
 import java.io.IOException;
 
 public class For extends Block implements Endable {
 
-    private Token lower, upper;
+    private Expression lower, upper;
 
-    public For(Block superBlock, Token lower, Token upper) {
+    public For(Block superBlock, Expression lower, Expression upper) {
         super(superBlock);
 
         this.lower = lower;
@@ -18,7 +21,7 @@ public class For extends Block implements Endable {
 
     @Override
     public void run() throws InvalidCodeException, IOException {
-        Value l = checkBound(lower), u = checkBound(upper);
+        Value l = lower.evaluate(), u = upper.evaluate();
 
         double lVal = 0, uVal = 0;
 
@@ -41,39 +44,13 @@ public class For extends Block implements Endable {
         int direction = uVal > lVal ? 1 : -1;
 
         for (double i = lVal; i < uVal; i += direction) {
-            if (getSuperBlock().hasVariable(lower.getToken())) {
-                getSuperBlock().getVariable(lower.getToken()).get().setValue(i);
+            if (getSuperBlock().hasVariable(lower.getLine())) {
+                getSuperBlock().getVariable(lower.getLine()).get().setValue(i);
             }
 
             for (Block subBlock : getSubBlocks()) {
                 subBlock.run();
             }
-        }
-    }
-
-    private Value checkBound(Token bound) throws InvalidCodeException {
-        if (bound.getType() == Token.TokenType.DOUBLE_LITERAL) {
-            return new Value(PrimitiveType.DOUBLE, bound.getToken());
-        }
-
-        else if (bound.getType() == Token.TokenType.INTEGER_LITERAL) {
-            return new Value(PrimitiveType.INTEGER, bound.getToken());
-        }
-
-        else if (bound.getType() == Token.TokenType.STRING_LITERAL) {
-            Value value = Utils.parseToken(bound, this);
-
-            if (value.getType() == PrimitiveType.DOUBLE || value.getType() == PrimitiveType.INTEGER) {
-                return value;
-            }
-
-            else {
-                throw new InvalidCodeException("Expected number or variable, got " + bound + ".");
-            }
-        }
-
-        else {
-            throw new InvalidCodeException("Expected number or variable, got " + bound + ".");
         }
     }
 

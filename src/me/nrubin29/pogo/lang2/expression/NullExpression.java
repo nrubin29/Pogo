@@ -7,6 +7,10 @@ import java.io.IOException;
 
 public class NullExpression extends Expression {
 
+    public NullExpression() {
+        super(null, null);
+    }
+
     @Override
     public Value evaluate() throws IOException, InvalidCodeException {
         return new Value(null);

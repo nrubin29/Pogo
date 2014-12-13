@@ -19,6 +19,22 @@ import static me.nrubin29.pogo.lang2.tokenizer.Regex.IDENTIFIER;
  */
 public abstract class Expression {
 
+    Tokenizer tokenizer;
+    Block block;
+
+    public Expression(Tokenizer tokenizer, Block block) {
+        this.tokenizer = tokenizer;
+        this.block = block;
+    }
+
+    public String getLine() {
+        return tokenizer.getLine();
+    }
+
+    public Block getBlock() {
+        return block;
+    }
+
     public abstract Value evaluate() throws IOException, InvalidCodeException;
 
     public static Expression parse(Tokenizer tokenizer, Block block, Variable variable) throws InvalidCodeException {

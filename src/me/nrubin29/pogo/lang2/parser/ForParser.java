@@ -3,6 +3,8 @@ package me.nrubin29.pogo.lang2.parser;
 import me.nrubin29.pogo.lang2.InvalidCodeException;
 import me.nrubin29.pogo.lang2.block.Block;
 import me.nrubin29.pogo.lang2.block.For;
+import me.nrubin29.pogo.lang2.expression.Expression;
+import me.nrubin29.pogo.lang2.tokenizer.PreProcessedTokenizer;
 import me.nrubin29.pogo.lang2.tokenizer.Token;
 import me.nrubin29.pogo.lang2.tokenizer.Tokenizer;
 
@@ -35,6 +37,6 @@ public class ForParser extends Parser<For> {
             throw new InvalidCodeException("For statement does not end with closing parenthesis.");
         }
 
-        return new For(superBlock, lower, upper);
+        return new For(superBlock, Expression.parse(new PreProcessedTokenizer(lower), superBlock, null), Expression.parse(new PreProcessedTokenizer(upper), superBlock, null));
     }
 }
